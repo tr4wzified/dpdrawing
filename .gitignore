@@ -2,3 +2,4 @@ Makefile
 CMakeCache.txt
 SDL2Test
 DPDrawing
+CMakeFiles/
