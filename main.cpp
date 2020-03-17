@@ -46,21 +46,37 @@ int main(int argc, char* argv[])
 				quit = true;
 				break;
 			case SDL_MOUSEBUTTONUP: 
-				if(event.button.button == SDL_BUTTON_LEFT)
+				switch (event.button.button)
 				{
-							SDL_GetMouseState(&mouseEndX, &mouseEndY);
-							SDL_Log("mouse end x: %d", mouseEndX);
-							SDL_Log("mouse end y: %d", mouseEndY);
-							sizeX = abs(mouseX - mouseEndX);
-							sizeY = abs(mouseY - mouseEndY);
-							SDL_Log("size x: %d", sizeX);
-							SDL_Log("size y: %d", sizeY);
+					case SDL_BUTTON_LEFT:
+						SDL_GetMouseState(&mouseEndX, &mouseEndY);
+						SDL_Log("mouse end x: %d", mouseEndX);
+						SDL_Log("mouse end y: %d", mouseEndY);
+						sizeX = abs(mouseX - mouseEndX);
+						sizeY = abs(mouseY - mouseEndY);
+						SDL_Log("size x: %d", sizeX);
+						SDL_Log("size y: %d", sizeY);
+						if (mouseX < mouseEndX && mouseY < mouseEndY)
+						{
 							dstrect = { mouseX, mouseY, sizeX, sizeY };
-							SDL_RenderClear(renderer);
-							SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-							SDL_RenderPresent(renderer);
-							mouseBeingHeld = false;
-							break;
+						}
+						else if (mouseEndX < mouseX && mouseY < mouseEndY)
+						{
+							dstrect = { mouseEndX, mouseY, sizeX, sizeY };
+						}
+						else if (mouseX < mouseEndX && mouseEndY < mouseY)
+						{
+							dstrect = { mouseX, mouseEndY, sizeX, sizeY };
+						}
+						else
+						{
+							dstrect = { mouseEndX, mouseEndY, sizeX, sizeY };
+						}
+						SDL_RenderClear(renderer);
+						SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+						SDL_RenderPresent(renderer);
+						mouseBeingHeld = false;
+						break;
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
@@ -72,6 +88,7 @@ int main(int argc, char* argv[])
 						SDL_Log("mouse x: %d", mouseX);
 						SDL_Log("mouse y: %d", mouseY);
                         break;
+
                     case SDL_BUTTON_RIGHT:
                         SDL_ShowSimpleMessageBox(0, "Mouse", "Right button was pressed!", window);
 						SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
