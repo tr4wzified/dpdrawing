@@ -79,6 +79,7 @@ DPDrawing_EXTERNAL_OBJECTS =
 
 DPDrawing: CMakeFiles/DPDrawing.dir/main.cpp.o
 DPDrawing: CMakeFiles/DPDrawing.dir/build.make
+DPDrawing: /usr/lib/libSDL2.so
 DPDrawing: /usr/lib/libSDL2main.a
 DPDrawing: /usr/lib/libSDL2_image.so
 DPDrawing: CMakeFiles/DPDrawing.dir/link.txt

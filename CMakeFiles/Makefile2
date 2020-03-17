@@ -53,7 +53,7 @@ CMAKE_BINARY_DIR = /home/fire/Git/DPDrawing
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/SDL2Test.dir/all
+all: CMakeFiles/DPDrawing.dir/all
 
 .PHONY : all
 
@@ -63,36 +63,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/SDL2Test.dir/clean
+clean: CMakeFiles/DPDrawing.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/SDL2Test.dir
+# Target rules for target CMakeFiles/DPDrawing.dir
 
 # All Build rule for target.
-CMakeFiles/SDL2Test.dir/all:
-	$(MAKE) -f CMakeFiles/SDL2Test.dir/build.make CMakeFiles/SDL2Test.dir/depend
-	$(MAKE) -f CMakeFiles/SDL2Test.dir/build.make CMakeFiles/SDL2Test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/fire/Git/DPDrawing/CMakeFiles --progress-num=1,2 "Built target SDL2Test"
-.PHONY : CMakeFiles/SDL2Test.dir/all
+CMakeFiles/DPDrawing.dir/all:
+	$(MAKE) -f CMakeFiles/DPDrawing.dir/build.make CMakeFiles/DPDrawing.dir/depend
+	$(MAKE) -f CMakeFiles/DPDrawing.dir/build.make CMakeFiles/DPDrawing.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/fire/Git/DPDrawing/CMakeFiles --progress-num=1,2 "Built target DPDrawing"
+.PHONY : CMakeFiles/DPDrawing.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/SDL2Test.dir/rule: cmake_check_build_system
+CMakeFiles/DPDrawing.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/fire/Git/DPDrawing/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/SDL2Test.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/DPDrawing.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/fire/Git/DPDrawing/CMakeFiles 0
-.PHONY : CMakeFiles/SDL2Test.dir/rule
+.PHONY : CMakeFiles/DPDrawing.dir/rule
 
 # Convenience name for target.
-SDL2Test: CMakeFiles/SDL2Test.dir/rule
+DPDrawing: CMakeFiles/DPDrawing.dir/rule
 
-.PHONY : SDL2Test
+.PHONY : DPDrawing
 
 # clean rule for target.
-CMakeFiles/SDL2Test.dir/clean:
-	$(MAKE) -f CMakeFiles/SDL2Test.dir/build.make CMakeFiles/SDL2Test.dir/clean
-.PHONY : CMakeFiles/SDL2Test.dir/clean
+CMakeFiles/DPDrawing.dir/clean:
+	$(MAKE) -f CMakeFiles/DPDrawing.dir/build.make CMakeFiles/DPDrawing.dir/clean
+.PHONY : CMakeFiles/DPDrawing.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
