@@ -34,9 +34,15 @@ int main(int argc, char* argv[])
                 {
                     case SDL_BUTTON_LEFT:
                         SDL_ShowSimpleMessageBox(0, "Mouse", "Left button was pressed!", window);
+						SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+						SDL_RenderClear(renderer);
+						SDL_RenderPresent(renderer);
                         break;
                     case SDL_BUTTON_RIGHT:
                         SDL_ShowSimpleMessageBox(0, "Mouse", "Right button was pressed!", window);
+						SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+						SDL_RenderClear(renderer);
+						SDL_RenderPresent(renderer);
                         break;
                     default:
                         SDL_ShowSimpleMessageBox(0, "Mouse", "Some other button was pressed!", window);
