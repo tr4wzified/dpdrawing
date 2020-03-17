@@ -1,0 +1,3 @@
+/home/fire/Git/DPDrawing/CMakeFiles/rebuild_cache.dir
+/home/fire/Git/DPDrawing/CMakeFiles/main.dir
+/home/fire/Git/DPDrawing/CMakeFiles/edit_cache.dir
