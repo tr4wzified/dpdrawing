@@ -3,6 +3,7 @@
 
 CMakeFiles/SDL2Test.dir/main.cpp.o
  /home/fire/Git/DPDrawing/main.cpp
+ /home/fire/Git/DPDrawing/main.h
  /usr/include/SDL2/SDL.h
  /usr/include/SDL2/SDL_assert.h
  /usr/include/SDL2/SDL_atomic.h

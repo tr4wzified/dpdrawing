@@ -7,8 +7,12 @@
 #IncludeRegexTransform: 
 
 /home/fire/Git/DPDrawing/main.cpp
+main.h
+/home/fire/Git/DPDrawing/main.h
 SDL.h
 /home/fire/Git/DPDrawing/SDL.h
+
+/home/fire/Git/DPDrawing/main.h
 
 /usr/include/SDL2/SDL.h
 SDL_main.h
