@@ -5,7 +5,11 @@ int main(int argc, char* argv[])
 {
 	// Variables
 	bool quit = false;
+	const unsigned int SCREEN_WIDTH = 1280;
+	const unsigned int SCREEN_HEIGHT = 720;
 	SDL_Event event;
+	int x = 288;
+    int y = 208;
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -13,8 +17,8 @@ int main(int argc, char* argv[])
 		"DPDrawing",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		1280,
-		720,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
 		0
 	);
 
@@ -22,6 +26,12 @@ int main(int argc, char* argv[])
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
+
+	SDL_Rect dstrect = { 128, 128, 64, 64 };
+	SDL_Surface * image = SDL_LoadBMP("resources/images/blue.bmp");
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer,
+        image);
+    SDL_FreeSurface(image);
 
     while (!quit) {
 		SDL_WaitEvent(&event);
@@ -33,10 +43,11 @@ int main(int argc, char* argv[])
                 switch (event.button.button)
                 {
                     case SDL_BUTTON_LEFT:
-                        SDL_ShowSimpleMessageBox(0, "Mouse", "Left button was pressed!", window);
-						SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+						// While held
 						SDL_RenderClear(renderer);
+						SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 						SDL_RenderPresent(renderer);
+                        SDL_ShowSimpleMessageBox(0, "Mouse", "Left button was pressed!", window);
                         break;
                     case SDL_BUTTON_RIGHT:
                         SDL_ShowSimpleMessageBox(0, "Mouse", "Right button was pressed!", window);
