@@ -1,4 +1,4 @@
-./Makefile
-./CMakeCache.txt
-./SDL2Test
-./DPDrawing
+Makefile
+CMakeCache.txt
+SDL2Test
+DPDrawing
