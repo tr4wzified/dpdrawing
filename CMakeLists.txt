@@ -9,5 +9,5 @@ find_package(SDL2_image REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${SDL2_IMAGE_DIRS})
 
-add_executable(SDL2Test WIN32 main.cpp)
-target_link_libraries(SDL2Test ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
+add_executable(DPDrawing WIN32 main.cpp)
+target_link_libraries(DPDrawing ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
