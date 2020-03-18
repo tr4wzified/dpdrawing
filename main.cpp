@@ -1,4 +1,5 @@
 #include "main.h"
+#include<stdlib.h>
 #include "SDL.h"
 
 int main(int argc, char* argv[])
@@ -34,12 +35,37 @@ int main(int argc, char* argv[])
 	SDL_Surface * image = SDL_LoadBMP("resources/images/harald.bmp");
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
-	unsigned int sizeX;
-	unsigned int sizeY;
-	int mouseEndX = 0;
-	int mouseEndY = 0;
+	static int sizeX;
+	static int sizeY;
+	static int mouseEndX = 0;
+	static int mouseEndY = 0;
 
     while (!quit) {
+		if(mouseBeingHeld)
+		{
+			SDL_GetMouseState(&mouseEndX, &mouseEndY);
+			sizeX = abs(mouseX - mouseEndX);
+			sizeY = abs(mouseY - mouseEndY);
+			if (mouseX < mouseEndX && mouseY < mouseEndY)
+			{
+				dstrect = { mouseX, mouseY, sizeX, sizeY };
+			}
+			else if (mouseEndX < mouseX && mouseY < mouseEndY)
+			{
+				dstrect = { mouseEndX, mouseY, sizeX, sizeY };
+			}
+			else if (mouseX < mouseEndX && mouseEndY < mouseY)
+			{
+				dstrect = { mouseX, mouseEndY, sizeX, sizeY };
+			}
+			else
+			{
+				dstrect = { mouseEndX, mouseEndY, sizeX, sizeY };
+			}
+			SDL_RenderClear(renderer);
+			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+			SDL_RenderPresent(renderer);
+		}
 		SDL_WaitEvent(&event);
 		switch (event.type) {
 			case SDL_KEYDOWN:
@@ -50,12 +76,8 @@ int main(int argc, char* argv[])
 				{
 					case SDL_BUTTON_LEFT:
 						SDL_GetMouseState(&mouseEndX, &mouseEndY);
-						SDL_Log("mouse end x: %d", mouseEndX);
-						SDL_Log("mouse end y: %d", mouseEndY);
 						sizeX = abs(mouseX - mouseEndX);
 						sizeY = abs(mouseY - mouseEndY);
-						SDL_Log("size x: %d", sizeX);
-						SDL_Log("size y: %d", sizeY);
 						if (mouseX < mouseEndX && mouseY < mouseEndY)
 						{
 							dstrect = { mouseX, mouseY, sizeX, sizeY };
@@ -85,8 +107,6 @@ int main(int argc, char* argv[])
                     case SDL_BUTTON_LEFT:
 						mouseBeingHeld = true;
 						SDL_GetMouseState(&mouseX, &mouseY);
-						SDL_Log("mouse x: %d", mouseX);
-						SDL_Log("mouse y: %d", mouseY);
                         break;
 
                     case SDL_BUTTON_RIGHT:
