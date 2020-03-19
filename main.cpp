@@ -1,6 +1,4 @@
 #include "main.h"
-#include<stdlib.h>
-#include "SDL.h"
 
 int main(int argc, char* argv[])
 {
@@ -8,6 +6,7 @@ int main(int argc, char* argv[])
 	const unsigned int SCREEN_WIDTH = 1280;
 	const unsigned int SCREEN_HEIGHT = 720;
     SDL_Init(SDL_INIT_VIDEO);
+	SDL_Log("SDL Initialized");
 
     SDL_Window* window = SDL_CreateWindow
 	(
@@ -18,6 +17,7 @@ int main(int argc, char* argv[])
 		SCREEN_HEIGHT,
 		0
 	);
+	SDL_Log("SDL Window created");
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
     SDL_RenderPresent(renderer);
 
 	// Variables
-	bool quit = false;
+	bool running = true;
 	bool mouseBeingHeld = false;
 	SDL_Event event;
 	int mouseX = 0;
@@ -40,7 +40,10 @@ int main(int argc, char* argv[])
 	static int mouseEndX = 0;
 	static int mouseEndY = 0;
 
-    while (!quit) {
+	int renderedFrames = 0;
+    while (running) {
+		renderedFrames++;
+		SDL_Log(std::to_string(renderedFrames).c_str());
 		if(mouseBeingHeld)
 		{
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
@@ -68,9 +71,6 @@ int main(int argc, char* argv[])
 		}
 		SDL_WaitEvent(&event);
 		switch (event.type) {
-			case SDL_KEYDOWN:
-				quit = true;
-				break;
 			case SDL_MOUSEBUTTONUP: 
 				switch (event.button.button)
 				{
@@ -121,8 +121,23 @@ int main(int argc, char* argv[])
                         break;
                 }
                 break;
+
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym)
+				{
+					case SDLK_RETURN:
+						break;
+					case SDLK_e:
+						SDL_Log("SDLK_e called! Exiting.");
+						running = false;
+						break;
+					default:
+						break;
+				}
+				break;
 		}
     }
+	SDL_Log("Quitting");
     SDL_DestroyWindow(window);
 	SDL_Quit();
     return 0;
