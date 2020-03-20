@@ -1,15 +1,15 @@
 #include "main.h"
+using DPDrawing::Rectangle;
 
 int main(int argc, char* argv[])
 {
-
+	Rectangle rec(128, 128, 128, 128);
 	const unsigned int SCREEN_WIDTH = 1280;
 	const unsigned int SCREEN_HEIGHT = 720;
     SDL_Init(SDL_INIT_VIDEO);
 	SDL_Log("SDL Initialized");
 
-    SDL_Window* window = SDL_CreateWindow
-	(
+    SDL_Window* window = SDL_CreateWindow (
 		"DPDrawing",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
@@ -29,12 +29,11 @@ int main(int argc, char* argv[])
 	bool mouseBeingHeld = false;
 	SDL_Event event;
 	int mouseX = 0;
-    int mouseY = 0;
+	int mouseY = 0;
 
-	SDL_Rect dstrect = { 128, 128, 64, 64 };
 	SDL_Surface * image = SDL_LoadBMP("resources/images/harald.bmp");
-    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_FreeSurface(image);
+	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
+	SDL_FreeSurface(image);
 	static int sizeX;
 	static int sizeY;
 	static int mouseEndX = 0;
@@ -44,66 +43,55 @@ int main(int argc, char* argv[])
     while (running) {
 		renderedFrames++;
 		SDL_Log(std::to_string(renderedFrames).c_str());
-		if(mouseBeingHeld)
-		{
+		if (mouseBeingHeld) {
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
 			sizeX = abs(mouseX - mouseEndX);
 			sizeY = abs(mouseY - mouseEndY);
-			if (mouseX < mouseEndX && mouseY < mouseEndY)
-			{
-				dstrect = { mouseX, mouseY, sizeX, sizeY };
+			if (mouseX < mouseEndX && mouseY < mouseEndY) {
+				rec = Rectangle(mouseX, mouseY, sizeX, sizeY);
 			}
-			else if (mouseEndX < mouseX && mouseY < mouseEndY)
-			{
-				dstrect = { mouseEndX, mouseY, sizeX, sizeY };
+			else if (mouseEndX < mouseX && mouseY < mouseEndY) {
+				rec = Rectangle(mouseEndX, mouseY, sizeX, sizeY);
 			}
-			else if (mouseX < mouseEndX && mouseEndY < mouseY)
-			{
-				dstrect = { mouseX, mouseEndY, sizeX, sizeY };
+			else if (mouseX < mouseEndX && mouseEndY < mouseY) {
+				rec = Rectangle(mouseX, mouseEndY, sizeX, sizeY);
 			}
-			else
-			{
-				dstrect = { mouseEndX, mouseEndY, sizeX, sizeY };
+			else {
+				rec = Rectangle(mouseEndX, mouseEndY, sizeX, sizeY);
 			}
 			SDL_RenderClear(renderer);
-			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+			SDL_RenderCopy(renderer, texture, NULL, rec.getSDLObj());
 			SDL_RenderPresent(renderer);
 		}
 		SDL_WaitEvent(&event);
 		switch (event.type) {
 			case SDL_MOUSEBUTTONUP: 
-				switch (event.button.button)
-				{
+				switch (event.button.button) {
 					case SDL_BUTTON_LEFT:
 						SDL_GetMouseState(&mouseEndX, &mouseEndY);
 						sizeX = abs(mouseX - mouseEndX);
 						sizeY = abs(mouseY - mouseEndY);
-						if (mouseX < mouseEndX && mouseY < mouseEndY)
-						{
-							dstrect = { mouseX, mouseY, sizeX, sizeY };
+						if (mouseX < mouseEndX && mouseY < mouseEndY) {
+							rec = Rectangle(mouseX, mouseY, sizeX, sizeY);
 						}
-						else if (mouseEndX < mouseX && mouseY < mouseEndY)
-						{
-							dstrect = { mouseEndX, mouseY, sizeX, sizeY };
+						else if (mouseEndX < mouseX && mouseY < mouseEndY) {
+							rec = Rectangle(mouseEndX, mouseY, sizeX, sizeY);
 						}
-						else if (mouseX < mouseEndX && mouseEndY < mouseY)
-						{
-							dstrect = { mouseX, mouseEndY, sizeX, sizeY };
+						else if (mouseX < mouseEndX && mouseEndY < mouseY) {
+							rec = Rectangle(mouseX, mouseEndY, sizeX, sizeY);
 						}
-						else
-						{
-							dstrect = { mouseEndX, mouseEndY, sizeX, sizeY };
+						else {
+							rec = Rectangle(mouseEndX, mouseEndY, sizeX, sizeY);
 						}
 						SDL_RenderClear(renderer);
-						SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+						SDL_RenderCopy(renderer, texture, NULL, rec.getSDLObj());
 						SDL_RenderPresent(renderer);
 						mouseBeingHeld = false;
 						break;
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-                switch (event.button.button)
-                {
+                switch (event.button.button) {
                     case SDL_BUTTON_LEFT:
 						mouseBeingHeld = true;
 						SDL_GetMouseState(&mouseX, &mouseY);
