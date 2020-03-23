@@ -1,27 +1,26 @@
-#pragma once
-#include "../main.h"
-Rectangle::Rectangle(int width, int height, int posX, int posY) {
+#include "Rectangle.h"
+DPDrawing::Rectangle::Rectangle(int width, int height, int posX, int posY) {
 	this->width = width;
 	this->height = height;
 	this->posX = posX;
 	this->posY = posY;
-	rct = { posX, posY, width, height };
+	this->rect = { posX, posY, width, height };
 }
 
-void Rectangle::setWidth(int width) {
+void DPDrawing::Rectangle::setWidth(int width) {
 	this->width = width;
-	rct = { posX, posY, width, height };
+	this->rect = { posX, posY, width, height };
 }
 
-void Rectangle::setWidth(int width) {
+void DPDrawing::Rectangle::setHeight(int height) {
 	this->width = width;
-	rct = { posX, posY, width, height };
+	this->rect = { posX, posY, this->width, this->height };
 }
 
-float Rectangle::getArea() {
-	return width * height;
+float DPDrawing::Rectangle::getArea() {
+	return this->width * this->height;
 }
 
-const SDL_Rect* Rectangle::getSDLObj() {
-	return &rct;
+const SDL_Rect* DPDrawing::Rectangle::getSDLObj() {
+	return &this->rect;
 }
