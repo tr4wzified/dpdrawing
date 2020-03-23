@@ -45,20 +45,7 @@ int main(int argc, char* argv[])
 		SDL_Log(std::to_string(renderedFrames).c_str());
 		if (mouseBeingHeld) {
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
-			sizeX = abs(mouseX - mouseEndX);
-			sizeY = abs(mouseY - mouseEndY);
-			if (mouseX < mouseEndX && mouseY < mouseEndY) {
-				rec = Rectangle(mouseX, mouseY, sizeX, sizeY);
-			}
-			else if (mouseEndX < mouseX && mouseY < mouseEndY) {
-				rec = Rectangle(mouseEndX, mouseY, sizeX, sizeY);
-			}
-			else if (mouseX < mouseEndX && mouseEndY < mouseY) {
-				rec = Rectangle(mouseX, mouseEndY, sizeX, sizeY);
-			}
-			else {
-				rec = Rectangle(mouseEndX, mouseEndY, sizeX, sizeY);
-			}
+			rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
 			SDL_RenderClear(renderer);
 			SDL_RenderCopy(renderer, texture, NULL, rec.getSDLObj());
 			SDL_RenderPresent(renderer);
@@ -69,20 +56,7 @@ int main(int argc, char* argv[])
 				switch (event.button.button) {
 					case SDL_BUTTON_LEFT:
 						SDL_GetMouseState(&mouseEndX, &mouseEndY);
-						sizeX = abs(mouseX - mouseEndX);
-						sizeY = abs(mouseY - mouseEndY);
-						if (mouseX < mouseEndX && mouseY < mouseEndY) {
-							rec = Rectangle(mouseX, mouseY, sizeX, sizeY);
-						}
-						else if (mouseEndX < mouseX && mouseY < mouseEndY) {
-							rec = Rectangle(mouseEndX, mouseY, sizeX, sizeY);
-						}
-						else if (mouseX < mouseEndX && mouseEndY < mouseY) {
-							rec = Rectangle(mouseX, mouseEndY, sizeX, sizeY);
-						}
-						else {
-							rec = Rectangle(mouseEndX, mouseEndY, sizeX, sizeY);
-						}
+						rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
 						SDL_RenderClear(renderer);
 						SDL_RenderCopy(renderer, texture, NULL, rec.getSDLObj());
 						SDL_RenderPresent(renderer);

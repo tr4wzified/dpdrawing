@@ -7,7 +7,10 @@ namespace DPDrawing {
 			float getArea();
 			void setWidth(int width);
 			void setHeight(int height);
+			void setPosX(int posX);
+			void setPosY(int posY);
 			const SDL_Rect* getSDLObj();
+			void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
 			SDL_Rect rect;
 	};
 }
