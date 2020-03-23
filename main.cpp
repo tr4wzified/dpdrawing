@@ -1,11 +1,24 @@
 #include "main.h"
-using DPDrawing::Rectangle;
+SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+// Variables
+bool running = true;
+SDL_Event event;
+// Mouse
+int mouseX = 0;
+int mouseY = 0;
+int mouseEndX = 0;
+int mouseEndY = 0;
+bool mouseBeingHeld = false;
+// Textures
+SDL_Surface * image = SDL_LoadBMP("resources/images/harald.bmp");
+SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
+SDL_FreeSurface(image);
+// Objects
+DPDrawing::Rectangle rec(128, 128, 128, 128);
+// Debug
+int renderedFrames = 0;
 
-int main(int argc, char* argv[])
-{
-	Rectangle rec(128, 128, 128, 128);
-	const unsigned int SCREEN_WIDTH = 1280;
-	const unsigned int SCREEN_HEIGHT = 720;
+void Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT) {
     SDL_Init(SDL_INIT_VIDEO);
 	SDL_Log("SDL Initialized");
 
@@ -19,27 +32,14 @@ int main(int argc, char* argv[])
 	);
 	SDL_Log("SDL Window created");
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
+	Update(window, renderer);
+	return 0;
+}
 
-	// Variables
-	bool running = true;
-	bool mouseBeingHeld = false;
-	SDL_Event event;
-	int mouseX = 0;
-	int mouseY = 0;
-
-	SDL_Surface * image = SDL_LoadBMP("resources/images/harald.bmp");
-	SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
-	SDL_FreeSurface(image);
-	static int sizeX;
-	static int sizeY;
-	static int mouseEndX = 0;
-	static int mouseEndY = 0;
-
-	int renderedFrames = 0;
+void Update(SDL_Window*& window, SDL_Renderer*& renderer) {
     while (running) {
 		renderedFrames++;
 		SDL_Log(std::to_string(renderedFrames).c_str());
@@ -99,8 +99,17 @@ int main(int argc, char* argv[])
 				break;
 		}
     }
+}
+int Quit() {
 	SDL_Log("Quitting");
     SDL_DestroyWindow(window);
 	SDL_Quit();
-    return 0;
+	return 0;
+}
+
+int main(int argc, char* argv[])
+{
+	Init(1280, 720);
+	Update();
+	Quit();
 }
