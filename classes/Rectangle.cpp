@@ -36,10 +36,6 @@ void DPDrawing::Rectangle::setRect(int mouseX, int mouseY, int mouseEndX, int mo
 		posX = mouseX;
 		posY = mouseY;
 	}
-	else if (mouseEndX < mouseEndX && mouseEndY > mouseY) {
-		posX = mouseEndX;
-		posY = mouseY;
-	}
 	else if (mouseEndX > mouseX && mouseEndY < mouseY) {
 		posX = mouseX;
 		posY = mouseEndY;
