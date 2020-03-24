@@ -42,7 +42,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& renderer) {
 
 		SDL_WaitEvent(&event);
 		switch (event.type) {
-			case SDL_QUIT:
+			case SDL_Quit:
 				Quit();
 				break;
 			case SDL_MOUSEBUTTONUP: 
