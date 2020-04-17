@@ -1,10 +1,12 @@
 #pragma once
 #include<stdlib.h>
 #include<string>
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "classes/Rectangle.h"
 #include "classes/Circle.h"
 #include "classes/Pixel.h"
+#include <eigen3/Eigen/Core>
+#include <nanogui/button.h>
 namespace DPDrawing {
 	class Main {
 		public:

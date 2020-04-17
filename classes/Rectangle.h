@@ -1,5 +1,5 @@
 #pragma once
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "Shape.h"
 namespace DPDrawing {
 	class Rectangle: public Shape {
