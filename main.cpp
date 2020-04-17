@@ -12,7 +12,7 @@ int mouseEndX = 0;
 int mouseEndY = 0;
 bool mouseBeingHeld = false;
 // Objects
-DPDrawing::Rectangle rec(128, 128, 128, 128);
+DPDrawing::DrawRectangle rec(128, 128, 128, 128);
 // Debug
 int renderedFrames = 0;
 
