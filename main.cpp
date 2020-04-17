@@ -95,10 +95,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 						Pixel p(mouseX, mouseY, 255, 0, 0, 255);
 						p.Draw(gRenderer);
                         break;
-
-                    default:
-                        SDL_ShowSimpleMessageBox(0, "Mouse", "Some other button was pressed!", window);
-                        break;
                 }
                 break;
 
