@@ -1,6 +1,5 @@
-#include "DrawRectangle.h"
-#include <DrawShape.h>
-#include <Shape.h>
+#include "DrawShape.h"
+#include "Shape.h"
 
 class DrawCircle : public DrawShape {
 	

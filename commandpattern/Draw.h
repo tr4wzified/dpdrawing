@@ -1,5 +1,4 @@
-#pragma once
-
+#include "DrawShape.h"
 namespace DPDrawing {
 	class Draw {
 		public:

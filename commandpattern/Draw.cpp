@@ -2,10 +2,10 @@
 #include "Draw.h"
 #include <string.h>
 #include <list>
-#include <DrawShape.h>
-#include <Shape.h>
+#include "DrawShape.h"
+#include "Shape.h"
 
-class draw : public DrawShape
+class Draw : public DrawShape
 {
     std::list<DrawShape*> drawList;
 

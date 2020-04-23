@@ -1,5 +1,3 @@
-#pragma once
-
 namespace DPDrawing {
 	class Shape {
 		public:
