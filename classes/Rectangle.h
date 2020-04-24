@@ -1,17 +1,19 @@
 #pragma once
-#include <SDL2/SDL.h>
 #include "Shape.h"
+#include <SDL2/SDL.h>
 namespace DPDrawing {
-	class Rectangle: public Shape {
-		public:
-			Rectangle(int width, int height, int posX, int posY);
-			float getArea();
-			void setWidth(int width);
-			void setHeight(int height);
-			void setPosX(int posX);
-			void setPosY(int posY);
-			const SDL_Rect* getSDLObj();
-			void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
-			SDL_Rect rect;
-	};
+class Rectangle : public Shape {
+public:
+    Rectangle(int width, int height, int posX, int posY);
+    void setWidth(int width);
+    void setHeight(int height);
+    void setPosX(int posX);
+    void setPosY(int posY);
+    float getArea();
+	int getWidth();
+	int getHeight();
+    const SDL_Rect* getSDLObj();
+    void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
+    SDL_Rect rect;
+};
 }
