@@ -31,14 +31,6 @@ float DPDrawing::Rectangle::getArea() {
     return this->width * this->height;
 }
 
-int DPDrawing::Rectangle::getWidth() {
-	return this->width;
-}
-
-int DPDrawing::Rectangle::getHeight() {
-	return this->height;
-}
-
 void DPDrawing::Rectangle::setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
     if (mouseEndX > mouseX && mouseEndY > mouseY) {
 	setPosX(mouseX);
@@ -57,6 +49,6 @@ void DPDrawing::Rectangle::setRect(int mouseX, int mouseY, int mouseEndX, int mo
     setHeight(abs(mouseEndY - mouseY));
 }
 
-const SDL_Rect* DPDrawing::Rectangle::getSDLObj() {
+SDL_Rect* DPDrawing::Rectangle::getSDLObj() {
     return &this->rect;
 }

@@ -8,12 +8,17 @@ using std::string;
 namespace DPDrawing {
 class Button : public Shape {
 public:
-	Button(int posX, int posY, TTF_Font* font, SDL_Color color, string text);
-    Rectangle rect = Rectangle(1,1,1,1);
+	Button(int posX, int posY, SDL_Color bg_color, SDL_Color fg_color, string text);
+    float getArea();
+	SDL_Rect* getRectangle();
+	SDL_Surface* getSurface();
+private:
+    Rectangle rect = Rectangle(0,0,0,0);
     TTF_Font* font;
     string text;
 	SDL_Surface* label;
-    float getArea();
-	void Draw(SDL_Renderer* r);
+	SDL_Color bg_color;
+	SDL_Color fg_color;
+
 };
 }

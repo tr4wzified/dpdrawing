@@ -10,9 +10,7 @@ public:
     void setPosX(int posX);
     void setPosY(int posY);
     float getArea();
-	int getWidth();
-	int getHeight();
-    const SDL_Rect* getSDLObj();
+    SDL_Rect* getSDLObj();
     void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
     SDL_Rect rect;
 };
