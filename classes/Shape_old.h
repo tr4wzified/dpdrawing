@@ -1,8 +1,8 @@
 #pragma once
 namespace DPDrawing {
-	class Shape {
+	class Shape_old {
 		public:
-			virtual float getArea() = 0;
+			//virtual float getArea() = 0;
 			void setWidth(int width);
 			void setHeight(int height);
 			void setPosX(int posX);

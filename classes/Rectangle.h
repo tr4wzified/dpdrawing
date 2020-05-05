@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include "Shape.h"
+#include "Shape_old.h"
 namespace DPDrawing {
-	class Rectangle: public Shape {
+	class Rectangle: public Shape_old {
 		public:
 			Rectangle(int width, int height, int posX, int posY);
 			float getArea();

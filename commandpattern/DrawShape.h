@@ -1,5 +1,7 @@
+//de pure virtual command interface
+#pragma once
+
 class DrawShape 
 {
-    public: 
-    virtual void execute() = 0;
+    public: virtual void Execute() = 0;
 };

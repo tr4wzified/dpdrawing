@@ -2,23 +2,31 @@
 using namespace DPDrawing;
 using std::vector;
 
+//SDL Stuffs
 SDL_Window *window = nullptr;
 SDL_Renderer *gRenderer = nullptr;
+
 // Variables
 bool running = true;
 SDL_Event event;
+
 // Mouse
 int mouseX = 0;
 int mouseY = 0;
 int mouseEndX = 0;
 int mouseEndY = 0;
+
 bool mouseBeingHeld = false;
+
+//give rectangle a texture
 const vector<SDL_Surface*> images = {
 	SDL_LoadBMP("resources/images/harald.bmp")
 };
 vector<SDL_Texture *> textures;
+
 // Objects
 Rectangle rec(128, 128, 128, 128);
+
 // Debug
 int renderedFrames = 0;
 
@@ -41,6 +49,7 @@ int Init(const int &SCREEN_WIDTH, const int &SCREEN_HEIGHT) {
   return 0;
 }
 
+//Exits program
 int Quit() {
   SDL_Log("Quit() called!");
   running = false;
@@ -49,6 +58,7 @@ int Quit() {
   return 0;
 }
 
+//Updates program
 void Update(SDL_Window *&window, SDL_Renderer *&gRenderer) {
   while (running) {
 	SDL_WaitEvent(&event);
@@ -65,16 +75,37 @@ void Update(SDL_Window *&window, SDL_Renderer *&gRenderer) {
     case SDL_QUIT:
       Quit();
       break;
+    
+    //When mouse is released
     case SDL_MOUSEBUTTONUP:
       switch (event.button.button) {
-      case SDL_BUTTON_LEFT:
+      case SDL_BUTTON_LEFT: {
         mouseBeingHeld = false;
         SDL_GetMouseState(&mouseEndX, &mouseEndY);
+        
+        //New shape drawing with command pattern
+        
+        Shape square;
+        square.setName("Rectangle");
+
+        DrawRectangle drawrect(square);
+
+        std::vector<std::unique_ptr<DrawShape>> dl;
+
+        std::unique_ptr<DrawShape> up = std::make_unique<DrawShape>(drawrect);
+
+        Drawer d(dl);
+        d.takeDrawRequest(up);
+
+        d.executeDrawRequests();
+        
+        //end command pattern part
         rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
         SDL_RenderClear(gRenderer);
         SDL_RenderCopy(gRenderer, textures[0], NULL, rec.getSDLObj());
         SDL_RenderPresent(gRenderer);
         break;
+      }
       case SDL_BUTTON_RIGHT:
         SDL_GetMouseState(&mouseX, &mouseY);
         Pixel p(mouseX, mouseY, 255, 0, 0, 255);

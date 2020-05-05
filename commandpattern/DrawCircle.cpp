@@ -1,18 +1,13 @@
-#include "DrawShape.h"
-#include "Shape.h"
+#include "DrawCircle.h"
 
-class DrawCircle : public DrawShape {
-	
-	private: DPDrawing::Shape desiredShape;
+//Concrete klasse waar de DrawShape interface geimplementeerd is.
 
-	public: 
-	DrawCircle(DPDrawing::Shape desiredShape)
+	void DPDrawing::DrawCircle::Draw(Shape desiredShape)
 	{
 		this->desiredShape = desiredShape;
 	}
-
-	void execute() 
+	
+	void DPDrawing::DrawCircle::Execute()
 	{
-		desiredShape.DrawCircle();
+		Draw(desiredShape);
 	}
-};

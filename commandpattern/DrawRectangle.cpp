@@ -1,19 +1,13 @@
 #include "DrawRectangle.h"
-#include "DrawShape.h"
-#include "Shape.h"
 
-class DrawRectangle : public DrawShape {
-	
-	private: DPDrawing::Shape desiredShape;
+//Concrete klasse waar de DrawShape interface geimplementeerd is.
 
-	public:
-	DrawRectangle(DPDrawing::Shape desiredShape)
+	void DPDrawing::DrawRectangle::Draw(Shape s)
 	{
-		this->desiredShape = desiredShape;
+		desiredShape = s;
 	}
 
-	void execute() 
+	void DPDrawing::DrawRectangle::Execute()
 	{
-		desiredShape.DrawRectangle();
+		Draw(desiredShape);
 	}
-};
