@@ -8,7 +8,7 @@ using std::string;
 namespace DPDrawing {
 class Button : public Shape {
 public:
-	Button(int posX, int posY, SDL_Color bg_color, SDL_Color fg_color, string text);
+	Button(int posX, int posY, SDL_Color bg_color, SDL_Color fg_color, int text);
     float getArea();
 	SDL_Rect* getRectangle();
 	SDL_Surface* getSurface();

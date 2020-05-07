@@ -1,8 +1,8 @@
 #include "main.h"
-#define BUTTON_WIDTH 110
-#define BUTTON_HEIGHT 60
+#define BUTTON_WIDTH 75
+#define BUTTON_HEIGHT 75
 SDL_Window* window = nullptr;
-SDL_Renderer* gRenderer = nullptr;
+SDL_Renderer* gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 // Variables
 bool running = true;
 SDL_Event event;
@@ -13,9 +13,10 @@ int mouseY = 0;
 int mouseEndX = 0;
 int mouseEndY = 0;
 bool mouseBeingHeld = false;
-TextureManager tm;
 // Objects
 Rectangle rec(128, 128, 128, 128);
+TextureManager tm;
+Drawer* dr = new Drawer(gRenderer, &tm);
 // Fonts, initialized in Init()
 // Debug
 int renderedFrames = 0;
@@ -32,7 +33,7 @@ int loadButtons() {
 	SDL_Color text_c = {255,255,255};
 
 	// Button 1
-	Button b(0, 0, background_c, text_c, "Rectangle");
+	Button b(0, 0, background_c, text_c, 82);
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
 	SDL_Rect* b_msg_rect = b.getRectangle();
@@ -41,7 +42,7 @@ int loadButtons() {
 	SDL_RenderPresent(gRenderer);
 
 	// Button 2
-	Button c(BUTTON_WIDTH, 0, background_c, text_c, "Reset");
+	Button c(BUTTON_WIDTH, 0, background_c, text_c, 120);
 	SDL_Rect* c_rect = c.getRectangle();
 	SDL_Texture* c_msg = SDL_CreateTextureFromSurface(gRenderer, c.getSurface());
 	SDL_Rect* c_msg_rect = c.getRectangle();
@@ -95,7 +96,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     TTF_Init();
 
     SDL_Log("Initializing SDL Renderer...");
-    gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    //gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(gRenderer);
     SDL_RenderPresent(gRenderer);
@@ -135,9 +136,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	if (mouseBeingHeld && gMode.id == 0) {
 		SDL_GetMouseState(&mouseEndX, &mouseEndY);
 		if(!checkIfButtonPressed(mouseEndX, mouseEndY)) {
-	    	rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
-	    	SDL_RenderCopy(gRenderer, tm.getTextureByName("harald"), NULL, rec.getSDLObj());
-	    	SDL_RenderPresent(gRenderer);
 		}
 	}
 
@@ -152,8 +150,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		if(!checkIfButtonPressed(mouseX, mouseY) && gMode.id == 0) {
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
 			rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
-			SDL_RenderCopy(gRenderer, tm.getTextureByName("harald"), NULL, rec.getSDLObj());
-			SDL_RenderPresent(gRenderer);
+			DrawRectangle* drawrec = new DrawRectangle(&rec);
+			dr->prepareToDraw(drawrec);
+			dr->Draw();
 		}
 		break;
 	    case SDL_BUTTON_RIGHT:

@@ -4,6 +4,9 @@
 #include "classes/Rectangle.h"
 #include "classes/TextureManager.h"
 #include "classes/Button.h"
+#include "classes/Drawer.h"
+#include "classes/DrawCommand.h"
+#include "classes/DrawRectangle.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
