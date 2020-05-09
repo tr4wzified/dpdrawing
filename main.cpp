@@ -2,11 +2,15 @@
 #define BUTTON_WIDTH 75
 #define BUTTON_HEIGHT 75
 SDL_Window* window = nullptr;
-SDL_Renderer* gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+SDL_Renderer* gRenderer = nullptr;
 // Variables
 bool running = true;
 SDL_Event event;
-int updateCount = 0;
+/*
+ * 0 = Rectangle
+ * 1 = Circle
+*/
+int currentMode = 0;
 // Mouse
 int mouseX = 0;
 int mouseY = 0;
@@ -16,40 +20,41 @@ bool mouseBeingHeld = false;
 // Objects
 Rectangle rec(128, 128, 128, 128);
 TextureManager tm;
-Drawer* dr = new Drawer(gRenderer, &tm);
+Drawer* dr;
 // Fonts, initialized in Init()
 // Debug
-int renderedFrames = 0;
-struct Mode {
-	string name;
-	int id;
-};
-struct Mode gMode = { "Rectangle", 0 };
-
+int updateCount = 0;
 
 int loadButtons() {
 	SDL_Log("Loading buttons");
-	SDL_Color background_c = {84,34,34};
-	SDL_Color text_c = {255,255,255};
+	SDL_Color background = {84,34,34};
+	SDL_Color text = {255,255,255};
 
-	// Button 1
-	Button b(0, 0, background_c, text_c, 82);
+	// Button 1 - Reset - 
+	Button b(0, 0, background, text, 88);
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
 	SDL_Rect* b_msg_rect = b.getRectangle();
 	SDL_RenderCopy(gRenderer, tm.getTextureByName("button"), NULL, b_rect);
 	SDL_RenderCopy(gRenderer, b_msg, NULL, b_msg_rect);
-	SDL_RenderPresent(gRenderer);
 
-	// Button 2
-	Button c(BUTTON_WIDTH, 0, background_c, text_c, 120);
+	// Button 2 - Rectangle - R
+	Button c(BUTTON_WIDTH, 0, background, text, 82);
 	SDL_Rect* c_rect = c.getRectangle();
 	SDL_Texture* c_msg = SDL_CreateTextureFromSurface(gRenderer, c.getSurface());
 	SDL_Rect* c_msg_rect = c.getRectangle();
 	SDL_RenderCopy(gRenderer, tm.getTextureByName("button"), NULL, c_rect);
 	SDL_RenderCopy(gRenderer, c_msg, NULL, c_msg_rect);
-	SDL_RenderPresent(gRenderer);
 
+	// Button 3 - Ellipse - O
+	Button d(BUTTON_WIDTH * 2, 0, background, text, 79);
+	SDL_Rect* d_rect = d.getRectangle();
+	SDL_Texture* d_msg = SDL_CreateTextureFromSurface(gRenderer, d.getSurface());
+	SDL_Rect* d_msg_rect = d.getRectangle();
+	SDL_RenderCopy(gRenderer, tm.getTextureByName("button"), NULL, d_rect);
+	SDL_RenderCopy(gRenderer, d_msg, NULL, d_msg_rect);
+
+	SDL_RenderPresent(gRenderer);
 
 	return 0;
 }
@@ -64,14 +69,19 @@ int resetCanvas() {
 bool checkIfButtonPressed(int mouseX, int mouseY) {
 	if(!mouseBeingHeld) {
 		if(mouseY >= 0 && mouseY <= BUTTON_HEIGHT) {
-		// Pressed first button
+		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= BUTTON_WIDTH) {
-				gMode = {"Rectangle", 0};
+				resetCanvas();
 				return true;
 			}
-			// Pressed second button
+			// Pressed second button - RECTANGLE
 			else if(mouseX >= BUTTON_WIDTH * 1 && mouseX <= BUTTON_WIDTH * 2) {
-				resetCanvas();
+				currentMode = 0;
+				return true;
+			}
+			// Pressed third button - ELLIPSE
+			else if(mouseX >= BUTTON_WIDTH * 2 && mouseX <= BUTTON_WIDTH * 3) {
+				currentMode = 1;
 				return true;
 			}
 			return false;
@@ -96,7 +106,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     TTF_Init();
 
     SDL_Log("Initializing SDL Renderer...");
-    //gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(gRenderer);
     SDL_RenderPresent(gRenderer);
@@ -108,6 +118,8 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     tm.addSurface(gRenderer, "resources/images/blue.bmp", "blue");
 	tm.addSurface(gRenderer, "resources/images/brown.bmp", "button");
     SDL_Log("Textures loaded.");
+
+	dr = new Drawer(gRenderer, &tm);
 
 	loadButtons();
 
@@ -133,9 +145,17 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		SDL_Log("Update: %s", std::to_string(updateCount).c_str());
 	}
 	// Live preview of the Rectangle drawing
-	if (mouseBeingHeld && gMode.id == 0) {
-		SDL_GetMouseState(&mouseEndX, &mouseEndY);
-		if(!checkIfButtonPressed(mouseEndX, mouseEndY)) {
+	if (mouseBeingHeld) {
+		switch(currentMode) {
+			case 0:
+			SDL_GetMouseState(&mouseEndX, &mouseEndY);
+			if(!checkIfButtonPressed(mouseEndX, mouseEndY)) {
+				SDL_GetMouseState(&mouseEndX, &mouseEndY);
+				rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
+				DrawRectangle* drawrec = new DrawRectangle(&rec);
+				dr->prepareToDraw(drawrec);
+				dr->Draw();
+			}
 		}
 	}
 
@@ -147,12 +167,27 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		mouseBeingHeld = false;
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
-		if(!checkIfButtonPressed(mouseX, mouseY) && gMode.id == 0) {
-			SDL_GetMouseState(&mouseEndX, &mouseEndY);
-			rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
-			DrawRectangle* drawrec = new DrawRectangle(&rec);
-			dr->prepareToDraw(drawrec);
-			dr->Draw();
+		if(!checkIfButtonPressed(mouseX, mouseY)) {
+			switch(currentMode) {
+				// Rectangle
+				case 0:
+					{
+						SDL_GetMouseState(&mouseEndX, &mouseEndY);
+						rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
+						DrawRectangle* drawrec = new DrawRectangle(&rec);
+						dr->prepareToDraw(drawrec);
+						dr->Draw();
+						break;
+					}
+				// Ellipse
+				case 1:
+					{
+						Circle* a = new Circle();
+						a->aaellipseRGBA(gRenderer, mouseX, mouseY, mouseEndX, mouseEndY, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+					SDL_RenderPresent(gRenderer);
+						break;
+					}
+			}
 		}
 		break;
 	    case SDL_BUTTON_RIGHT:

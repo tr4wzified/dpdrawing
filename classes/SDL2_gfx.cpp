@@ -1,58 +1,9 @@
-#include "Circle.h"
-DPDrawing::Circle::Circle(int width, int height, int posX, int posY) {
-	this->width = width;
-	this->height = height;
-	this->posX = posX;
-	this->posX = posY;
+#include "SDL2_gfx.h"
+
+DPDrawing::gfx::gfx() {
 }
 
-DPDrawing::Circle::Circle() {
-}
-
-float DPDrawing::Circle::getArea() {
-	return 0;
-}
-
-void DPDrawing::Circle::DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius, SDL_Color c)
-{
-   const int32_t diameter = (radius * 2);
-
-   SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
-
-   int32_t x = (radius - 1);
-   int32_t y = 0;
-   int32_t tx = 1;
-   int32_t ty = 1;
-   int32_t error = (tx - diameter);
-
-   while (x >= y)
-   {
-      //  Each of the following renders an octant of the circle
-      SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
-      SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
-      SDL_RenderDrawPoint(renderer, centreX - x, centreY - y);
-      SDL_RenderDrawPoint(renderer, centreX - x, centreY + y);
-      SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
-      SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
-      SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
-      SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
-
-      if (error <= 0)
-      {
-         ++y;
-         error += ty;
-         ty += 2;
-      }
-
-      if (error > 0)
-      {
-         --x;
-         tx += 2;
-         error += (tx - diameter);
-      }
-   }
-}
-int DPDrawing::Circle::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::gfx::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -61,7 +12,7 @@ int DPDrawing::Circle::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Ui
 	return result;
 }
 
-int DPDrawing::Circle::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Uint32 weight)
+int DPDrawing::gfx::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Uint32 weight)
 {
 	/*
 	* Modify Alpha by weight 
@@ -77,7 +28,7 @@ int DPDrawing::Circle::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Sint16
 	return pixelRGBA(renderer, x, y, r, g, b, a);
 }
 
-int DPDrawing::Circle::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::gfx::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -86,7 +37,7 @@ int DPDrawing::Circle::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y1, S
 	return result;
 }
 
-int DPDrawing::Circle::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::gfx::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -95,7 +46,7 @@ int DPDrawing::Circle::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, 
 	return result;
 }
 
-int DPDrawing::Circle::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::gfx::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result;
 	int i;
@@ -275,4 +226,3 @@ int DPDrawing::Circle::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y
 
 	return (result);
 }
-

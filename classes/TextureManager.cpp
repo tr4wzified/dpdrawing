@@ -17,6 +17,7 @@ void DPDrawing::TextureManager::addSurface(SDL_Renderer* r, string path, string 
 }
 
 void DPDrawing::TextureManager::addSurface(SDL_Renderer* r, SDL_Color c, string name) {
+	SDL_Log("Calling color function of addSurface() - experimental!");
 	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
     Uint32 rmask = 0xff000000;
     Uint32 gmask = 0x00ff0000;
@@ -42,6 +43,8 @@ void DPDrawing::TextureManager::addText(SDL_Renderer* r, SDL_Surface* surfaceMes
 }
 
 SDL_Texture* DPDrawing::TextureManager::getTextureByName(string name) {
+	SDL_Log("Getting texture %s", name.c_str()) ;
+	SDL_Log("Names size: %s", std::to_string(names.size()).c_str());
 	int amount_names = names.size();
 	if(amount_names > 0) {
 		for(int i = 0; i < amount_names; i++) {

@@ -12,6 +12,7 @@ public:
     float getArea();
     SDL_Rect* getSDLObj();
     void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
+private:
     SDL_Rect rect;
 };
 }

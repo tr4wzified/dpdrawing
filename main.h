@@ -7,6 +7,7 @@
 #include "classes/Drawer.h"
 #include "classes/DrawCommand.h"
 #include "classes/DrawRectangle.h"
+#include "classes/Circle.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
