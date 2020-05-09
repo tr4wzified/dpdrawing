@@ -61,6 +61,7 @@ int loadButtons() {
 
 int resetCanvas() {
 	SDL_Log("resetCanvas() called");
+    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(gRenderer);
 	loadButtons();
 	return 0;
@@ -182,9 +183,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				// Ellipse
 				case 1:
 					{
+						SDL_GetMouseState(&mouseEndX, &mouseEndY);
 						Circle* a = new Circle();
-						a->aaellipseRGBA(gRenderer, mouseX, mouseY, mouseEndX, mouseEndY, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
-					SDL_RenderPresent(gRenderer);
+						int startX = (mouseX + (mouseEndX - mouseX)) - ((mouseEndX - mouseX) / 2);
+						int startY = (mouseY + (mouseEndY - mouseY)) - ((mouseEndY - mouseY) / 2);
+						a->filledEllipseRGBA(gRenderer, startX, startY, (mouseEndX - mouseX) / 2, (mouseEndY - mouseY) / 2, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+						SDL_RenderPresent(gRenderer);
 						break;
 					}
 			}
