@@ -7,6 +7,7 @@ SDL_Renderer* gRenderer = nullptr;
 bool running = true;
 SDL_Event event;
 /*
+ * -1 = Select
  * 0 = Rectangle
  * 1 = Circle
 */
@@ -16,6 +17,8 @@ bool mouseBeingHeld = false;
 // Objects
 TextureManager tm;
 Drawer* dr;
+Shape* selectedShape = nullptr;
+vector<std::unique_ptr<Shape>> shapes;
 // Fonts, initialized in Init()
 // Debug
 int updateCount = 0;
@@ -25,7 +28,15 @@ int loadButtons() {
 	SDL_Color background = {84,34,34};
 	SDL_Color text = {255,255,255};
 
-	// Button 1 - Reset - 
+	// Button -1 - Select - Vertical
+	Button a(0, BUTTON_HEIGHT, background, text, 83);
+	SDL_Rect* a_rect = a.getRectangle();
+	SDL_Texture* a_msg = SDL_CreateTextureFromSurface(gRenderer, a.getSurface());
+	SDL_Rect* a_msg_rect = a.getRectangle();
+	SDL_RenderCopy(gRenderer, tm.getTextureByName("button"), NULL, a_rect);
+	SDL_RenderCopy(gRenderer, a_msg, NULL, a_msg_rect);
+
+	// Button 1 - Reset
 	Button b(0, 0, background, text, 88);
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
@@ -54,6 +65,17 @@ int loadButtons() {
 	return 0;
 }
 
+/* Shape* searchForShapeWithPos(int width, int height, int posX, int posY) { */
+/* 	int shapeId = (width * 7) + (height * 7) + (posX * 7) + (posY * 7); */
+/* 	for(Shape& s : shapes) { */
+/* 		if(s.getId() == shapeId) { */
+/* 			return &s; */
+/* 		} */
+/* 	} */
+/* 	SDL_Log("ERROR: SHAPE NOT FOUND!"); */
+/* 	return NULL; */
+/* } */
+
 int resetCanvas() {
 	SDL_Log("resetCanvas() called");
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
@@ -64,6 +86,7 @@ int resetCanvas() {
 
 bool checkIfButtonPressed(int mouseX, int mouseY) {
 	if(!mouseBeingHeld) {
+		// Horizontal
 		if(mouseY >= 0 && mouseY <= BUTTON_HEIGHT) {
 		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= BUTTON_WIDTH) {
@@ -78,6 +101,14 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 			// Pressed third button - ELLIPSE
 			else if(mouseX >= BUTTON_WIDTH * 2 && mouseX <= BUTTON_WIDTH * 3) {
 				currentMode = 1;
+				return true;
+			}
+			return false;
+		}
+		// Vertical
+		else if(mouseX <= BUTTON_WIDTH && mouseY >= 0) {
+			if(mouseY <= BUTTON_HEIGHT) {
+				currentMode = -1;
 				return true;
 			}
 			return false;
@@ -113,6 +144,8 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     SDL_Log("Loading textures into TextureManager");
     tm.addSurface(gRenderer, "resources/images/harald.bmp", "harald");
     tm.addSurface(gRenderer, "resources/images/blue.bmp", "blue");
+    tm.addSurface(gRenderer, "resources/images/white.bmp", "white");
+    tm.addSurface(gRenderer, "resources/images/red.bmp", "red");
 	tm.addSurface(gRenderer, "resources/images/brown.bmp", "button");
     SDL_Log("Textures loaded.");
 
@@ -147,6 +180,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		if(!checkIfButtonPressed(dr->getMouseEndX(), dr->getMouseEndY())) {
 			switch(currentMode) {
 				// Rectangle
+				/*
 				case 0:
 					{
 						resetCanvas();
@@ -155,8 +189,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mY = dr->getMouseY();
 						int mEndX = dr->getMouseEndX();
 						int mEndY = dr->getMouseEndY();
-						Rectangle* rec = new Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						DrawRectangle* drawrec = new DrawRectangle(rec);
+						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
+						DrawRectangle* drawrec = new DrawRectangle(&rec);
 						dr->prepareToDraw(drawrec);
 						dr->Draw();
 					}
@@ -169,12 +203,15 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mY = dr->getMouseY();
 						int mEndX = dr->getMouseEndX();
 						int mEndY = dr->getMouseEndY();
-						Circle* circ = new Circle(mEndX - mX, mEndY - mY, mX, mY);
-						DrawCircle* drawcirc = new DrawCircle(circ);
-						dr->prepareToDraw(drawcirc);
+						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
+						std::unique_ptr<Shape> uniqueCirc = std::make_unique<Shape>(&circ);
+						shapes.push_back(uniqueCirc);
+						DrawCircle drawcirc = DrawCircle(&circ);
+						dr->prepareToDraw(&drawcirc);
 						dr->Draw();
 					}
 					break;
+					*/
 			}
 		}
 	}
@@ -197,8 +234,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mY = dr->getMouseY();
 						int mEndX = dr->getMouseEndX();
 						int mEndY = dr->getMouseEndY();
-						Rectangle* rec = new Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						DrawRectangle* drawrec = new DrawRectangle(rec);
+						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
+						DrawRectangle* drawrec = new DrawRectangle(&rec);
 						dr->prepareToDraw(drawrec);
 						dr->Draw();
 						break;
@@ -206,13 +243,15 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				// Ellipse
 				case 1:
 					{
-						int mouseX = dr->getMouseX();
-						int mouseY = dr->getMouseY();
-						int mouseEndX = dr->getMouseEndX();
-						int mouseEndY = dr->getMouseEndY();
-						Circle* a = new Circle(mouseEndX - mouseX, mouseEndY - mouseY, mouseX, mouseY);
-						DrawCircle* drawcirc = new DrawCircle(a);
-						dr->prepareToDraw(drawcirc);
+						dr->updateMouseEnd();
+						int mX = dr->getMouseX();
+						int mY = dr->getMouseY();
+						int mEndX = dr->getMouseEndX();
+						int mEndY = dr->getMouseEndY();
+						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
+						shapes.push_back(std::make_unique<Circle>(circ));
+						DrawCircle drawcirc = DrawCircle(&circ);
+						dr->prepareToDraw(&drawcirc);
 						dr->Draw();
 						break;
 					}
@@ -226,6 +265,28 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	case SDL_MOUSEBUTTONDOWN:
 		mouseBeingHeld = true;
 		dr->updateMouse();
+		switch(event.button.button) {
+			case SDL_BUTTON_LEFT:
+				{
+					switch(currentMode) {
+						case -1:
+							int mX = dr->getMouseX();
+							int mY = dr->getMouseY();
+							for(int i = shapes.size(); i <= 0; i--) {
+								auto& s = *shapes.at(i);
+								SDL_Log("Width: %s", std::to_string(s.getWidth()).c_str());
+								if(mX >= s.getPosX() && mX <= s.getPosX() + s.getWidth() && mY >= s.getPosY() && mY <= s.getPosY() + s.getHeight()) {
+									SDL_Log("Width: %s has been selected", std::to_string(s.getWidth()).c_str());
+									s.isSelected = true;
+									break;
+								}
+								else {
+									SDL_Log("Width: %s has NOT been selected", std::to_string(s.getWidth()).c_str());
+								}
+							}
+					}
+				}
+		}
 	    break;
 
 	case SDL_KEYUP:

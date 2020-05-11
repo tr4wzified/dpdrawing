@@ -46,6 +46,7 @@ namespace DPDrawing {
 			mCmd->execute(renderer, tm, mouseX, mouseY, mouseEndX, mouseEndY);
 			SDL_RenderPresent(renderer);
 		} 
+
 	private:
 		DrawCommand* mCmd;
 		SDL_Renderer* renderer;

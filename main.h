@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <memory>
 using namespace DPDrawing;
 using std::vector;
 

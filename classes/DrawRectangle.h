@@ -25,8 +25,15 @@ namespace DPDrawing {
 				SDL_Log("Height: %s", std::to_string(mRect->getWidth()).c_str());
 				SDL_Log("posX: %s", std::to_string(mRect->getPosX()).c_str());
 				SDL_Log("posY: %s", std::to_string(mRect->getPosY()).c_str());
-				SDL_Log("Getting harald texture");
-				SDL_Texture* tempTex = tm->getTextureById(0);
+				SDL_Texture* tempTex = nullptr;
+				if(!mRect->isSelected) {
+					SDL_Log("Getting white texture (not selected)");
+					tempTex = tm->getTextureByName("white");
+				}
+				else {
+					SDL_Log("Getting red texture (selected)");
+					tempTex = tm->getTextureByName("red");
+				}
 				SDL_Log("Applying TextureManager texture to Rectangle");
 				SDL_RenderCopy(renderer, tempTex, NULL, obj);
 			}
