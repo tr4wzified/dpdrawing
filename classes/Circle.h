@@ -6,6 +6,8 @@ namespace DPDrawing {
 		public:
 			Circle(int width, int height, int posX, int posY);
 			float getArea();
+			void setWidth(int width);
+			void setHeight(int height);
 			int getRadiusX();
 			int getRadiusY();
 			void setRadiusX(int radiusX);

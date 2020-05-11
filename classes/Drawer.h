@@ -17,34 +17,43 @@ namespace DPDrawing {
 			mCmd = cmd;
 		}
 
-		int* updateMousePos1() {
-			SDL_GetMouseState(&mousePos1[0], &mousePos1[1]);
-			return mousePos1;
+		void updateMouse() {
+			SDL_GetMouseState(&mouseX, &mouseY);
 		}
 
-		int* updateMousePos2() {
-			SDL_GetMouseState(&mousePos2[0], &mousePos2[1]);
-			return mousePos2;
+		void updateMouseEnd() {
+			SDL_GetMouseState(&mouseEndX, &mouseEndY);
 		}
 
-		int* getMousePos1() {
-			return mousePos1;
+		int getMouseX() {
+			return mouseX;
 		}
 
-		int* getMousePos2() {
-			return mousePos2;
+		int getMouseY() {
+			return mouseY;
+		}
+
+		int getMouseEndX() {
+			return mouseEndX;
+		}
+
+		int getMouseEndY() {
+			return mouseEndY;
 		}
 
 		void Draw() {
 			SDL_Log("Executing command.");
-			mCmd->execute(renderer, tm, mousePos1, mousePos2);
+			mCmd->execute(renderer, tm, mouseX, mouseY, mouseEndX, mouseEndY);
 			SDL_RenderPresent(renderer);
 		} 
 	private:
 		DrawCommand* mCmd;
 		SDL_Renderer* renderer;
 		TextureManager* tm;
-		int mousePos1[2];
-		int mousePos2[2];
+		int mouseX = 0;
+		int mouseY = 0;
+
+		int mouseEndX = 0;
+		int mouseEndY = 0;
 	};
 }

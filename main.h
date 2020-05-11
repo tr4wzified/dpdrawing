@@ -21,8 +21,6 @@ public:
 	int resetCanvas();
 	int loadButtons();
 	bool checkIfButtonPressed(int mouseX, int mouseY);
-	void dynamicResize(Shape* s, int mouseX, int mouseY, int mouseEndX, int mouseEndY);
-	void dynamicResize(Rectangle* s, int mouseX, int mouseY, int mouseEndX, int mouseEndY);
     int Quit();
     int Init(const int SCREEN_WIDTH = 1280, const int SCREEN_HEIGHT = 720);
     void Update(SDL_Window*& window, SDL_Renderer*& gRenderer);

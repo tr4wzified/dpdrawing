@@ -10,17 +10,17 @@ namespace DPDrawing {
 				SDL_Log("Initializing DrawRectangle");
 				mRect = rect;
 			}
-			void execute(SDL_Renderer* renderer, TextureManager* tm, int* mousePos1, int* mousePos2) {
+			void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
 				SDL_Log("Creating tempRect");
 				SDL_Rect* tempRect = mRect->getSDLObj();
 				SDL_Log("Executing DrawRectangle.Draw()");
-				Draw(renderer, tm, tempRect, mousePos1, mousePos2);
+				Draw(renderer, tm, tempRect, mouseX, mouseY, mouseEndX, mouseEndY);
 			}
 		private:
 			Rectangle* mRect;
-			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int* mousePos1, int* mousePos2) {
+			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
 				SDL_Log("Using dynamicResize() on Rectangle");
-				dynamicResize(mousePos1[0], mousePos1[1], mousePos2[0], mousePos2[1]);
+				dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
 				SDL_Log("Width: %s", std::to_string(mRect->getWidth()).c_str());
 				SDL_Log("Height: %s", std::to_string(mRect->getWidth()).c_str());
 				SDL_Log("posX: %s", std::to_string(mRect->getPosX()).c_str());

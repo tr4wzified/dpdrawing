@@ -10,6 +10,16 @@ float DPDrawing::Circle::getArea() {
 	return M_PI * this->radiusX * this->radiusY;
 }
 
+void DPDrawing::Circle::setWidth(int width) {
+	this->width = width;
+	this->radiusX = width / 2;
+}
+
+void DPDrawing::Circle::setHeight(int height) {
+	this->height = height;
+	this->radiusY = height / 2;
+}
+
 int DPDrawing::Circle::getRadiusX() {
 	return this->radiusX;
 }

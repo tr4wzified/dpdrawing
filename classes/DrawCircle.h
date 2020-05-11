@@ -9,8 +9,8 @@ namespace DPDrawing {
 			SDL_Log("Initializing DrawCircle");
 			mCirc = circ;
 		}
-		void execute(SDL_Renderer* renderer, TextureManager* tm, int* mousePos1, int* mousePos2) {
-			dynamicResize(mousePos1[0], mousePos1[1], mousePos2[0], mousePos2[1]);
+		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+			dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
 			Draw(renderer);
 		}
 			
@@ -29,29 +29,46 @@ namespace DPDrawing {
 			int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f);
 			
 			Circle* mCirc;
-		void Draw(SDL_Renderer* renderer) {
-			filledEllipseRGBA(renderer, mCirc->posX, mCirc->posY, mCirc->width, mCirc->height, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
-		}
+			void Draw(SDL_Renderer* renderer) {
+				filledEllipseRGBA(renderer, mCirc->getPosX(), mCirc->getPosY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+			}
 
 		void dynamicResize(int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+			
+			// topleft to bottomright
 		    if (mouseEndX > mouseX && mouseEndY > mouseY) {
-				mCirc->setPosX(mouseX);
-				mCirc->setPosY(mouseY);
 			}
+			// bottomleft to topright
 		    else if (mouseEndX > mouseX && mouseEndY < mouseY) {
-				mCirc->setPosX(mouseX);
-				mCirc->setPosY(mouseEndY);
+				int temp = mouseY;
+				mouseY = mouseEndY;
+				mouseEndY = temp;
 			}
+			// bottomright to topleft
 		    else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-				mCirc->setPosX(mouseEndX);
-				mCirc->setPosY(mouseEndY);
+				int temp = mouseX;
+				mouseX = mouseEndX;
+				mouseEndX = temp;
+
+				temp = mouseY;
+				mouseY = mouseEndY;
+				mouseEndY = temp;
 			}
+			// topright to bottomleft
 			else {
-				mCirc->setPosX(mouseEndX);
-				mCirc->setPosY(mouseY);
+				int temp = mouseX;
+				mouseX = mouseEndX;
+				mouseEndX = temp;
 		    }
-			mCirc->setWidth(abs(mouseEndX - mouseX));
-		    mCirc->setHeight(abs(mouseEndY - mouseY));
+
+			int middelX = (mouseX + mouseEndX) / 2;
+			int middelY = (mouseY + mouseEndY) / 2;
+			mCirc->setPosX(middelX); 
+			mCirc->setPosY(middelY); 
+			int radiusX = (mouseEndX - mouseX) / 2;
+			int radiusY = (mouseEndY - mouseY) / 2;
+			mCirc->setRadiusX(radiusX);
+			mCirc->setRadiusY(radiusY);
 		}
 
 	};
