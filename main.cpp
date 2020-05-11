@@ -18,7 +18,6 @@ int mouseEndX = 0;
 int mouseEndY = 0;
 bool mouseBeingHeld = false;
 // Objects
-Rectangle rec(128, 128, 128, 128);
 TextureManager tm;
 Drawer* dr;
 // Fonts, initialized in Init()
@@ -92,6 +91,7 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 	return false;
 }
 
+
 int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 {
     SDL_Log("Initializing SDL...");
@@ -151,11 +151,15 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 			case 0:
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
 			if(!checkIfButtonPressed(mouseEndX, mouseEndY)) {
+				/*
+				resetCanvas();
 				SDL_GetMouseState(&mouseEndX, &mouseEndY);
-				rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
-				DrawRectangle* drawrec = new DrawRectangle(&rec);
+				Rectangle* rec = new Rectangle(mouseEndX - mouseX, mouseEndY - mouseY, mouseX, mouseY);
+				dynamicResize(rec, mouseX, mouseY, mouseEndX, mouseEndY);
+				DrawRectangle* drawrec = new DrawRectangle(rec);
 				dr->prepareToDraw(drawrec);
 				dr->Draw();
+				*/
 			}
 		}
 	}
@@ -166,6 +170,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    break;
 	case SDL_MOUSEBUTTONUP:
 		mouseBeingHeld = false;
+		SDL_GetMouseState(&mouseEndX, &mouseEndY);
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
 		if(!checkIfButtonPressed(mouseX, mouseY)) {
@@ -173,9 +178,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				// Rectangle
 				case 0:
 					{
-						SDL_GetMouseState(&mouseEndX, &mouseEndY);
-						rec.setRect(mouseX, mouseY, mouseEndX, mouseEndY);
-						DrawRectangle* drawrec = new DrawRectangle(&rec);
+						Rectangle* rec = new Rectangle(mouseEndX - mouseX, mouseEndY - mouseY, mouseX, mouseY);
+						DrawRectangle* drawrec = new DrawRectangle(rec);
 						dr->prepareToDraw(drawrec);
 						dr->Draw();
 						break;
@@ -183,12 +187,13 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				// Ellipse
 				case 1:
 					{
-						SDL_GetMouseState(&mouseEndX, &mouseEndY);
-						Circle* a = new Circle();
 						int startX = (mouseX + (mouseEndX - mouseX)) - ((mouseEndX - mouseX) / 2);
 						int startY = (mouseY + (mouseEndY - mouseY)) - ((mouseEndY - mouseY) / 2);
-						a->filledEllipseRGBA(gRenderer, startX, startY, (mouseEndX - mouseX) / 2, (mouseEndY - mouseY) / 2, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
-						SDL_RenderPresent(gRenderer);
+						Circle* a = new Circle(mouseEndX - mouseX, mouseEndY - mouseY, startX, startY);
+						//dynamicResize(a, startX, startY, mouseEndX, mouseEndY);
+						DrawCircle* drawcirc = new DrawCircle(a);
+						dr->prepareToDraw(drawcirc);
+						dr->Draw();
 						break;
 					}
 			}
@@ -200,16 +205,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    break;
 	case SDL_MOUSEBUTTONDOWN:
 		mouseBeingHeld = true;
-	    switch (event.button.button) {
-	    case SDL_BUTTON_LEFT:
 		SDL_GetMouseState(&mouseX, &mouseY);
-		break;
-
-	    case SDL_BUTTON_RIGHT:
-		SDL_GetMouseState(&mouseX, &mouseY);
-		
-		break;
-	    }
 	    break;
 
 	case SDL_KEYUP:

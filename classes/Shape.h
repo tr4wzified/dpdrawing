@@ -1,9 +1,10 @@
 #pragma once
+#include <SDL2/SDL.h>
 namespace DPDrawing {
 class Shape {
 public:
     virtual float getArea() = 0;
-    void setWidth(int width);
+    virtual void setWidth(int width);
     void setHeight(int height);
 	int getWidth();
 	int getHeight();

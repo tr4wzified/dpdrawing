@@ -1,10 +1,9 @@
 #include "Rectangle.h"
 DPDrawing::Rectangle::Rectangle(int width, int height, int posX, int posY) {
-    this->width = width;
-    this->height = height;
-    this->posX = posX;
-    this->posY = posY;
-    this->rect = { this->width, this->height, this->posX, this->posY };
+    setWidth(width);
+    setHeight(height);
+    setPosX(posX);
+    setPosY(posY);
 }
 
 void DPDrawing::Rectangle::setWidth(int width) {

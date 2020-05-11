@@ -10,7 +10,7 @@ DPDrawing::Button::Button(int posX, int posY, SDL_Color bg_color, SDL_Color fg_c
 	}
 	SDL_Log("Converting string to Uint16...");
 	SDL_Log("Setting rectangle...");
-	this->rect = Rectangle(posX, posY, 75, 75);
+	this->rect = Rectangle(75, 75, posX, posY);
 	SDL_Log("Creating label...");
 	this->label = TTF_RenderGlyph_Blended(font, text, fg_color);
 	//SDL_Log("Freeing label surface...");
