@@ -25,11 +25,10 @@ int updateCount = 0;
 
 int loadButtons() {
 	SDL_Log("Loading buttons");
-	SDL_Color background = {84,34,34};
 	SDL_Color text = {255,255,255};
 
 	// Button -1 - Select - Vertical
-	Button a(0, BUTTON_HEIGHT, background, text, 83);
+	Button a(0, BUTTON_HEIGHT, text, 83);
 	SDL_Rect* a_rect = a.getRectangle();
 	SDL_Texture* a_msg = SDL_CreateTextureFromSurface(gRenderer, a.getSurface());
 	SDL_Rect* a_msg_rect = a.getRectangle();
@@ -37,7 +36,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, a_msg, NULL, a_msg_rect);
 
 	// Button 1 - Reset
-	Button b(0, 0, background, text, 88);
+	Button b(0, 0, text, 88);
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
 	SDL_Rect* b_msg_rect = b.getRectangle();
@@ -45,7 +44,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, b_msg, NULL, b_msg_rect);
 
 	// Button 2 - Rectangle - R
-	Button c(BUTTON_WIDTH, 0, background, text, 82);
+	Button c(BUTTON_WIDTH, 0, text, 82);
 	SDL_Rect* c_rect = c.getRectangle();
 	SDL_Texture* c_msg = SDL_CreateTextureFromSurface(gRenderer, c.getSurface());
 	SDL_Rect* c_msg_rect = c.getRectangle();
@@ -53,7 +52,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, c_msg, NULL, c_msg_rect);
 
 	// Button 3 - Ellipse - O
-	Button d(BUTTON_WIDTH * 2, 0, background, text, 79);
+	Button d(BUTTON_WIDTH * 2, 0, text, 79);
 	SDL_Rect* d_rect = d.getRectangle();
 	SDL_Texture* d_msg = SDL_CreateTextureFromSurface(gRenderer, d.getSurface());
 	SDL_Rect* d_msg_rect = d.getRectangle();
@@ -78,6 +77,7 @@ int loadButtons() {
 
 int resetCanvas() {
 	SDL_Log("resetCanvas() called");
+	shapes.clear();
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(gRenderer);
 	loadButtons();
@@ -107,7 +107,7 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 		}
 		// Vertical
 		else if(mouseX <= BUTTON_WIDTH && mouseY >= 0) {
-			if(mouseY <= BUTTON_HEIGHT) {
+			if(mouseY <= BUTTON_HEIGHT * 2) {
 				currentMode = -1;
 				return true;
 			}
@@ -235,6 +235,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mEndX = dr->getMouseEndX();
 						int mEndY = dr->getMouseEndY();
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
+						shapes.push_back(std::make_unique<Rectangle>(rec));
 						DrawRectangle* drawrec = new DrawRectangle(&rec);
 						dr->prepareToDraw(drawrec);
 						dr->Draw();
@@ -270,19 +271,61 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				{
 					switch(currentMode) {
 						case -1:
+							{
+							SDL_Log("EXECUTING SELECT");
 							int mX = dr->getMouseX();
+							SDL_Log("mouseX: %s", std::to_string(mX).c_str());
 							int mY = dr->getMouseY();
-							for(int i = shapes.size(); i <= 0; i--) {
-								auto& s = *shapes.at(i);
-								SDL_Log("Width: %s", std::to_string(s.getWidth()).c_str());
-								if(mX >= s.getPosX() && mX <= s.getPosX() + s.getWidth() && mY >= s.getPosY() && mY <= s.getPosY() + s.getHeight()) {
-									SDL_Log("Width: %s has been selected", std::to_string(s.getWidth()).c_str());
-									s.isSelected = true;
-									break;
+							SDL_Log("mouseY: %s", std::to_string(mY).c_str());
+							if (shapes.size() != 0) {
+								SDL_Log("Going through For loop to search for shape, shape size %s", std::to_string(shapes.size()).c_str());
+								for(int i = shapes.size() - 1; i >= 0; i--) {
+									SDL_Log("Entered for loop");
+									if(shapes.at(i)->getType() == "Rectangle") {
+										SDL_Log("for: %s", std::to_string(i).c_str());
+										if (mX >= shapes.at(i)->getPosX() &&
+											mX <= shapes.at(i)->getPosX() + shapes.at(i)->getWidth() &&
+											mY >= shapes.at(i)->getPosY() &&
+											mY <= shapes.at(i)->getPosY() + shapes.at(i)->getHeight()) {
+											SDL_Log("SELECTED RECTANGLE at position %s", std::to_string(i).c_str());
+											SDL_Log("RECTANGLE SHAPE WIDTH %s", std::to_string(shapes.at(i)->getWidth()).c_str());
+											SDL_Log("RECTANGLE SHAPE HEIGHT %s", std::to_string(shapes.at(i)->getHeight()).c_str());
+											SDL_Log("RECTANGLE SHAPE posX %s", std::to_string(shapes.at(i)->getPosX()).c_str());
+											SDL_Log("RECTANGLE SHAPE posX %s", std::to_string(shapes.at(i)->getPosY()).c_str());
+											Rectangle rcopy(shapes.at(i)->getWidth(),shapes.at(i)->getHeight(),shapes.at(i)->getPosX(),shapes.at(i)->getPosY());
+											SDL_Log("COPIED RECTANGLE WIDTH %s", std::to_string(rcopy.getWidth()).c_str());
+											SDL_Log("COPIED RECTANGLE HEIGHT %s", std::to_string(rcopy.getHeight()).c_str());
+											SDL_Log("COPIED RECTANGLE posX %s", std::to_string(rcopy.getPosX()).c_str());
+											SDL_Log("COPIED RECTANGLE posY %s", std::to_string(rcopy.getPosY()).c_str());
+											rcopy.Select();
+											DrawRectangle* drawrec = new DrawRectangle(&rcopy);
+											dr->prepareToDraw(drawrec);
+											dr->Draw();
+											/* else if(shapes.at(i)->getType() == "Circle") { */
+											/* 	Circle rcirc(shapes.at(i)->getWidth(),shapes.at(i)->getHeight(),shapes.at(i)->getPosX(),shapes.at(i)->getPosY()); */
+											/* 	DrawCircle* drawcirc = new DrawCircle(&rcirc); */
+											/* 	dr->prepareToDraw(drawcirc); */
+											/* 	dr->Draw(); */
+											/* } */
+											break;
+											}
+									}
+									else if(shapes.at(i)->getType() == "Circle") {
+										if (mX >= shapes.at(i)->getPosX() &&
+											mX <= shapes.at(i)->getPosX() + shapes.at(i)->getWidth() &&
+											mY >= shapes.at(i)->getPosY() &&
+											mY <= shapes.at(i)->getPosY() + shapes.at(i)->getHeight()) {
+											Circle ccopy(shapes.at(i)->getWidth(), shapes.at(i)->getHeight(), (shapes.at(i)->getPosX() + (shapes.at(i)->getWidth() / 2)),(shapes.at(i)->getPosY() + (shapes.at(i)->getHeight() / 2)));
+											ccopy.Select();
+											DrawCircle* drawcirc = new DrawCircle(&ccopy);
+											dr->prepareToDraw(drawcirc);
+											dr->Draw();
+											break;
+										}
+									}
 								}
-								else {
-									SDL_Log("Width: %s has NOT been selected", std::to_string(s.getWidth()).c_str());
-								}
+							}
+							break;
 							}
 					}
 				}

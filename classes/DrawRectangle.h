@@ -20,13 +20,15 @@ namespace DPDrawing {
 			Rectangle* mRect;
 			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
 				SDL_Log("Using dynamicResize() on Rectangle");
-				dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
-				SDL_Log("Width: %s", std::to_string(mRect->getWidth()).c_str());
-				SDL_Log("Height: %s", std::to_string(mRect->getWidth()).c_str());
-				SDL_Log("posX: %s", std::to_string(mRect->getPosX()).c_str());
-				SDL_Log("posY: %s", std::to_string(mRect->getPosY()).c_str());
+				if(!mRect->getSelected()) {
+					dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
+					SDL_Log("Width: %s", std::to_string(mRect->getWidth()).c_str());
+					SDL_Log("Height: %s", std::to_string(mRect->getWidth()).c_str());
+					SDL_Log("posX: %s", std::to_string(mRect->getPosX()).c_str());
+					SDL_Log("posY: %s", std::to_string(mRect->getPosY()).c_str());
+				}
 				SDL_Texture* tempTex = nullptr;
-				if(!mRect->isSelected) {
+				if(!mRect->getSelected()) {
 					SDL_Log("Getting white texture (not selected)");
 					tempTex = tm->getTextureByName("white");
 				}

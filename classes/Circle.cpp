@@ -10,6 +10,14 @@ float DPDrawing::Circle::getArea() {
 	return M_PI * this->radiusX * this->radiusY;
 }
 
+void DPDrawing::Circle::setPosX(int posX) {
+	this->posX = posX;
+}
+
+void DPDrawing::Circle::setPosY(int posY) {
+	this->posY = posY;
+}
+
 void DPDrawing::Circle::setWidth(int width) {
 	this->width = width;
 	this->radiusX = width / 2;
@@ -20,14 +28,6 @@ void DPDrawing::Circle::setHeight(int height) {
 	this->radiusY = height / 2;
 }
 
-int DPDrawing::Circle::getRadiusX() {
-	return this->radiusX;
-}
-
-int DPDrawing::Circle::getRadiusY() {
-	return this->radiusY;
-}
-
 void DPDrawing::Circle::setRadiusX(int radiusX) {
 	this->radiusX = radiusX;
 	this->width = radiusX * 2;
@@ -36,4 +36,44 @@ void DPDrawing::Circle::setRadiusX(int radiusX) {
 void DPDrawing::Circle::setRadiusY(int radiusY) {
 	this->radiusY = radiusY;
 	this->height = radiusY * 2;
+}
+
+int DPDrawing::Circle::getPosX() {
+	return this->posX;
+}
+
+int DPDrawing::Circle::getPosY() {
+	return this->posY;
+}
+
+int DPDrawing::Circle::getWidth() {
+	return this->width;
+}
+
+int DPDrawing::Circle::getHeight() {
+	return this->height;
+}
+
+int DPDrawing::Circle::getRadiusX() {
+	return this->radiusX;
+}
+
+int DPDrawing::Circle::getRadiusY() {
+	return this->radiusY;
+}
+
+string DPDrawing::Circle::getType() {
+	return "Circle";
+}
+
+bool DPDrawing::Circle::getSelected() {
+	return isSelected;
+}
+
+void DPDrawing::Circle::Select() {
+	isSelected = true;
+}
+
+void DPDrawing::Circle::Deselect() {
+	isSelected = false;
 }
