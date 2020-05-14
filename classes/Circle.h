@@ -16,12 +16,16 @@ namespace DPDrawing {
 			int getPosY();
 			int getWidth();
 			int getHeight();
+			int getCenterX();
+			int getCenterY();
 			int getRadiusX();
 			int getRadiusY();
 			string getType();
 			bool getSelected();
 			void Select();
 			void Deselect();
+			bool getDynamicResized();
+			void setDynamicResized();
 
 		private:
 			int posX;
@@ -31,6 +35,7 @@ namespace DPDrawing {
 			int radiusX;
 			int radiusY;
 			bool isSelected = false;
+			bool dynamicResized = false;
 
 	};
 }

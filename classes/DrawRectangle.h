@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "TextureManager.h"
 #include "DrawCommand.h"
+#include <memory>
 namespace DPDrawing {
 	class DrawRectangle : public DrawCommand {
 		public:
@@ -10,17 +11,13 @@ namespace DPDrawing {
 				SDL_Log("Initializing DrawRectangle");
 				mRect = rect;
 			}
-			void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
-				SDL_Log("Creating tempRect");
-				SDL_Rect* tempRect = mRect->getSDLObj();
-				SDL_Log("Executing DrawRectangle.Draw()");
-				Draw(renderer, tm, tempRect, mouseX, mouseY, mouseEndX, mouseEndY);
+			void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
+				Draw(renderer, tm, mRect->getSDLObj(), mouseX, mouseY, mouseEndX, mouseEndY, mouseBeingHeld);
 			}
 		private:
 			Rectangle* mRect;
-			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
-				SDL_Log("Using dynamicResize() on Rectangle");
-				if(!mRect->getSelected()) {
+			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
+				if(!mRect->getSelected() && !mouseBeingHeld) {
 					dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
 					SDL_Log("Width: %s", std::to_string(mRect->getWidth()).c_str());
 					SDL_Log("Height: %s", std::to_string(mRect->getWidth()).c_str());
@@ -29,11 +26,9 @@ namespace DPDrawing {
 				}
 				SDL_Texture* tempTex = nullptr;
 				if(!mRect->getSelected()) {
-					SDL_Log("Getting white texture (not selected)");
 					tempTex = tm->getTextureByName("white");
 				}
 				else {
-					SDL_Log("Getting red texture (selected)");
 					tempTex = tm->getTextureByName("red");
 				}
 				SDL_Log("Applying TextureManager texture to Rectangle");
@@ -41,6 +36,7 @@ namespace DPDrawing {
 			}
 
 			void dynamicResize(int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+				SDL_Log("Using dynamicResize() on Rectangle");
 			    if (mouseEndX > mouseX && mouseEndY > mouseY) {
 					mRect->setPosX(mouseX);
 					mRect->setPosY(mouseY);

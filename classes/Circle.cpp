@@ -11,11 +11,11 @@ float DPDrawing::Circle::getArea() {
 }
 
 void DPDrawing::Circle::setPosX(int posX) {
-	this->posX = posX;
+	this->posX = posX - getRadiusX();
 }
 
 void DPDrawing::Circle::setPosY(int posY) {
-	this->posY = posY;
+	this->posY = posY - getRadiusY();
 }
 
 void DPDrawing::Circle::setWidth(int width) {
@@ -54,6 +54,14 @@ int DPDrawing::Circle::getHeight() {
 	return this->height;
 }
 
+int DPDrawing::Circle::getCenterX() {
+	return this->posX + getRadiusX();
+}
+
+int DPDrawing::Circle::getCenterY() {
+	return this->posY + getRadiusY();
+}
+
 int DPDrawing::Circle::getRadiusX() {
 	return this->radiusX;
 }
@@ -77,3 +85,13 @@ void DPDrawing::Circle::Select() {
 void DPDrawing::Circle::Deselect() {
 	isSelected = false;
 }
+
+bool DPDrawing::Circle::getDynamicResized() {
+	return dynamicResized;
+}
+
+void DPDrawing::Circle::setDynamicResized() {
+	dynamicResized = true;
+}
+
+

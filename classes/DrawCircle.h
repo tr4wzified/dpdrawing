@@ -9,11 +9,12 @@ namespace DPDrawing {
 			SDL_Log("Initializing DrawCircle");
 			mCirc = circ;
 		}
-		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
-			if(!mCirc->getSelected()) {
+		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
+			if(!mCirc->getSelected() && !mCirc->getDynamicResized() && !mouseBeingHeld) {
 				dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
+				mCirc->setDynamicResized();
 			}
-			Draw(renderer);
+			Draw(renderer, mouseBeingHeld);
 		}
 			
 		private:
@@ -31,12 +32,12 @@ namespace DPDrawing {
 			int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f);
 			
 			Circle* mCirc;
-			void Draw(SDL_Renderer* renderer) {
-				if (!mCirc->getSelected()) {
-					filledEllipseRGBA(renderer, mCirc->getPosX(), mCirc->getPosY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+			void Draw(SDL_Renderer* renderer, bool mouseBeingHeld) {
+				if (mCirc->getSelected()) {
+					filledEllipseRGBA(renderer, mCirc->getCenterX(), mCirc->getCenterY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
 				}
 				else {
-					filledEllipseRGBA(renderer, mCirc->getPosX(), mCirc->getPosY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
+					filledEllipseRGBA(renderer, mCirc->getCenterX(), mCirc->getCenterY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
 				}
 			}
 

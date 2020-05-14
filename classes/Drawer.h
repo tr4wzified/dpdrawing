@@ -1,4 +1,5 @@
 #pragma once
+#include "SDL2/SDL.h"
 #include "DrawCommand.h"
 #include "TextureManager.h"
 // Invoker
@@ -12,17 +13,24 @@ namespace DPDrawing {
 			this->tm = tm;
 		};
 
+		void setDrawingColor(SDL_Color& c) {
+			this->drawingColor = c;
+			SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, SDL_ALPHA_OPAQUE);
+		}
+
 		void prepareToDraw(DrawCommand* cmd) {
-			SDL_Log("Preparing to draw...");
-			mCmd = cmd;
+			SDL_Log("Adding DrawCommand...");
+			mCmds.push_back(cmd);
 		}
 
-		void updateMouse() {
+		void updateMouse(bool mouseBeingHeld) {
 			SDL_GetMouseState(&mouseX, &mouseY);
+			this->mouseBeingHeld = mouseBeingHeld;
 		}
 
-		void updateMouseEnd() {
+		void updateMouseEnd(bool mouseBeingHeld) {
 			SDL_GetMouseState(&mouseEndX, &mouseEndY);
+			this->mouseBeingHeld = mouseBeingHeld;
 		}
 
 		int getMouseX() {
@@ -43,12 +51,19 @@ namespace DPDrawing {
 
 		void Draw() {
 			SDL_Log("Executing command.");
-			mCmd->execute(renderer, tm, mouseX, mouseY, mouseEndX, mouseEndY);
+			for(DrawCommand* mCmd : mCmds) {
+				if(mCmd == nullptr) {
+					SDL_Log("ERROR: Calling Draw() on a nullptr! Your DrawCommand* likely went out of scope.");
+				}
+				mCmd->execute(renderer, tm, mouseX, mouseY, mouseEndX, mouseEndY, mouseBeingHeld);
+			}
 			SDL_RenderPresent(renderer);
+			mCmds.clear();
 		} 
 
 	private:
-		DrawCommand* mCmd;
+		bool mouseBeingHeld;
+		vector<DrawCommand*> mCmds;
 		SDL_Renderer* renderer;
 		TextureManager* tm;
 		int mouseX = 0;
@@ -56,5 +71,7 @@ namespace DPDrawing {
 
 		int mouseEndX = 0;
 		int mouseEndY = 0;
+
+		SDL_Color drawingColor;
 	};
 }
