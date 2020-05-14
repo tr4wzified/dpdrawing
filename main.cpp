@@ -205,7 +205,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 			switch(currentMode) {
 				// Rectangle
 				/*
-				case 0:
+				case 1:
 					{
 						resetCanvas();
 						dr->updateMouseEnd();
@@ -219,7 +219,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						dr->Draw();
 					}
 					break;
-				case 1:
+				case 2:
 					{
 						resetCanvas();
 						dr->updateMouseEnd();
