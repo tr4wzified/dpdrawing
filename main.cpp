@@ -1,6 +1,7 @@
 #include "main.h"
 #define BUTTON_WIDTH 75
 #define BUTTON_HEIGHT 75
+#define SAVE_PATH "saves/objects.json"
 SDL_Window* window = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 // Variables
@@ -28,9 +29,35 @@ int loadButtons() {
 	SDL_Log("Loading buttons");
 	SDL_Color text = {255,255,255};
 
-	// Button -1 - Select - Vertical
+	// Button -3 - JSON Load - Vertical
 	SDL_Texture* button_tex = tm.getTextureByName("button");
 	SDL_Texture* button_active = tm.getTextureByName("button-active");
+	Button y(0, BUTTON_HEIGHT * 3, text, 76);
+	SDL_Rect* y_rect = y.getRectangle();
+	SDL_Texture* y_msg = SDL_CreateTextureFromSurface(gRenderer, y.getSurface());
+	SDL_Rect* y_msg_rect = y.getRectangle();
+	if(currentMode == -3) {
+		SDL_RenderCopy(gRenderer, button_active, NULL, y_rect);
+	}
+	else {
+		SDL_RenderCopy(gRenderer, button_tex, NULL, y_rect);
+	}
+	SDL_RenderCopy(gRenderer, y_msg, NULL, y_msg_rect);
+
+	// Button -2 - JSON Save - Vertical
+	Button z(0, BUTTON_HEIGHT * 2, text, 74);
+	SDL_Rect* z_rect = z.getRectangle();
+	SDL_Texture* z_msg = SDL_CreateTextureFromSurface(gRenderer, z.getSurface());
+	SDL_Rect* z_msg_rect = z.getRectangle();
+	if(currentMode == -2) {
+		SDL_RenderCopy(gRenderer, button_active, NULL, z_rect);
+	}
+	else {
+		SDL_RenderCopy(gRenderer, button_tex, NULL, z_rect);
+	}
+	SDL_RenderCopy(gRenderer, z_msg, NULL, z_msg_rect);
+
+	// Button -1 - Select - Vertical
 	Button a(0, BUTTON_HEIGHT, text, 83);
 	SDL_Rect* a_rect = a.getRectangle();
 	SDL_Texture* a_msg = SDL_CreateTextureFromSurface(gRenderer, a.getSurface());
@@ -48,7 +75,12 @@ int loadButtons() {
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
 	SDL_Rect* b_msg_rect = b.getRectangle();
-	SDL_RenderCopy(gRenderer, button_tex, NULL, b_rect);
+	if(currentMode == 0) {
+		SDL_RenderCopy(gRenderer, button_active, NULL, b_rect);
+	}
+	else {
+		SDL_RenderCopy(gRenderer, button_tex, NULL, b_rect);
+	}
 	SDL_RenderCopy(gRenderer, b_msg, NULL, b_msg_rect);
 
 	// Button 2 - Rectangle - R
@@ -82,17 +114,6 @@ int loadButtons() {
 	return 0;
 }
 
-/* Shape* searchForShapeWithPos(int width, int height, int posX, int posY) { */
-/* 	int shapeId = (width * 7) + (height * 7) + (posX * 7) + (posY * 7); */
-/* 	for(Shape& s : shapes) { */
-/* 		if(s.getId() == shapeId) { */
-/* 			return &s; */
-/* 		} */
-/* 	} */
-/* 	SDL_Log("ERROR: SHAPE NOT FOUND!"); */
-/* 	return NULL; */
-/* } */
-
 int resetCanvas() {
 	SDL_Log("resetCanvas() called");
 	shapes.clear();
@@ -100,8 +121,72 @@ int resetCanvas() {
 	SDL_Color color = {0, 0, 0};
 	dr->setDrawingColor(color);
 	SDL_RenderClear(gRenderer);
+	SDL_Color white = {255, 255, 255};
+	dr->setDrawingColor(white);
 	loadButtons();
 	return 0;
+}
+
+void saveCanvas() {
+	json jsonObjects = json::array();
+	for(int i = 0; i < shapes.size(); ++i) {
+	    jsonObjects.push_back(json::object());
+		jsonObjects[i]["type"] = shapes.at(i)->getType();
+		jsonObjects[i]["width"] = shapes.at(i)->getWidth();
+		jsonObjects[i]["height"] = shapes.at(i)->getHeight();
+		jsonObjects[i]["posX"] = shapes.at(i)->getPosX();
+		jsonObjects[i]["posY"] = shapes.at(i)->getPosY();
+	}
+
+	std::cout << jsonObjects << std::endl;
+	std::ofstream myfile(SAVE_PATH);
+	myfile << jsonObjects;
+	myfile.close();
+}
+
+void loadCanvas() {
+	std::ifstream i(SAVE_PATH);
+	json j;
+	i >> j;
+	std::cout << j;
+	resetCanvas();
+	SDL_Log("Going through for loop of size %d", (int)j.size());
+	SDL_Color c = {255, 255, 255};
+	dr->setDrawingColor(c);
+	for(int i = 0; i < (int)j.size(); ++i) {
+		SDL_Log("j[%d]['type'] = %s", i, j[i]["type"].get<std::string>().c_str());
+		if (j[i]["type"].get<std::string>() == "Rectangle") {
+			Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
+			shapes.push_back(std::make_unique<Rectangle>(r));
+			DrawRectangle* drawrec = new DrawRectangle(&r);
+			dr->prepareToDraw(drawrec);
+			dr->Draw();
+		}
+		else if (j[i]["type"].get<std::string>() == "Circle") {
+			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
+			shapes.push_back(std::make_unique<Circle>(r));
+			DrawCircle* drawcirc = new DrawCircle(&r);
+			dr->prepareToDraw(drawcirc);
+			dr->Draw();
+		}
+	}
+	for(int i = shapes.size() - 1; i >= 0; i--) {
+		auto& sp = shapes.at(i);
+		sp->Deselect();
+		SDL_Log("===\nDESELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
+		if(sp->getType() == "Rectangle") {
+			DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
+			dr->prepareToDraw(drawrec);
+			dr->Draw();
+		}
+		else if(sp->getType() == "Circle") {
+			Circle* c = dynamic_cast<Circle*>(sp.get());
+			DrawCircle* drawrec = new DrawCircle(c);
+			dr->prepareToDraw(drawrec);
+			dr->Draw();
+		}
+	}
+	i.close();
 }
 
 bool checkIfButtonPressed(int mouseX, int mouseY) {
@@ -110,6 +195,7 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 		if(mouseY >= 0 && mouseY <= BUTTON_HEIGHT) {
 		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= BUTTON_WIDTH) {
+				currentMode = 0;
 				resetCanvas();
 				return true;
 			}
@@ -129,9 +215,24 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 		}
 		// Vertical
 		else if(mouseX <= BUTTON_WIDTH && mouseY >= 0) {
+			// Select
 			if(mouseY <= BUTTON_HEIGHT * 2) {
 				currentMode = -1;
 				loadButtons();
+				return true;
+			}
+			// Save
+			else if(mouseY <= BUTTON_HEIGHT * 3) {
+				currentMode = -2;
+				saveCanvas();
+				loadButtons();
+				return true;
+			}
+			// Load
+			else if(mouseY <= BUTTON_HEIGHT * 4) {
+				currentMode = -3;
+				loadButtons();
+				loadCanvas();
 				return true;
 			}
 			return false;
@@ -301,31 +402,34 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 							SDL_Log("mouseX: %s", std::to_string(mX).c_str());
 							int mY = dr->getMouseY();
 							SDL_Log("mouseY: %s", std::to_string(mY).c_str());
-							if (shapes.size() != 0) {
-								for(int i = 0; i >= shapes.size(); i++) {
-									shapes.at(i)->Deselect();
-									if(shapes.at(i)->getType() == "Rectangle") {
-										DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(shapes.at(i).get()));
+							int shapes_size = shapes.size();
+							if (shapes_size > 0) {
+								for(int i = shapes_size - 1; i >= 0; i--) {
+									auto& sp = shapes.at(i);
+									sp->Deselect();
+									SDL_Log("===\nDESELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
+									if(sp->getType() == "Rectangle") {
+										DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
 										dr->prepareToDraw(drawrec);
 										dr->Draw();
 									}
-									else if(shapes.at(i)->getType() == "Circle") {
-										DrawCircle* drawrec = new DrawCircle(dynamic_cast<Circle*>(shapes.at(i).get()));
+									else if(sp->getType() == "Circle") {
+										Circle* c = dynamic_cast<Circle*>(sp.get());
+										DrawCircle* drawrec = new DrawCircle(c);
 										dr->prepareToDraw(drawrec);
 										dr->Draw();
 									}
 								}
-								SDL_Log("Going through for loop to search for shape, amount of shapes: %s", std::to_string(shapes.size()).c_str());
-								bool haveSelectedAlready = false;
-								for(int i = shapes.size() - 1; i >= 0; i--) {
-									if (!haveSelectedAlready &&
+								SDL_Log("Going through for loop to select shape, amount of shapes: %s", std::to_string(shapes.size()).c_str());
+								for(int i = shapes_size - 1; i >= 0; i--) {
+									if (
 										mX >= shapes.at(i)->getPosX() &&
 										mX <= shapes.at(i)->getPosX() + shapes.at(i)->getWidth() &&
 										mY >= shapes.at(i)->getPosY() &&
 										mY <= shapes.at(i)->getPosY() + shapes.at(i)->getHeight()
 										) {
 
-										SDL_Log("SELECTED SHAPE at position %s!\n===\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
+										SDL_Log("===\nSELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
 										shapes.at(i)->Select();
 
 										if(shapes.at(i)->getType() == "Rectangle") {
@@ -334,26 +438,27 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											dr->Draw();
 										}
 										else if(shapes.at(i)->getType() == "Circle") {
-											DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(shapes.at(i).get()));
+											Circle* c = dynamic_cast<Circle*>(shapes.at(i).get());
+											DrawCircle* drawcirc = new DrawCircle(c);
 											dr->prepareToDraw(drawcirc);
 											dr->Draw();
 										}
-										haveSelectedAlready = true;
+										break;
 									}
-									else {
-										SDL_Log("DESELECTING SHAPE at position %s!\n===\nType: %s\nWidth: %d\nHeight: %d\nposX: %d\nposY: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight(), shapes.at(i)->getPosX(), shapes.at(i)->getPosY());
-										shapes.at(i)->Deselect();
-										if(shapes.at(i)->getType() == "Rectangle") {
-											DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(shapes.at(i).get()));
-											dr->prepareToDraw(drawrec);
-											dr->Draw();
-										}
-										else if(shapes.at(i)->getType() == "Circle") {
-											DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(shapes.at(i).get()));
-											dr->prepareToDraw(drawcirc);
-											dr->Draw();
-										}
-									}
+									/* else { */
+									/* 	SDL_Log("DESELECTING SHAPE at position %s!\n===\nType: %s\nWidth: %d\nHeight: %d\nposX: %d\nposY: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight(), shapes.at(i)->getPosX(), shapes.at(i)->getPosY()); */
+									/* 	shapes.at(i)->Deselect(); */
+									/* 	if(shapes.at(i)->getType() == "Rectangle") { */
+									/* 		DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(shapes.at(i).get())); */
+									/* 		dr->prepareToDraw(drawrec); */
+									/* 		dr->Draw(); */
+									/* 	} */
+									/* 	else if(shapes.at(i)->getType() == "Circle") { */
+									/* 		DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(shapes.at(i).get())); */
+									/* 		dr->prepareToDraw(drawcirc); */
+									/* 		dr->Draw(); */
+									/* 	} */
+									//}
 								}
 							}
 							break;
@@ -382,7 +487,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 int main(int argc, char* argv[])
 {
     SDL_Log("DPDrawing - calling Init()");
-    Init(1280, 720);
+    Init(1600, 900);
     SDL_Log("DPDrawing - calling Update()");
     Update(window, gRenderer);
 }

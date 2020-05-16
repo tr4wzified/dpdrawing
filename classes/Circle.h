@@ -12,6 +12,8 @@ namespace DPDrawing {
 			void setHeight(int height);
 			void setRadiusX(int radiusX);
 			void setRadiusY(int radiusY);
+			void setCenterX(int centerY);
+			void setCenterY(int centerY);
 			int getPosX();
 			int getPosY();
 			int getWidth();
@@ -24,8 +26,8 @@ namespace DPDrawing {
 			bool getSelected();
 			void Select();
 			void Deselect();
-			bool getDynamicResized();
-			void setDynamicResized();
+			int getAmountDynamicResized();
+			void increaseAmountDynamicResized();
 
 		private:
 			int posX;
@@ -35,7 +37,7 @@ namespace DPDrawing {
 			int radiusX;
 			int radiusY;
 			bool isSelected = false;
-			bool dynamicResized = false;
+			int amountDynamicResized = 0;
 
 	};
 }

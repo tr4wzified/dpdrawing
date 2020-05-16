@@ -38,6 +38,14 @@ void DPDrawing::Circle::setRadiusY(int radiusY) {
 	this->height = radiusY * 2;
 }
 
+void DPDrawing::Circle::setCenterX(int centerX) {
+	this->posX = centerX - getRadiusX();
+}
+
+void DPDrawing::Circle::setCenterY(int centerY) {
+	this->posY = centerY - getRadiusY();
+}
+
 int DPDrawing::Circle::getPosX() {
 	return this->posX;
 }
@@ -86,12 +94,12 @@ void DPDrawing::Circle::Deselect() {
 	isSelected = false;
 }
 
-bool DPDrawing::Circle::getDynamicResized() {
-	return dynamicResized;
+int DPDrawing::Circle::getAmountDynamicResized() {
+	return this->amountDynamicResized;
 }
 
-void DPDrawing::Circle::setDynamicResized() {
-	dynamicResized = true;
+void DPDrawing::Circle::increaseAmountDynamicResized() {
+	this->amountDynamicResized++;
 }
 
 

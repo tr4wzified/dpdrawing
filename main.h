@@ -13,14 +13,20 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
 using namespace DPDrawing;
 using std::vector;
+using json = nlohmann::json;
 
 namespace DPDrawing {
 class Main {
 public:
 	int resetCanvas();
 	int loadButtons();
+	void saveCanvas();
 	bool checkIfButtonPressed(int mouseX, int mouseY);
     int Quit();
     int Init(const int SCREEN_WIDTH = 1280, const int SCREEN_HEIGHT = 720);

@@ -17,6 +17,7 @@ namespace DPDrawing {
 		private:
 			Rectangle* mRect;
 			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
+				/*
 				if(!mRect->getSelected() && !mouseBeingHeld) {
 					dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
 					SDL_Log("Width: %s", std::to_string(mRect->getWidth()).c_str());
@@ -24,6 +25,7 @@ namespace DPDrawing {
 					SDL_Log("posX: %s", std::to_string(mRect->getPosX()).c_str());
 					SDL_Log("posY: %s", std::to_string(mRect->getPosY()).c_str());
 				}
+				*/
 				SDL_Texture* tempTex = nullptr;
 				if(!mRect->getSelected()) {
 					tempTex = tm->getTextureByName("white");
