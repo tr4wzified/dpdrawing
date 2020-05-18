@@ -11,8 +11,7 @@ namespace DPDrawing {
 		}
 		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
 			SDL_Log("AMOUNT DYNAMIC RESIZED: %d", mCirc->getAmountDynamicResized());
-			/*
-			if(mCirc->getAmountDynamicResized() == 0) {
+			/*if(mCirc->getAmountDynamicResized() == 0) {
 				SDL_Log("DYNAMIC RESIZED!");
 				dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
 				mCirc->increaseAmountDynamicResized();
@@ -46,42 +45,6 @@ namespace DPDrawing {
 				}
 			}
 
-		void dynamicResize(int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
-			// topleft to bottomright
-		    if (mouseEndX > mouseX && mouseEndY > mouseY) {
-			}
-			// bottomleft to topright
-		    else if (mouseEndX > mouseX && mouseEndY < mouseY) {
-				int temp = mouseY;
-				mouseY = mouseEndY;
-				mouseEndY = temp;
-			}
-			// bottomright to topleft
-		    else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-				int temp = mouseX;
-				mouseX = mouseEndX;
-				mouseEndX = temp;
-
-				temp = mouseY;
-				mouseY = mouseEndY;
-				mouseEndY = temp;
-			}
-			// topright to bottomleft
-			else {
-				int temp = mouseX;
-				mouseX = mouseEndX;
-				mouseEndX = temp;
-		    }
-			int radiusX = (mouseEndX - mouseX) / 2;
-			int radiusY = (mouseEndY - mouseY) / 2;
-			mCirc->setRadiusX(radiusX);
-			mCirc->setRadiusY(radiusY);
-
-			int middelX = (mouseX + mouseEndX) / 2;
-			int middelY = (mouseY + mouseEndY) / 2;
-			mCirc->setCenterX(middelX); 
-			mCirc->setCenterY(middelY); 
-		}
 
 	};
 }

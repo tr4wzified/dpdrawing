@@ -25,6 +25,68 @@ vector<std::unique_ptr<Shape>> shapes;
 // Debug
 int updateCount = 0;
 
+void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+	// topleft to bottomright
+    if (mouseEndX > mouseX && mouseEndY > mouseY) {
+	}
+	// bottomleft to topright
+    else if (mouseEndX > mouseX && mouseEndY < mouseY) {
+		int temp = mouseY;
+		mouseY = mouseEndY;
+		mouseEndY = temp;
+	}
+	// bottomright to topleft
+    else if (mouseEndX < mouseX && mouseEndY < mouseY) {
+		int temp = mouseX;
+		mouseX = mouseEndX;
+		mouseEndX = temp;
+
+		temp = mouseY;
+		mouseY = mouseEndY;
+		mouseEndY = temp;
+	}
+	// topright to bottomleft
+	else {
+		int temp = mouseX;
+		mouseX = mouseEndX;
+		mouseEndX = temp;
+    }
+	int radiusX = (mouseEndX - mouseX) / 2;
+	int radiusY = (mouseEndY - mouseY) / 2;
+	mCirc->setRadiusX(radiusX);
+	mCirc->setRadiusY(radiusY);
+
+	int middelX = (mouseX + mouseEndX) / 2;
+	int middelY = (mouseY + mouseEndY) / 2;
+	mCirc->setCenterX(middelX); 
+	mCirc->setCenterY(middelY); 
+
+	dr->updateMouse(mouseBeingHeld);
+}
+
+void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+	if (mouseEndX > mouseX && mouseEndY > mouseY) {
+		mRect->setPosX(mouseX);
+		mRect->setPosY(mouseY);
+	}
+	else if (mouseEndX > mouseX && mouseEndY < mouseY) {
+		mRect->setPosX(mouseX);
+		mRect->setPosY(mouseEndY);
+	}
+	else if (mouseEndX < mouseX && mouseEndY < mouseY) {
+		mRect->setPosX(mouseEndX);
+		mRect->setPosY(mouseEndY);
+	}
+	else {
+		mRect->setPosX(mouseEndX);
+		mRect->setPosY(mouseY);
+	}
+	mRect->setWidth(abs(mouseEndX - mouseX));
+	mRect->setHeight(abs(mouseEndY - mouseY));
+
+	dr->updateMouse(mouseBeingHeld);
+}
+
 int loadButtons() {
 	SDL_Log("Loading buttons");
 	SDL_Color text = {255,255,255};
@@ -163,7 +225,7 @@ void loadCanvas() {
 			dr->Draw();
 		}
 		else if (j[i]["type"].get<std::string>() == "Circle") {
-			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
+			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>() + (j[i]["width"].get<int>() / 2), j[i]["posY"].get<int>() + (j[i]["height"].get<int>() / 2));
 			shapes.push_back(std::make_unique<Circle>(r));
 			DrawCircle* drawcirc = new DrawCircle(&r);
 			dr->prepareToDraw(drawcirc);
@@ -351,15 +413,16 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
 		if(!checkIfButtonPressed(dr->getMouseEndX(), dr->getMouseEndY())) {
+			int mX = dr->getMouseX();
+			int mY = dr->getMouseY();
+			int mEndX = dr->getMouseEndX();
+			int mEndY = dr->getMouseEndY();
 			switch(currentMode) {
 				// Rectangle
 				case 1:
 					{
-						int mX = dr->getMouseX();
-						int mY = dr->getMouseY();
-						int mEndX = dr->getMouseEndX();
-						int mEndY = dr->getMouseEndY();
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
+						dynamicResize(&rec, dr->getMouseX(), dr->getMouseY(), dr->getMouseEndX(), dr->getMouseEndY());
 						shapes.push_back(std::make_unique<Rectangle>(rec));
 						DrawRectangle* drawrec = new DrawRectangle(&rec);
 						dr->prepareToDraw(drawrec);
@@ -369,12 +432,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				// Ellipse
 				case 2:
 					{
-						dr->updateMouseEnd(mouseBeingHeld);
-						int mX = dr->getMouseX();
-						int mY = dr->getMouseY();
-						int mEndX = dr->getMouseEndX();
-						int mEndY = dr->getMouseEndY();
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
+						dynamicResize(&circ, dr->getMouseX(), dr->getMouseY(), dr->getMouseEndX(), dr->getMouseEndY());
 						shapes.push_back(std::make_unique<Circle>(circ));
 						DrawCircle drawcirc = DrawCircle(&circ);
 						dr->prepareToDraw(&drawcirc);
