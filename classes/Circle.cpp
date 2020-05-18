@@ -93,13 +93,3 @@ void DPDrawing::Circle::Select() {
 void DPDrawing::Circle::Deselect() {
 	isSelected = false;
 }
-
-int DPDrawing::Circle::getAmountDynamicResized() {
-	return this->amountDynamicResized;
-}
-
-void DPDrawing::Circle::increaseAmountDynamicResized() {
-	this->amountDynamicResized++;
-}
-
-

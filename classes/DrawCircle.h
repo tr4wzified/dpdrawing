@@ -6,18 +6,9 @@ namespace DPDrawing {
 	class DrawCircle : public DrawCommand {
 		public:
 		DrawCircle(Circle* circ) {
-			SDL_Log("Initializing DrawCircle");
 			mCirc = circ;
 		}
 		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
-			SDL_Log("AMOUNT DYNAMIC RESIZED: %d", mCirc->getAmountDynamicResized());
-			/*if(mCirc->getAmountDynamicResized() == 0) {
-				SDL_Log("DYNAMIC RESIZED!");
-				dynamicResize(mouseX, mouseY, mouseEndX, mouseEndY);
-				mCirc->increaseAmountDynamicResized();
-				SDL_Log("IN IF: AMOUNT DYNAMIC RESIZED: %d", mCirc->getAmountDynamicResized());
-			}
-			*/
 			Draw(renderer, mouseBeingHeld);
 		}
 			

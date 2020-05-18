@@ -8,7 +8,6 @@ namespace DPDrawing {
 	public:
 
 		Drawer(SDL_Renderer* renderer, TextureManager* tm) {
-			SDL_Log("Initializing Drawer");
 			this->renderer = renderer;
 			this->tm = tm;
 		};
@@ -19,7 +18,6 @@ namespace DPDrawing {
 		}
 
 		void prepareToDraw(DrawCommand* cmd) {
-			SDL_Log("Adding DrawCommand...");
 			mCmds.push_back(cmd);
 		}
 
@@ -50,7 +48,6 @@ namespace DPDrawing {
 		}
 
 		void Draw() {
-			SDL_Log("Executing command.");
 			for(DrawCommand* mCmd : mCmds) {
 				if(mCmd == nullptr) {
 					SDL_Log("ERROR: Calling Draw() on a nullptr! Your DrawCommand* likely went out of scope.");

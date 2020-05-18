@@ -26,8 +26,6 @@ namespace DPDrawing {
 			bool getSelected();
 			void Select();
 			void Deselect();
-			int getAmountDynamicResized();
-			void increaseAmountDynamicResized();
 
 		private:
 			int posX;

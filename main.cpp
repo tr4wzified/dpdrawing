@@ -22,8 +22,6 @@ Drawer* dr;
 Shape* selectedShape = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
 // Fonts, initialized in Init()
-// Debug
-int updateCount = 0;
 
 void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
 	// topleft to bottomright
@@ -88,7 +86,6 @@ void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int 
 }
 
 int loadButtons() {
-	SDL_Log("Loading buttons");
 	SDL_Color text = {255,255,255};
 
 	// Button -3 - JSON Load - Vertical
@@ -212,7 +209,6 @@ void loadCanvas() {
 	i >> j;
 	std::cout << j;
 	resetCanvas();
-	SDL_Log("Going through for loop of size %d", (int)j.size());
 	SDL_Color c = {255, 255, 255};
 	dr->setDrawingColor(c);
 	for(int i = 0; i < (int)j.size(); ++i) {
@@ -235,7 +231,6 @@ void loadCanvas() {
 	for(int i = shapes.size() - 1; i >= 0; i--) {
 		auto& sp = shapes.at(i);
 		sp->Deselect();
-		SDL_Log("===\nDESELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
 		if(sp->getType() == "Rectangle") {
 			DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
 			dr->prepareToDraw(drawrec);
@@ -357,10 +352,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 {
     while (running) {
 	SDL_WaitEvent(&event);
-	updateCount++;
-	if(updateCount % 200 == 0) {
-		SDL_Log("Update: %s", std::to_string(updateCount).c_str());
-	}
 	// Live preview of the Rectangle drawing
 	if (mouseBeingHeld) {
 		dr->updateMouseEnd(mouseBeingHeld);
@@ -456,17 +447,13 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 					switch(currentMode) {
 						case -1:
 							{
-							SDL_Log("EXECUTING SELECT");
 							int mX = dr->getMouseX();
-							SDL_Log("mouseX: %s", std::to_string(mX).c_str());
 							int mY = dr->getMouseY();
-							SDL_Log("mouseY: %s", std::to_string(mY).c_str());
 							int shapes_size = shapes.size();
 							if (shapes_size > 0) {
 								for(int i = shapes_size - 1; i >= 0; i--) {
 									auto& sp = shapes.at(i);
 									sp->Deselect();
-									SDL_Log("===\nDESELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
 									if(sp->getType() == "Rectangle") {
 										DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
 										dr->prepareToDraw(drawrec);
@@ -479,7 +466,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										dr->Draw();
 									}
 								}
-								SDL_Log("Going through for loop to select shape, amount of shapes: %s", std::to_string(shapes.size()).c_str());
 								for(int i = shapes_size - 1; i >= 0; i--) {
 									if (
 										mX >= shapes.at(i)->getPosX() &&
@@ -488,7 +474,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										mY <= shapes.at(i)->getPosY() + shapes.at(i)->getHeight()
 										) {
 
-										SDL_Log("===\nSELECTED SHAPE at position %s!\nType: %s\nWidth: %d\nHeight: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight());
 										shapes.at(i)->Select();
 
 										if(shapes.at(i)->getType() == "Rectangle") {
@@ -504,20 +489,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										}
 										break;
 									}
-									/* else { */
-									/* 	SDL_Log("DESELECTING SHAPE at position %s!\n===\nType: %s\nWidth: %d\nHeight: %d\nposX: %d\nposY: %d\n===", std::to_string(i).c_str(), shapes.at(i)->getType().c_str(), shapes.at(i)->getWidth(), shapes.at(i)->getHeight(), shapes.at(i)->getPosX(), shapes.at(i)->getPosY()); */
-									/* 	shapes.at(i)->Deselect(); */
-									/* 	if(shapes.at(i)->getType() == "Rectangle") { */
-									/* 		DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(shapes.at(i).get())); */
-									/* 		dr->prepareToDraw(drawrec); */
-									/* 		dr->Draw(); */
-									/* 	} */
-									/* 	else if(shapes.at(i)->getType() == "Circle") { */
-									/* 		DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(shapes.at(i).get())); */
-									/* 		dr->prepareToDraw(drawcirc); */
-									/* 		dr->Draw(); */
-									/* 	} */
-									//}
 								}
 							}
 							break;
