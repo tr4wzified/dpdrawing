@@ -244,9 +244,7 @@ void drawShapes() {
 }
 
 void deleteShape() {
-	SDL_Log("DELETE CALLED, SHAPES SIZE %d", (int)shapes.size());
 	for(int i = 0; i < shapes.size(); i++) {
-		SDL_Log("Found a type %s on index %d that says selected: %d", shapes.at(i)->getType().c_str(), i, shapes.at(i)->getSelected());
 		if(shapes.at(i)->getType() == "Rectangle") {
 			if (shapes.at(i)->getSelected()){
 				shapes.erase(shapes.begin() + i);
@@ -260,7 +258,6 @@ void deleteShape() {
 			}
 		}
 	}
-	SDL_Log("SHAPES SIZE %d AFTER DELETION", (int)shapes.size());
 	clearCanvas();
 	drawShapes();
 }
@@ -274,7 +271,6 @@ void loadCanvas() {
 	SDL_Color c = {255, 255, 255};
 	dr->setDrawingColor(c);
 	for(int i = 0; i < (int)j.size(); ++i) {
-		SDL_Log("j[%d]['type'] = %s", i, j[i]["type"].get<std::string>().c_str());
 		if (j[i]["type"].get<std::string>() == "Rectangle") {
 			Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
 			shapes.push_back(std::make_unique<Rectangle>(r));
@@ -454,13 +450,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    Quit();
 	    break;
 	case SDL_MOUSEBUTTONUP:
-		SDL_Log("MOUSEBUTTONUP!");
-		SDL_Log("shapes size: %d", (int)shapes.size());
 		mouseBeingHeld = false;
 		dr->updateMouseEnd(mouseBeingHeld);
 		if(currentMode == -1 && howLongBeingHeld > 30 && holdingShape >= 0) {
-			SDL_Log("holdingPosX: %d, holdingPosY: %d", holdingPosX, holdingPosY);
-			SDL_Log("mouseEndX: %d, mouseEndY: %d", dr->getMouseEndX(), dr->getMouseEndY());
 			if(shapes.at(holdingShape)->getType() != "Circle") {
 				shapes.at(holdingShape)->setPosX(dr->getMouseEndX() - holdingPosX);
 				shapes.at(holdingShape)->setPosY(dr->getMouseEndY() - holdingPosY);
@@ -524,13 +516,10 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 								{
 								int mX = dr->getMouseX();
 								int mY = dr->getMouseY();
-								SDL_Log("Select mode:\n mX - %d\n mY - %d", mX, mY);
 								int shapes_size = shapes.size();
-								SDL_Log("Shapes size: %d", shapes_size);
 								if (shapes_size > 0) {
 									for(int i = shapes_size - 1; i >= 0; i--) {
 										auto& sp = shapes.at(i);
-										SDL_Log("Deselecting shape at position %d", i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
 											DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
