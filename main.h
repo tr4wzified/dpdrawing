@@ -27,6 +27,7 @@ public:
 	int resetCanvas();
 	int loadButtons();
 	void saveCanvas();
+	void drawShapes();
 	bool checkIfButtonPressed(int mouseX, int mouseY);
     int Quit();
     int Init(const int SCREEN_WIDTH = 1280, const int SCREEN_HEIGHT = 720);
