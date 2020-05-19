@@ -22,9 +22,8 @@ int holdingPosY = 0;
 // Objects
 TextureManager tm;
 Drawer* dr;
-Shape* selectedShape = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
-int holdingRectangle = -1;
+int holdingShape = -1;
 // Fonts, initialized in Init()
 
 void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
@@ -100,7 +99,7 @@ int loadButtons() {
 	SDL_Rect* x_rect = x.getRectangle();
 	SDL_Texture* x_msg = SDL_CreateTextureFromSurface(gRenderer, x.getSurface());
 	SDL_Rect* x_msg_rect = x.getRectangle();
-	if(currentMode == -3) {
+	if(currentMode == -4) {
 		SDL_RenderCopy(gRenderer, button_active, NULL, x_rect);
 	}
 	else {
@@ -237,8 +236,7 @@ void drawShapes() {
 			dr->Draw();
 		}
 		else if(sp->getType() == "Circle") {
-			Circle* c = dynamic_cast<Circle*>(sp.get());
-			DrawCircle* drawrec = new DrawCircle(c);
+			DrawCircle* drawrec = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
 			dr->prepareToDraw(drawrec);
 			dr->Draw();
 		}
@@ -344,6 +342,7 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 			}
 			else if(mouseY <= BUTTON_HEIGHT * 5) {
 				currentMode = -4;
+				loadButtons();
 				deleteShape();
 				return true;
 			}
@@ -459,14 +458,21 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		SDL_Log("shapes size: %d", (int)shapes.size());
 		mouseBeingHeld = false;
 		dr->updateMouseEnd(mouseBeingHeld);
-		if(currentMode == -1 && howLongBeingHeld > 30 && holdingRectangle >= 0) {
+		if(currentMode == -1 && howLongBeingHeld > 30 && holdingShape >= 0) {
 			SDL_Log("holdingPosX: %d, holdingPosY: %d", holdingPosX, holdingPosY);
 			SDL_Log("mouseEndX: %d, mouseEndY: %d", dr->getMouseEndX(), dr->getMouseEndY());
-			shapes.at(holdingRectangle)->setPosX(dr->getMouseEndX() - holdingPosX);
-			shapes.at(holdingRectangle)->setPosY(dr->getMouseEndY() - holdingPosY);
+			if(shapes.at(holdingShape)->getType() != "Circle") {
+				shapes.at(holdingShape)->setPosX(dr->getMouseEndX() - holdingPosX);
+				shapes.at(holdingShape)->setPosY(dr->getMouseEndY() - holdingPosY);
+			}
+			else {
+				Circle* c = dynamic_cast<Circle*>(shapes.at(holdingShape).get());
+				c->setCenterX((dr->getMouseEndX() - holdingPosX) + c->getRadiusX());
+				c->setCenterY((dr->getMouseEndY() - holdingPosY) + c->getRadiusY());
+			}
 			clearCanvas();
 			drawShapes();
-			holdingRectangle = -1;
+			holdingShape = -1;
 		}
 		howLongBeingHeld = 0;
 	    switch (event.button.button) {
@@ -532,8 +538,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											dr->Draw();
 										}
 										else if(sp->getType() == "Circle") {
-											Circle* c = dynamic_cast<Circle*>(sp.get());
-											DrawCircle* drawrec = new DrawCircle(c);
+											DrawCircle* drawrec = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
 											dr->prepareToDraw(drawrec);
 											dr->Draw();
 										}
@@ -549,22 +554,20 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 
 											sp->Select();
 
+											if(howLongBeingHeld == 0) {
+												dr->updateMouse(mouseBeingHeld);
+												holdingPosX = dr->getMouseX() - sp->getPosX();
+												holdingPosY = dr->getMouseY() - sp->getPosY();
+												holdingShape = i;
+											}
+
 											if(sp->getType() == "Rectangle") {
 												DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
 												dr->prepareToDraw(drawrec);
 												dr->Draw();
-
-												SDL_Log("Voordat ik de if ga checken is howLongBeingHeld nu op %d", howLongBeingHeld);
-												if(howLongBeingHeld == 0) {
-													dr->updateMouse(mouseBeingHeld);
-													holdingPosX = dr->getMouseX() - sp->getPosX();
-													holdingPosY = dr->getMouseY() - sp->getPosY();
-													holdingRectangle = i;
-												}
 											}
 											else if(sp->getType() == "Circle") {
-												Circle* c = dynamic_cast<Circle*>(sp.get());
-												DrawCircle* drawcirc = new DrawCircle(c);
+												DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
 												dr->prepareToDraw(drawcirc);
 												dr->Draw();
 											}
