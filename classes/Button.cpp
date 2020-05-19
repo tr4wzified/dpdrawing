@@ -1,9 +1,8 @@
 #include "Button.h"
-DPDrawing::Button::Button(int posX, int posY, SDL_Color fg_color, int text) {
+DPDrawing::Button::Button(int posX, int posY, SDL_Color& fg_color, int text, TTF_Font* font) {
     this->posX = posX;
     this->posY = posY;
 	this->text = text;
-	TTF_Font* font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
 	this->font = font;
 	this->fg_color = fg_color;
 	if(!font) {

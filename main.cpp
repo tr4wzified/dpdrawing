@@ -24,7 +24,7 @@ TextureManager tm;
 Drawer* dr;
 Shape* selectedShape = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
-Rectangle* holdingRectangle;
+int holdingRectangle = -1;
 // Fonts, initialized in Init()
 
 void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
@@ -91,11 +91,12 @@ void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int 
 
 int loadButtons() {
 	SDL_Color text = {255,255,255};
+	TTF_Font* font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
 
 	// Button -4 - Delete - Vertical
 	SDL_Texture* button_tex = tm.getTextureByName("button");
 	SDL_Texture* button_active = tm.getTextureByName("button-active");
-	Button x(0, BUTTON_HEIGHT * 4, text, 68);
+	Button x(0, BUTTON_HEIGHT * 4, text, 68, font);
 	SDL_Rect* x_rect = x.getRectangle();
 	SDL_Texture* x_msg = SDL_CreateTextureFromSurface(gRenderer, x.getSurface());
 	SDL_Rect* x_msg_rect = x.getRectangle();
@@ -108,7 +109,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, x_msg, NULL, x_msg_rect);
 
 	// Button -3 - JSON Load - Vertical
-	Button y(0, BUTTON_HEIGHT * 3, text, 76);
+	Button y(0, BUTTON_HEIGHT * 3, text, 76, font);
 	SDL_Rect* y_rect = y.getRectangle();
 	SDL_Texture* y_msg = SDL_CreateTextureFromSurface(gRenderer, y.getSurface());
 	SDL_Rect* y_msg_rect = y.getRectangle();
@@ -121,7 +122,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, y_msg, NULL, y_msg_rect);
 
 	// Button -2 - JSON Save - Vertical
-	Button z(0, BUTTON_HEIGHT * 2, text, 74);
+	Button z(0, BUTTON_HEIGHT * 2, text, 74, font);
 	SDL_Rect* z_rect = z.getRectangle();
 	SDL_Texture* z_msg = SDL_CreateTextureFromSurface(gRenderer, z.getSurface());
 	SDL_Rect* z_msg_rect = z.getRectangle();
@@ -134,7 +135,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, z_msg, NULL, z_msg_rect);
 
 	// Button -1 - Select - Vertical
-	Button a(0, BUTTON_HEIGHT, text, 83);
+	Button a(0, BUTTON_HEIGHT, text, 83, font);
 	SDL_Rect* a_rect = a.getRectangle();
 	SDL_Texture* a_msg = SDL_CreateTextureFromSurface(gRenderer, a.getSurface());
 	SDL_Rect* a_msg_rect = a.getRectangle();
@@ -147,7 +148,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, a_msg, NULL, a_msg_rect);
 
 	// Button 1 - Reset
-	Button b(0, 0, text, 88);
+	Button b(0, 0, text, 88, font);
 	SDL_Rect* b_rect = b.getRectangle();
 	SDL_Texture* b_msg = SDL_CreateTextureFromSurface(gRenderer, b.getSurface());
 	SDL_Rect* b_msg_rect = b.getRectangle();
@@ -160,7 +161,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, b_msg, NULL, b_msg_rect);
 
 	// Button 2 - Rectangle - R
-	Button c(BUTTON_WIDTH, 0, text, 82);
+	Button c(BUTTON_WIDTH, 0, text, 82, font);
 	SDL_Rect* c_rect = c.getRectangle();
 	SDL_Texture* c_msg = SDL_CreateTextureFromSurface(gRenderer, c.getSurface());
 	SDL_Rect* c_msg_rect = c.getRectangle();
@@ -173,7 +174,7 @@ int loadButtons() {
 	SDL_RenderCopy(gRenderer, c_msg, NULL, c_msg_rect);
 
 	// Button 3 - Ellipse - O
-	Button d(BUTTON_WIDTH * 2, 0, text, 79);
+	Button d(BUTTON_WIDTH * 2, 0, text, 79, font);
 	SDL_Rect* d_rect = d.getRectangle();
 	SDL_Texture* d_msg = SDL_CreateTextureFromSurface(gRenderer, d.getSurface());
 	SDL_Rect* d_msg_rect = d.getRectangle();
@@ -192,7 +193,6 @@ int loadButtons() {
 
 int clearCanvas() {
 	SDL_Log("resetCanvas() called");
-	currentMode = 0;
 	SDL_Color color = {0, 0, 0};
 	dr->setDrawingColor(color);
 	SDL_RenderClear(gRenderer);
@@ -204,6 +204,7 @@ int clearCanvas() {
 
 int resetCanvas() {
 	clearCanvas();
+	currentMode = 0;
 	shapes.clear();
 	return 0;
 }
@@ -406,7 +407,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	SDL_WaitEvent(&event);
 	if(mouseBeingHeld) {
 		howLongBeingHeld++;
-		SDL_Log("howLongBeingHeld: %d", howLongBeingHeld);
 	}
 	// Live preview of the Rectangle drawing
 	if (mouseBeingHeld) {
@@ -456,18 +456,19 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    break;
 	case SDL_MOUSEBUTTONUP:
 		SDL_Log("MOUSEBUTTONUP!");
+		SDL_Log("shapes size: %d", (int)shapes.size());
 		mouseBeingHeld = false;
-		if(currentMode == -1 && howLongBeingHeld > 1 && holdingRectangle != nullptr) {
+		dr->updateMouseEnd(mouseBeingHeld);
+		if(currentMode == -1 && howLongBeingHeld > 30 && holdingRectangle >= 0) {
 			SDL_Log("holdingPosX: %d, holdingPosY: %d", holdingPosX, holdingPosY);
-			holdingRectangle->setPosX(dr->getMouseX() - holdingPosX);
-			holdingRectangle->setPosY(dr->getMouseY() - holdingPosY);
-			DrawRectangle* drawrec = new DrawRectangle(holdingRectangle);
-			dr->prepareToDraw(drawrec);
-			dr->Draw();
-			holdingRectangle = nullptr;
+			SDL_Log("mouseEndX: %d, mouseEndY: %d", dr->getMouseEndX(), dr->getMouseEndY());
+			shapes.at(holdingRectangle)->setPosX(dr->getMouseEndX() - holdingPosX);
+			shapes.at(holdingRectangle)->setPosY(dr->getMouseEndY() - holdingPosY);
+			clearCanvas();
+			drawShapes();
+			holdingRectangle = -1;
 		}
 		howLongBeingHeld = 0;
-		dr->updateMouseEnd(mouseBeingHeld);
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
 		if(!checkIfButtonPressed(dr->getMouseEndX(), dr->getMouseEndY())) {
@@ -517,10 +518,13 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 								{
 								int mX = dr->getMouseX();
 								int mY = dr->getMouseY();
+								SDL_Log("Select mode:\n mX - %d\n mY - %d", mX, mY);
 								int shapes_size = shapes.size();
+								SDL_Log("Shapes size: %d", shapes_size);
 								if (shapes_size > 0) {
 									for(int i = shapes_size - 1; i >= 0; i--) {
 										auto& sp = shapes.at(i);
+										SDL_Log("Deselecting shape at position %d", i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
 											DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
@@ -555,8 +559,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 													dr->updateMouse(mouseBeingHeld);
 													holdingPosX = dr->getMouseX() - sp->getPosX();
 													holdingPosY = dr->getMouseY() - sp->getPosY();
-													SDL_Log("holdingPosX: %d, holdingPosY: %d", holdingPosX, holdingPosY);
-													holdingRectangle = dynamic_cast<Rectangle*>(sp.get());
+													holdingRectangle = i;
 												}
 											}
 											else if(sp->getType() == "Circle") {
