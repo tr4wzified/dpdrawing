@@ -55,10 +55,10 @@ void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mou
 		mouseX = mouseEndX;
 		mouseEndX = temp;
     }
-	int radiusX = (mouseEndX - mouseX) / 2;
-	int radiusY = (mouseEndY - mouseY) / 2;
-	mCirc->setRadiusX(radiusX);
-	mCirc->setRadiusY(radiusY);
+	int w = mouseEndX - mouseX;
+	int h = mouseEndY - mouseY;
+	mCirc->setWidth(w);
+	mCirc->setHeight(h);
 
 	int middelX = (mouseX + mouseEndX) / 2;
 	int middelY = (mouseY + mouseEndY) / 2;
@@ -565,8 +565,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 			}
 			else {
 				Circle* c = dynamic_cast<Circle*>(shapes.at(holdingShape).get());
-				c->setCenterX((dr->getMouseEndX() - holdingPosX) + c->getRadiusX());
-				c->setCenterY((dr->getMouseEndY() - holdingPosY) + c->getRadiusY());
+				c->setCenterX((dr->getMouseEndX() - holdingPosX) + c->getWidth() / 2);
+				c->setCenterY((dr->getMouseEndY() - holdingPosY) + c->getHeight() / 2);
 			}
 			clearCanvas();
 			drawShapes();

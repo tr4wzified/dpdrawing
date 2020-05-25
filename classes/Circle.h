@@ -6,31 +6,13 @@ namespace DPDrawing {
 		public:
 			Circle(int width, int height, int posX, int posY);
 			float getArea();
-			void setPosX(int posX);
-			void setPosY(int posY);
-			void setWidth(int width);
-			void setHeight(int height);
-			void setRadiusX(int radiusX);
-			void setRadiusY(int radiusY);
 			void setCenterX(int centerY);
 			void setCenterY(int centerY);
-			int getPosX();
-			int getPosY();
-			int getWidth();
-			int getHeight();
 			int getCenterX();
 			int getCenterY();
 			int getRadiusX();
 			int getRadiusY();
 			string getType();
-
-		private:
-			int posX;
-			int posY;
-			int width;
-			int height;
-			int radiusX;
-			int radiusY;
 
 	};
 }

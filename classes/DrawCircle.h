@@ -29,10 +29,11 @@ namespace DPDrawing {
 			Circle* mCirc;
 			void Draw(SDL_Renderer* renderer) {
 				if (mCirc->isSelected()) {
-					filledEllipseRGBA(renderer, mCirc->getCenterX(), mCirc->getCenterY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
+/* 	return Shape::getPosX() + (Shape::getWidth() / 2); */
+					filledEllipseRGBA(renderer, mCirc->getPosX() + (mCirc->getWidth() / 2), mCirc->getPosY() + (mCirc->getHeight() / 2), mCirc->getWidth() / 2, mCirc->getHeight() / 2, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
 				}
 				else {
-					filledEllipseRGBA(renderer, mCirc->getCenterX(), mCirc->getCenterY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
+					filledEllipseRGBA(renderer, mCirc->getPosX() + (mCirc->getWidth() / 2), mCirc->getPosY() + (mCirc->getHeight() / 2), mCirc->getWidth() / 2, mCirc->getHeight() / 2, (Uint8)255, (Uint8)255, (Uint8)255, (Uint8)255);
 				}
 			}
 
