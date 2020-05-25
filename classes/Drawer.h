@@ -52,7 +52,7 @@ namespace DPDrawing {
 				if(mCmd == nullptr) {
 					SDL_Log("ERROR: Calling Draw() on a nullptr! Your DrawCommand* likely went out of scope.");
 				}
-				mCmd->execute(renderer, tm, mouseX, mouseY, mouseEndX, mouseEndY, mouseBeingHeld);
+				mCmd->execute(renderer, tm);
 			}
 			SDL_RenderPresent(renderer);
 			mCmds.clear();

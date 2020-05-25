@@ -49,18 +49,6 @@ string DPDrawing::Rectangle::getType() {
 	return "Rectangle";
 }
 
-bool DPDrawing::Rectangle::getSelected() {
-	return isSelected;
-}
-
-void DPDrawing::Rectangle::Select() {
-	isSelected = true;
-}
-
-void DPDrawing::Rectangle::Deselect() {
-	isSelected = false;
-}
-
 void DPDrawing::Rectangle::setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
     if (mouseEndX > mouseX && mouseEndY > mouseY) {
 	setPosX(mouseX);

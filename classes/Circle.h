@@ -6,8 +6,6 @@ namespace DPDrawing {
 		public:
 			Circle(int width, int height, int posX, int posY);
 			float getArea();
-			void setRealPosX(int posX);
-			void setRealPosY(int posY);
 			void setPosX(int posX);
 			void setPosY(int posY);
 			void setWidth(int width);
@@ -25,9 +23,6 @@ namespace DPDrawing {
 			int getRadiusX();
 			int getRadiusY();
 			string getType();
-			bool getSelected();
-			void Select();
-			void Deselect();
 
 		private:
 			int posX;
@@ -36,8 +31,6 @@ namespace DPDrawing {
 			int height;
 			int radiusX;
 			int radiusY;
-			bool isSelected = false;
-			int amountDynamicResized = 0;
 
 	};
 }

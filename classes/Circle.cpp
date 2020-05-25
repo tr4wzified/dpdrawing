@@ -10,14 +10,6 @@ float DPDrawing::Circle::getArea() {
 	return M_PI * this->radiusX * this->radiusY;
 }
 
-void DPDrawing::Circle::setRealPosX(int posX) {
-	this->posX = posX;
-}
-
-void DPDrawing::Circle::setRealPosY(int posY) {
-	this->posY = posY;
-}
-
 void DPDrawing::Circle::setPosX(int posX) {
 	this->posX = posX;
 }
@@ -88,16 +80,4 @@ int DPDrawing::Circle::getRadiusY() {
 
 string DPDrawing::Circle::getType() {
 	return "Circle";
-}
-
-bool DPDrawing::Circle::getSelected() {
-	return isSelected;
-}
-
-void DPDrawing::Circle::Select() {
-	isSelected = true;
-}
-
-void DPDrawing::Circle::Deselect() {
-	isSelected = false;
 }

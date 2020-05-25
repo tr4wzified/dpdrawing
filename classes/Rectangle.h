@@ -17,15 +17,11 @@ public:
     SDL_Rect* getSDLObj();
     void setRect(int mouseX, int mouseY, int mouseEndX, int mouseEndY);
 	string getType();
-	bool getSelected();
-	void Select();
-	void Deselect();
 private:
     SDL_Rect rect;
 	int width;
 	int height;
 	int posX;
 	int posY;
-	bool isSelected = false;
 };
 }

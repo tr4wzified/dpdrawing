@@ -8,8 +8,8 @@ namespace DPDrawing {
 		DrawCircle(Circle* circ) {
 			mCirc = circ;
 		}
-		void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
-			Draw(renderer, mouseBeingHeld);
+		void execute(SDL_Renderer* renderer, TextureManager* tm) {
+			Draw(renderer);
 		}
 			
 		private:
@@ -27,8 +27,8 @@ namespace DPDrawing {
 			int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f);
 			
 			Circle* mCirc;
-			void Draw(SDL_Renderer* renderer, bool mouseBeingHeld) {
-				if (mCirc->getSelected()) {
+			void Draw(SDL_Renderer* renderer) {
+				if (mCirc->isSelected()) {
 					filledEllipseRGBA(renderer, mCirc->getCenterX(), mCirc->getCenterY(), mCirc->getRadiusX(), mCirc->getRadiusY(), (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
 				}
 				else {

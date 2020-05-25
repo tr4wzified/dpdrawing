@@ -10,14 +10,15 @@ namespace DPDrawing {
 			DrawRectangle(Rectangle* rect) {
 				mRect = rect;
 			}
-			void execute(SDL_Renderer* renderer, TextureManager* tm, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
-				Draw(renderer, tm, mRect->getSDLObj(), mouseX, mouseY, mouseEndX, mouseEndY, mouseBeingHeld);
+			void execute(SDL_Renderer* renderer, TextureManager* tm) {
+				Draw(renderer, tm);
 			}
 		private:
 			Rectangle* mRect;
-			void Draw(SDL_Renderer* renderer, TextureManager* tm, SDL_Rect* obj, int mouseX, int mouseY, int mouseEndX, int mouseEndY, bool mouseBeingHeld) {
+			void Draw(SDL_Renderer* renderer, TextureManager* tm) {
+				SDL_Rect* obj = mRect->getSDLObj();
 				SDL_Texture* tempTex = nullptr;
-				if(!mRect->getSelected()) {
+				if(!mRect->isSelected()) {
 					tempTex = tm->getTextureByName("white");
 				}
 				else {

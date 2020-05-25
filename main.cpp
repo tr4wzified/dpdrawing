@@ -262,13 +262,13 @@ void drawShapes() {
 void deleteShape() {
 	for(int i = 0; i < shapes.size(); i++) {
 		if(shapes.at(i)->getType() == "Rectangle") {
-			if (shapes.at(i)->getSelected()){
+			if (shapes.at(i)->isSelected()){
 				shapes.erase(shapes.begin() + i);
 				break;
 			}
 		}
 		else if(shapes.at(i)->getType() == "Circle") {
-			if (shapes.at(i)->getSelected()) {
+			if (shapes.at(i)->isSelected()) {
 				shapes.erase(shapes.begin() + i);
 				break;
 			}
@@ -310,7 +310,7 @@ void resize() {
 	SDL_Log("Called resize()");
 	for(int i = 0; i < shapes.size(); i++) {
 		auto& sp = shapes.at(i);
-		if(sp->getSelected()) {
+		if(sp->isSelected()) {
 			int centerX = sp->getWidth() / 2;
 			int centerY = sp->getHeight() / 2;
 			SDL_Log("centerX %d, centerY %d", centerX, centerY);
