@@ -591,6 +591,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				case 1:
 					{
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
+						SDL_Log("rec posX: %d posY: %d width: %d height: %d", rec.getPosX(), rec.getPosY(), rec.getWidth(), rec.getHeight());
 						dynamicResize(&rec, dr->getMouseX(), dr->getMouseY(), dr->getMouseEndX(), dr->getMouseEndY());
 						shapes.push_back(std::make_unique<Rectangle>(rec));
 						DrawRectangle* drawrec = new DrawRectangle(&rec);
