@@ -8,8 +8,11 @@ SDL_Renderer* gRenderer = nullptr;
 bool running = true;
 SDL_Event event;
 /*
+ * -4 = Delete Selected
+ * -3 = JSON Load
+ * -2 = JSON Save
  * -1 = Select
- * 0 = None
+ * 0 = None (Default)
  * 1 = Rectangle
  * 2 = Circle
 */
@@ -91,10 +94,23 @@ void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int 
 int loadButtons() {
 	SDL_Color text = {255,255,255};
 	TTF_Font* font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
-
-	// Button -4 - Delete - Vertical
 	SDL_Texture* button_tex = tm.getTextureByName("button");
 	SDL_Texture* button_active = tm.getTextureByName("button-active");
+
+	// Button -5 - Resize - Vertical
+	Button w(0, BUTTON_HEIGHT * 5, text, 124, font);
+	SDL_Rect* w_rect = w.getRectangle();
+	SDL_Texture* w_msg = SDL_CreateTextureFromSurface(gRenderer, w.getSurface());
+	SDL_Rect* w_msg_rect = w.getRectangle();
+	if(currentMode == -5) {
+		SDL_RenderCopy(gRenderer, button_active, NULL, w_rect);
+	}
+	else {
+		SDL_RenderCopy(gRenderer, button_tex, NULL, w_rect);
+	}
+	SDL_RenderCopy(gRenderer, w_msg, NULL, w_msg_rect);
+
+	// Button -4 - Delete - Vertical
 	Button x(0, BUTTON_HEIGHT * 4, text, 68, font);
 	SDL_Rect* x_rect = x.getRectangle();
 	SDL_Texture* x_msg = SDL_CreateTextureFromSurface(gRenderer, x.getSurface());
@@ -191,7 +207,6 @@ int loadButtons() {
 }
 
 int clearCanvas() {
-	SDL_Log("resetCanvas() called");
 	SDL_Color color = {0, 0, 0};
 	dr->setDrawingColor(color);
 	SDL_RenderClear(gRenderer);
@@ -202,6 +217,7 @@ int clearCanvas() {
 }
 
 int resetCanvas() {
+	SDL_Log("resetCanvas() called");
 	clearCanvas();
 	currentMode = 0;
 	shapes.clear();
@@ -290,6 +306,92 @@ void loadCanvas() {
 	i.close();
 }
 
+void resize() {
+	SDL_Log("Called resize()");
+	for(int i = 0; i < shapes.size(); i++) {
+		auto& sp = shapes.at(i);
+		if(sp->getSelected()) {
+			int centerX = sp->getWidth() / 2;
+			int centerY = sp->getHeight() / 2;
+			SDL_Log("centerX %d, centerY %d", centerX, centerY);
+			if(sp->getType() == "Rectangle" ) {
+				
+				// top left area
+				if(holdingPosX < centerX && holdingPosY < centerY) {
+					SDL_Log("Resizing from top left.");
+					int previousPosY = sp->getPosY();
+					int previousPosX = sp->getPosX();
+					sp->setPosX(dr->getMouseEndX());
+					sp->setPosY(dr->getMouseEndY());
+					sp->setWidth(sp->getWidth() + (previousPosX - dr->getMouseEndX()));
+					sp->setHeight(sp->getHeight() + (previousPosY - dr->getMouseEndY()));
+				}
+				// bottom left area
+				if(holdingPosX < centerX && holdingPosY > centerY) {
+					SDL_Log("Resizing from bottom left.");
+					int previousPosX = sp->getPosX();
+					sp->setPosX(dr->getMouseEndX());
+					sp->setWidth(sp->getWidth() + (previousPosX - sp->getPosX()));
+					sp->setHeight(sp->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
+				}
+				// top right area
+				if(holdingPosX > centerX && holdingPosY < centerY) {
+					SDL_Log("Resizing from top right.");
+					int previousPosY = sp->getPosY();
+					sp->setPosY(dr->getMouseEndY());
+					sp->setHeight(sp->getHeight() + (previousPosY - sp->getPosY()));
+					sp->setWidth(sp->getWidth() + (dr->getMouseEndX() - dr->getMouseX()));
+				}
+				// bottom right
+				if(holdingPosX > centerX && holdingPosY > centerY) {
+					SDL_Log("Resizing from bottom right.");
+					sp->setWidth(sp->getWidth() + (dr->getMouseEndX() - dr->getMouseX()));
+					sp->setHeight(sp->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
+				}
+			}
+			else if(sp->getType() == "Circle" ) {
+				Circle* circ = dynamic_cast<Circle*>(sp.get());
+				centerX = sp->getWidth() / 2;
+				centerY = sp->getHeight() / 2;
+				// top left area
+				if(holdingPosX < centerX && holdingPosY < centerY) {
+					SDL_Log("Resizing from top left.");
+					int previousPosY = circ->getPosY();
+					int previousPosX = circ->getPosX();
+					circ->setPosX(dr->getMouseEndX());
+					circ->setPosY(dr->getMouseEndY());
+					circ->setWidth(circ->getWidth() + (previousPosX - dr->getMouseEndX()));
+					circ->setHeight(circ->getHeight() + (previousPosY - dr->getMouseEndY()));
+				}
+				// bottom left area
+				if(holdingPosX < centerX && holdingPosY > centerY) {
+					SDL_Log("Resizing from bottom left.");
+					int previousPosX = circ->getPosX();
+					circ->setPosX(dr->getMouseEndX());
+					// teveel naar onder
+					circ->setWidth(circ->getWidth() + (previousPosX - circ->getPosX()));
+					circ->setHeight(circ->getHeight() + ((dr->getMouseEndY() - dr->getMouseY()) / 2));
+				}
+				// top right area
+				if(holdingPosX > centerX && holdingPosY < centerY) {
+					SDL_Log("Resizing from top right.");
+					int previousPosY = circ->getPosY();
+					circ->setPosY(dr->getMouseEndY());
+					// teveel naar rechts
+					circ->setHeight(circ->getHeight() + (previousPosY - circ->getPosY()));
+					circ->setWidth(circ->getWidth() + ((dr->getMouseEndX() - dr->getMouseX()) / 2));
+				}
+				// bottom right
+				if(holdingPosX > centerX && holdingPosY > centerY) {
+					SDL_Log("Resizing from bottom right.");
+					circ->setWidth(circ->getWidth() + ((dr->getMouseEndX() - dr->getMouseX()) / 2));
+					circ->setHeight(circ->getHeight() + ((dr->getMouseEndY() - dr->getMouseY()) / 2));
+				}
+			}
+		}
+	}
+}
+
 bool checkIfButtonPressed(int mouseX, int mouseY) {
 	//if(!mouseBeingHeld) {
 		// Horizontal
@@ -342,11 +444,15 @@ bool checkIfButtonPressed(int mouseX, int mouseY) {
 				deleteShape();
 				return true;
 			}
+			else if(mouseY <= BUTTON_HEIGHT * 6) {
+				currentMode = -5;
+				loadButtons();
+				return true;
+			}
 		}
 	//}
 	return false;
 }
-
 
 int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 {
@@ -466,6 +572,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 			drawShapes();
 			holdingShape = -1;
 		}
+
+		if(currentMode == -5 && howLongBeingHeld > 30) {
+			resize();
+			clearCanvas();
+			drawShapes();
+		}
 		howLongBeingHeld = 0;
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
@@ -511,9 +623,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 			switch(event.button.button) {
 				case SDL_BUTTON_LEFT:
 					{
-						switch(currentMode) {
-							case -1:
-								{
+						if(currentMode == -1 || currentMode == -5) {
 								int mX = dr->getMouseX();
 								int mY = dr->getMouseY();
 								int shapes_size = shapes.size();
@@ -563,8 +673,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											break;
 										}
 									}
-								}
-								break;
 								}
 						}
 					}
