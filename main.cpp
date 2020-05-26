@@ -24,7 +24,8 @@ int holdingPosX = 0;
 int holdingPosY = 0;
 // Objects
 TextureManager tm;
-Drawer* dr;
+Invoker* dr;
+MouseHandler mh;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 // Fonts, initialized in Init()
@@ -384,8 +385,9 @@ void resize() {
 				// bottom right
 				if(holdingPosX > centerX && holdingPosY > centerY) {
 					SDL_Log("Resizing from bottom right.");
+					int previousPosY = circ->getPosY();
 					circ->setWidth(circ->getWidth() + ((dr->getMouseEndX() - dr->getMouseX()) / 2));
-					circ->setHeight(circ->getHeight() + ((dr->getMouseEndY() - dr->getMouseY()) / 2));
+					circ->setHeight(circ->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
 				}
 			}
 		}
@@ -485,7 +487,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	tm.addSurface(gRenderer, "resources/images/button-active.bmp", "button-active");
     SDL_Log("Textures loaded.");
 
-	dr = new Drawer(gRenderer, &tm);
+	dr = new Invoker(gRenderer, &tm);
 
 	loadButtons();
 

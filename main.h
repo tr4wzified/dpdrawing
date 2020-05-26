@@ -3,10 +3,12 @@
 #include "classes/Circle.h"
 #include "classes/TextureManager.h"
 #include "classes/Button.h"
-#include "classes/Drawer.h"
+#include "classes/Invoker.h"
 #include "classes/DrawCommand.h"
 #include "classes/DrawRectangle.h"
 #include "classes/DrawCircle.h"
+#include "classes/MouseHandler.h"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
