@@ -17,20 +17,20 @@ SDL_Event event;
  * 2 = Circle
 */
 int currentMode = 0;
-// Mouse
-bool mouseBeingHeld = false;
-int howLongBeingHeld = 0;
-int holdingPosX = 0;
-int holdingPosY = 0;
 // Objects
 TextureManager tm;
 Invoker* dr;
-MouseHandler mh;
+MouseHandler* mh;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 // Fonts, initialized in Init()
 
-void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+void dynamicResize(Circle* mCirc) {
+	int temp;
+	int mouseX = mh->getMouseX();
+	int mouseY = mh->getMouseY();
+	int mouseEndX = mh->getMouseEndY();
+	int mouseEndY = mh->getMouseEndY();
 	// topleft to bottomright
     if (mouseEndX > mouseX && mouseEndY > mouseY) {
 	}
@@ -42,7 +42,7 @@ void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mou
 	}
 	// bottomright to topleft
     else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-		int temp = mouseX;
+		temp = mouseX;
 		mouseX = mouseEndX;
 		mouseEndX = temp;
 
@@ -52,7 +52,7 @@ void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mou
 	}
 	// topright to bottomleft
 	else {
-		int temp = mouseX;
+		temp = mouseX;
 		mouseX = mouseEndX;
 		mouseEndX = temp;
     }
@@ -65,11 +65,15 @@ void dynamicResize(Circle* mCirc, int mouseX, int mouseY, int mouseEndX, int mou
 	int middelY = (mouseY + mouseEndY) / 2;
 	mCirc->setCenterX(middelX); 
 	mCirc->setCenterY(middelY); 
-
-	dr->updateMouse(mouseBeingHeld);
 }
 
-void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int mouseEndY) {
+void dynamicResize(Rectangle* mRect) {
+	int temp;
+	int mouseX = mh->getMouseX();
+	int mouseY = mh->getMouseY();
+	int mouseEndX = mh->getMouseEndX();
+	int mouseEndY = mh->getMouseEndY();
+	SDL_Log("mouseX: %d mouseY: %d mouseEndX: %d mouseEndY: %d", mouseX, mouseY, mouseEndX, mouseEndY);
 	if (mouseEndX > mouseX && mouseEndY > mouseY) {
 		mRect->setPosX(mouseX);
 		mRect->setPosY(mouseY);
@@ -88,8 +92,6 @@ void dynamicResize(Rectangle* mRect, int mouseX, int mouseY, int mouseEndX, int 
 	}
 	mRect->setWidth(abs(mouseEndX - mouseX));
 	mRect->setHeight(abs(mouseEndY - mouseY));
-
-	dr->updateMouse(mouseBeingHeld);
 }
 
 int loadButtons() {
@@ -309,6 +311,8 @@ void loadCanvas() {
 
 void resize() {
 	SDL_Log("Called resize()");
+	int holdingPosX = mh->getHoldingPosX();
+	int holdingPosY = mh->getHoldingPosY();
 	for(int i = 0; i < shapes.size(); i++) {
 		auto& sp = shapes.at(i);
 		if(sp->isSelected()) {
@@ -316,38 +320,37 @@ void resize() {
 			int centerY = sp->getHeight() / 2;
 			SDL_Log("centerX %d, centerY %d", centerX, centerY);
 			if(sp->getType() == "Rectangle" ) {
-				
 				// top left area
 				if(holdingPosX < centerX && holdingPosY < centerY) {
 					SDL_Log("Resizing from top left.");
 					int previousPosY = sp->getPosY();
 					int previousPosX = sp->getPosX();
-					sp->setPosX(dr->getMouseEndX());
-					sp->setPosY(dr->getMouseEndY());
-					sp->setWidth(sp->getWidth() + (previousPosX - dr->getMouseEndX()));
-					sp->setHeight(sp->getHeight() + (previousPosY - dr->getMouseEndY()));
+					sp->setPosX(mh->getMouseEndX());
+					sp->setPosY(mh->getMouseEndY());
+					sp->setWidth(sp->getWidth() + (previousPosX - mh->getMouseEndX()));
+					sp->setHeight(sp->getHeight() + (previousPosY - mh->getMouseEndY()));
 				}
 				// bottom left area
 				if(holdingPosX < centerX && holdingPosY > centerY) {
 					SDL_Log("Resizing from bottom left.");
 					int previousPosX = sp->getPosX();
-					sp->setPosX(dr->getMouseEndX());
+					sp->setPosX(mh->getMouseEndX());
 					sp->setWidth(sp->getWidth() + (previousPosX - sp->getPosX()));
-					sp->setHeight(sp->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
+					sp->setHeight(sp->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
 				}
 				// top right area
 				if(holdingPosX > centerX && holdingPosY < centerY) {
 					SDL_Log("Resizing from top right.");
 					int previousPosY = sp->getPosY();
-					sp->setPosY(dr->getMouseEndY());
+					sp->setPosY(mh->getMouseEndY());
 					sp->setHeight(sp->getHeight() + (previousPosY - sp->getPosY()));
-					sp->setWidth(sp->getWidth() + (dr->getMouseEndX() - dr->getMouseX()));
+					sp->setWidth(sp->getWidth() + (mh->getMouseEndX() - mh->getMouseX()));
 				}
 				// bottom right
 				if(holdingPosX > centerX && holdingPosY > centerY) {
 					SDL_Log("Resizing from bottom right.");
-					sp->setWidth(sp->getWidth() + (dr->getMouseEndX() - dr->getMouseX()));
-					sp->setHeight(sp->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
+					sp->setWidth(sp->getWidth() + (mh->getMouseEndX() - mh->getMouseX()));
+					sp->setHeight(sp->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
 				}
 			}
 			else if(sp->getType() == "Circle" ) {
@@ -359,42 +362,44 @@ void resize() {
 					SDL_Log("Resizing from top left.");
 					int previousPosY = circ->getPosY();
 					int previousPosX = circ->getPosX();
-					circ->setPosX(dr->getMouseEndX());
-					circ->setPosY(dr->getMouseEndY());
-					circ->setWidth(circ->getWidth() + (previousPosX - dr->getMouseEndX()));
-					circ->setHeight(circ->getHeight() + (previousPosY - dr->getMouseEndY()));
+					circ->setPosX(mh->getMouseEndX());
+					circ->setPosY(mh->getMouseEndY());
+					circ->setWidth(circ->getWidth() + (previousPosX - mh->getMouseEndX()));
+					circ->setHeight(circ->getHeight() + (previousPosY - mh->getMouseEndY()));
 				}
 				// bottom left area
 				if(holdingPosX < centerX && holdingPosY > centerY) {
 					SDL_Log("Resizing from bottom left.");
 					int previousPosX = circ->getPosX();
-					circ->setPosX(dr->getMouseEndX());
+					circ->setPosX(mh->getMouseEndX());
 					// teveel naar onder
 					circ->setWidth(circ->getWidth() + (previousPosX - circ->getPosX()));
-					circ->setHeight(circ->getHeight() + ((dr->getMouseEndY() - dr->getMouseY()) / 2));
+					circ->setHeight(circ->getHeight() + ((mh->getMouseEndY() - mh->getMouseY()) / 2));
 				}
 				// top right area
 				if(holdingPosX > centerX && holdingPosY < centerY) {
 					SDL_Log("Resizing from top right.");
 					int previousPosY = circ->getPosY();
-					circ->setPosY(dr->getMouseEndY());
+					circ->setPosY(mh->getMouseEndY());
 					// teveel naar rechts
 					circ->setHeight(circ->getHeight() + (previousPosY - circ->getPosY()));
-					circ->setWidth(circ->getWidth() + ((dr->getMouseEndX() - dr->getMouseX()) / 2));
+					circ->setWidth(circ->getWidth() + ((mh->getMouseEndX() - mh->getMouseX()) / 2));
 				}
 				// bottom right
 				if(holdingPosX > centerX && holdingPosY > centerY) {
 					SDL_Log("Resizing from bottom right.");
 					int previousPosY = circ->getPosY();
-					circ->setWidth(circ->getWidth() + ((dr->getMouseEndX() - dr->getMouseX()) / 2));
-					circ->setHeight(circ->getHeight() + (dr->getMouseEndY() - dr->getMouseY()));
+					circ->setWidth(circ->getWidth() + ((mh->getMouseEndX() - mh->getMouseX()) / 2));
+					circ->setHeight(circ->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
 				}
 			}
 		}
 	}
 }
 
-bool checkIfButtonPressed(int mouseX, int mouseY) {
+bool checkIfButtonPressed() {
+	int mouseX = mh->getMouseX();
+	int mouseY = mh->getMouseY();
 	//if(!mouseBeingHeld) {
 		// Horizontal
 		if(mouseY >= 0 && mouseY <= BUTTON_HEIGHT) {
@@ -488,6 +493,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     SDL_Log("Textures loaded.");
 
 	dr = new Invoker(gRenderer, &tm);
+	mh = new MouseHandler();
 
 	loadButtons();
 
@@ -507,17 +513,18 @@ int Quit()
 void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 {
     while (running) {
+	/* std::cout << "mouseX: " << mh->getMouseX() << " mouseY: " << mh->getMouseY() << std::endl; */
+	/* std::cout << "mouseEndX: " << mh->getMouseEndX() << " mouseEndY: " << mh->getMouseEndY() << std::endl; */
+	/* std::cout << "mouseBeingHeld: " << mh->getMouseBeingHeld() << std::endl; */
 	SDL_WaitEvent(&event);
-	if(mouseBeingHeld) {
-		howLongBeingHeld++;
-	}
+	mh->Update();
 	// Live preview of the Rectangle drawing
-	if (mouseBeingHeld) {
-		dr->updateMouseEnd(mouseBeingHeld);
-		if(!checkIfButtonPressed(dr->getMouseEndX(), dr->getMouseEndY())) {
+	/*
+	if (mh->getMouseBeingHeld()) {
+		mh->Update();
+		if(!checkIfButtonPressed()) {
 			switch(currentMode) {
 				// Rectangle
-				/*
 				case 1:
 					{
 						resetCanvas();
@@ -548,53 +555,52 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						dr->Draw();
 					}
 					break;
-					*/
 			}
 		}
 	}
+	*/
 
 	switch (event.type) {
 	case SDL_QUIT:
 	    Quit();
 	    break;
 	case SDL_MOUSEBUTTONUP:
-		mouseBeingHeld = false;
-		dr->updateMouseEnd(mouseBeingHeld);
-		if(currentMode == -1 && howLongBeingHeld > 30 && holdingShape >= 0) {
+		// Move
+		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
 			if(shapes.at(holdingShape)->getType() != "Circle") {
-				shapes.at(holdingShape)->setPosX(dr->getMouseEndX() - holdingPosX);
-				shapes.at(holdingShape)->setPosY(dr->getMouseEndY() - holdingPosY);
+				shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
+				shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
 			}
 			else {
 				Circle* c = dynamic_cast<Circle*>(shapes.at(holdingShape).get());
-				c->setCenterX((dr->getMouseEndX() - holdingPosX) + c->getWidth() / 2);
-				c->setCenterY((dr->getMouseEndY() - holdingPosY) + c->getHeight() / 2);
+				c->setCenterX((mh->getMouseEndX() - mh->getHoldingPosX()) + c->getWidth() / 2);
+				c->setCenterY((mh->getMouseEndY() - mh->getHoldingPosY()) + c->getHeight() / 2);
 			}
 			clearCanvas();
 			drawShapes();
 			holdingShape = -1;
 		}
 
-		if(currentMode == -5 && howLongBeingHeld > 30) {
+		if(currentMode == -5 && mh->getHowLongBeingHeld() > 30) {
 			resize();
 			clearCanvas();
 			drawShapes();
 		}
-		howLongBeingHeld = 0;
+		mh->updateMouseBeingHeld();
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
-		if(!checkIfButtonPressed(dr->getMouseEndX(), dr->getMouseEndY())) {
-			int mX = dr->getMouseX();
-			int mY = dr->getMouseY();
-			int mEndX = dr->getMouseEndX();
-			int mEndY = dr->getMouseEndY();
+		if(!checkIfButtonPressed()) {
+			int mX = mh->getMouseX();
+			int mY = mh->getMouseY();
+			int mEndX = mh->getMouseEndX();
+			int mEndY = mh->getMouseEndY();
 			switch(currentMode) {
 				// Rectangle
 				case 1:
 					{
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
 						SDL_Log("rec posX: %d posY: %d width: %d height: %d", rec.getPosX(), rec.getPosY(), rec.getWidth(), rec.getHeight());
-						dynamicResize(&rec, dr->getMouseX(), dr->getMouseY(), dr->getMouseEndX(), dr->getMouseEndY());
+						dynamicResize(&rec);
 						shapes.push_back(std::make_unique<Rectangle>(rec));
 						DrawRectangle* drawrec = new DrawRectangle(&rec);
 						dr->prepareToDraw(drawrec);
@@ -605,7 +611,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				case 2:
 					{
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
-						dynamicResize(&circ, dr->getMouseX(), dr->getMouseY(), dr->getMouseEndX(), dr->getMouseEndY());
+						dynamicResize(&circ);
 						shapes.push_back(std::make_unique<Circle>(circ));
 						DrawCircle drawcirc = DrawCircle(&circ);
 						dr->prepareToDraw(&drawcirc);
@@ -620,15 +626,14 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	    }
 	    break;
 	case SDL_MOUSEBUTTONDOWN:
-		mouseBeingHeld = true;
-		dr->updateMouse(mouseBeingHeld);
-		if(!checkIfButtonPressed(dr->getMouseX(), dr->getMouseY())) {
+		mh->updateMouseBeingHeld();
+		if(!checkIfButtonPressed()) {
 			switch(event.button.button) {
 				case SDL_BUTTON_LEFT:
 					{
 						if(currentMode == -1 || currentMode == -5) {
-								int mX = dr->getMouseX();
-								int mY = dr->getMouseY();
+								int mX = mh->getMouseX();
+								int mY = mh->getMouseY();
 								int shapes_size = shapes.size();
 								if (shapes_size > 0) {
 									for(int i = shapes_size - 1; i >= 0; i--) {
@@ -656,10 +661,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 
 											sp->Select();
 
-											if(howLongBeingHeld == 0) {
-												dr->updateMouse(mouseBeingHeld);
-												holdingPosX = dr->getMouseX() - sp->getPosX();
-												holdingPosY = dr->getMouseY() - sp->getPosY();
+											if(mh->getHowLongBeingHeld() == 0) {
+												mh->updateHoldingPos(mh->getMouseX() - sp->getPosX(), mh->getMouseY() - sp->getPosY());
 												holdingShape = i;
 											}
 
