@@ -1,7 +1,7 @@
 #include "main.h"
 #define BUTTON_WIDTH 75
 #define BUTTON_HEIGHT 75
-#define SAVE_PATH "saves/objects.json"
+#define SAVE_PATH "saves/saved.json"
 SDL_Window* window = nullptr;
 SDL_Renderer* gRenderer = nullptr;
 // Variables
@@ -25,7 +25,7 @@ vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 // Fonts, initialized in Init()
 
-void dynamicResize(Circle* mCirc) {
+/*void dynamicResize(Circle* mCirc) {
 	int temp;
 	int mouseX = mh->getMouseX();
 	int mouseY = mh->getMouseY();
@@ -66,32 +66,32 @@ void dynamicResize(Circle* mCirc) {
 	mCirc->setCenterX(middelX); 
 	mCirc->setCenterY(middelY); 
 }
+*/
 
-void dynamicResize(Rectangle* mRect) {
+void dynamicResize(Shape* mShape) {
 	int temp;
 	int mouseX = mh->getMouseX();
 	int mouseY = mh->getMouseY();
 	int mouseEndX = mh->getMouseEndX();
 	int mouseEndY = mh->getMouseEndY();
-	SDL_Log("mouseX: %d mouseY: %d mouseEndX: %d mouseEndY: %d", mouseX, mouseY, mouseEndX, mouseEndY);
 	if (mouseEndX > mouseX && mouseEndY > mouseY) {
-		mRect->setPosX(mouseX);
-		mRect->setPosY(mouseY);
+		mShape->setPosX(mouseX);
+		mShape->setPosY(mouseY);
 	}
 	else if (mouseEndX > mouseX && mouseEndY < mouseY) {
-		mRect->setPosX(mouseX);
-		mRect->setPosY(mouseEndY);
+		mShape->setPosX(mouseX);
+		mShape->setPosY(mouseEndY);
 	}
 	else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-		mRect->setPosX(mouseEndX);
-		mRect->setPosY(mouseEndY);
+		mShape->setPosX(mouseEndX);
+		mShape->setPosY(mouseEndY);
 	}
 	else {
-		mRect->setPosX(mouseEndX);
-		mRect->setPosY(mouseY);
+		mShape->setPosX(mouseEndX);
+		mShape->setPosY(mouseY);
 	}
-	mRect->setWidth(abs(mouseEndX - mouseX));
-	mRect->setHeight(abs(mouseEndY - mouseY));
+	mShape->setWidth(abs(mouseEndX - mouseX));
+	mShape->setHeight(abs(mouseEndY - mouseY));
 }
 
 int loadButtons() {
@@ -250,16 +250,15 @@ void drawShapes() {
 		auto& sp = shapes.at(i);
 		sp->Deselect();
 		if(sp->getType() == "Rectangle") {
-			DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
-			dr->prepareToDraw(drawrec);
-			dr->Draw();
+			DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+			dr->addCommand(&drawrec);
 		}
 		else if(sp->getType() == "Circle") {
-			DrawCircle* drawrec = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
-			dr->prepareToDraw(drawrec);
-			dr->Draw();
+			DrawCircle drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+			dr->addCommand(&drawcirc);
 		}
 	}
+	dr->Invoke();
 }
 
 void deleteShape() {
@@ -285,7 +284,6 @@ void loadCanvas() {
 	std::ifstream i(SAVE_PATH);
 	json j;
 	i >> j;
-	std::cout << j;
 	resetCanvas();
 	SDL_Color c = {255, 255, 255};
 	dr->setDrawingColor(c);
@@ -293,16 +291,14 @@ void loadCanvas() {
 		if (j[i]["type"].get<std::string>() == "Rectangle") {
 			Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
 			shapes.push_back(std::make_unique<Rectangle>(r));
-			DrawRectangle* drawrec = new DrawRectangle(&r);
-			dr->prepareToDraw(drawrec);
-			dr->Draw();
+			DrawRectangle drawrec(&r, gRenderer, &tm);
+			dr->addCommand(&drawrec);
 		}
 		else if (j[i]["type"].get<std::string>() == "Circle") {
 			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>() + (j[i]["width"].get<int>() / 2), j[i]["posY"].get<int>() + (j[i]["height"].get<int>() / 2));
 			shapes.push_back(std::make_unique<Circle>(r));
-			DrawCircle* drawcirc = new DrawCircle(&r);
-			dr->prepareToDraw(drawcirc);
-			dr->Draw();
+			DrawCircle drawcirc(&r, gRenderer, &tm);
+			dr->addCommand(&drawcirc);
 		}
 	}
 	drawShapes();
@@ -518,6 +514,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	/* std::cout << "mouseBeingHeld: " << mh->getMouseBeingHeld() << std::endl; */
 	SDL_WaitEvent(&event);
 	mh->Update();
+	//SDL_Log("mh mouseX: %d mh mouseY: %d mh mouseBeingHeld: %d", mh->getMouseX(), mh->getMouseY(), mh->getHowLongBeingHeld());
 	// Live preview of the Rectangle drawing
 	/*
 	if (mh->getMouseBeingHeld()) {
@@ -535,8 +532,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mEndY = dr->getMouseEndY();
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
 						DrawRectangle* drawrec = new DrawRectangle(&rec);
-						dr->prepareToDraw(drawrec);
-						dr->Draw();
+						dr->addCommand(drawrec);
+						dr->Invoke();
 					}
 					break;
 				case 2:
@@ -551,8 +548,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						std::unique_ptr<Shape> uniqueCirc = std::make_unique<Shape>(&circ);
 						shapes.push_back(uniqueCirc);
 						DrawCircle drawcirc = DrawCircle(&circ);
-						dr->prepareToDraw(&drawcirc);
-						dr->Draw();
+						dr->addCommand(&drawcirc);
+						dr->Invoke();
 					}
 					break;
 			}
@@ -599,23 +596,24 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				case 1:
 					{
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						SDL_Log("rec posX: %d posY: %d width: %d height: %d", rec.getPosX(), rec.getPosY(), rec.getWidth(), rec.getHeight());
 						dynamicResize(&rec);
 						shapes.push_back(std::make_unique<Rectangle>(rec));
-						DrawRectangle* drawrec = new DrawRectangle(&rec);
-						dr->prepareToDraw(drawrec);
-						dr->Draw();
+						DrawRectangle drawrec(&rec, gRenderer, &tm);
+						dr->addCommand(&drawrec);
+						dr->Invoke();
 						break;
 					}
 				// Ellipse
 				case 2:
 					{
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
+						SDL_Log("Circle posX: %d posY: %d width: %d height: %d", circ.getPosX(), circ.getPosY(), circ.getWidth(), circ.getHeight());
 						dynamicResize(&circ);
+						SDL_Log("Dynamic RESIZED Circle posX: %d posY: %d width: %d height: %d", circ.getPosX(), circ.getPosY(), circ.getWidth(), circ.getHeight());
 						shapes.push_back(std::make_unique<Circle>(circ));
-						DrawCircle drawcirc = DrawCircle(&circ);
-						dr->prepareToDraw(&drawcirc);
-						dr->Draw();
+						DrawCircle drawcirc(&circ, gRenderer, &tm);
+						dr->addCommand(&drawcirc);
+						dr->Invoke();
 						break;
 					}
 			}
@@ -640,14 +638,14 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										auto& sp = shapes.at(i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
-											DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
-											dr->prepareToDraw(drawrec);
-											dr->Draw();
+											DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+											dr->addCommand(&drawrec);
+											dr->Invoke();
 										}
 										else if(sp->getType() == "Circle") {
-											DrawCircle* drawrec = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
-											dr->prepareToDraw(drawrec);
-											dr->Draw();
+											DrawCircle drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+											dr->addCommand(&drawrec);
+											dr->Invoke();
 										}
 									}
 									for(int i = shapes_size - 1; i >= 0; i--) {
@@ -667,14 +665,14 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											}
 
 											if(sp->getType() == "Rectangle") {
-												DrawRectangle* drawrec = new DrawRectangle(dynamic_cast<Rectangle*>(sp.get()));
-												dr->prepareToDraw(drawrec);
-												dr->Draw();
+												DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+												dr->addCommand(&drawrec);
+												dr->Invoke();
 											}
 											else if(sp->getType() == "Circle") {
-												DrawCircle* drawcirc = new DrawCircle(dynamic_cast<Circle*>(sp.get()));
-												dr->prepareToDraw(drawcirc);
-												dr->Draw();
+												DrawCircle drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+												dr->addCommand(&drawcirc);
+												dr->Invoke();
 											}
 											break;
 										}

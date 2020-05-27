@@ -2,30 +2,25 @@
 #include "Rectangle.h"
 #include <SDL2/SDL.h>
 #include "TextureManager.h"
-#include "DrawCommand.h"
+#include "Command.h"
 #include <memory>
 namespace DPDrawing {
-	class DrawRectangle : public DrawCommand {
+	class DrawRectangle : public Command {
 		public:
-			DrawRectangle(Rectangle* rect) {
+			DrawRectangle(Rectangle* rect, SDL_Renderer* r, TextureManager* tm) {
 				mRect = rect;
+				this->r = r;
+				this->tm = tm;
 			}
-			void execute(SDL_Renderer* renderer, TextureManager* tm) {
-				Draw(renderer, tm);
+			void execute() {
+				SDL_Rect* obj = mRect->getSDLObj();
+				SDL_Texture* tex = (mRect->isSelected()) ? tm->getTextureByName("red") : tm->getTextureByName("white");
+				SDL_RenderCopy(r, tex, NULL, obj);
+				SDL_RenderPresent(r);
 			}
 		private:
 			Rectangle* mRect;
-			void Draw(SDL_Renderer* renderer, TextureManager* tm) {
-				SDL_Rect* obj = mRect->getSDLObj();
-				SDL_Texture* tempTex = nullptr;
-				if(!mRect->isSelected()) {
-					tempTex = tm->getTextureByName("white");
-				}
-				else {
-					tempTex = tm->getTextureByName("red");
-				}
-				SDL_RenderCopy(renderer, tempTex, NULL, obj);
-			}
-
+			SDL_Renderer* r;
+			TextureManager* tm;
 	};
 }

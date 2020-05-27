@@ -14,12 +14,8 @@ void DPDrawing::MouseHandler::Update() {
 }
 
 void DPDrawing::MouseHandler::updateMouseBeingHeld() {
-	if(mouseBeingHeld) {
-		mouseBeingHeld = false;
-	}
-	else {
-		mouseBeingHeld = true;
-	}
+	// Invert mouseBeingHeld boolean
+	mouseBeingHeld ^= true;
 }
 
 void DPDrawing::MouseHandler::updateHoldingPos(int x, int y) {

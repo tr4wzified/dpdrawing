@@ -7,15 +7,15 @@ DPDrawing::Circle::Circle(int width, int height, int posX, int posY) {
 }
 
 float DPDrawing::Circle::getArea() {
-	return M_PI * (Shape::getWidth() / 2) * (Shape::getHeight() / 2);
+	return M_PI * (this->getWidth() / 2) * (this->getHeight() / 2);
 }
 
 void DPDrawing::Circle::setCenterX(int centerX) {
-	Shape::setPosX(centerX - (Shape::getWidth() / 2));
+	this->setPosX(centerX - (this->getWidth() / 2));
 }
 
 void DPDrawing::Circle::setCenterY(int centerY) {
-	Shape::setPosY(centerY - (Shape::getHeight() / 2));
+	this->setPosY(centerY - (this->getHeight() / 2));
 }
 
 string DPDrawing::Circle::getType() {

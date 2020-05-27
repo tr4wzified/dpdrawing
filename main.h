@@ -4,7 +4,7 @@
 #include "classes/TextureManager.h"
 #include "classes/Button.h"
 #include "classes/Invoker.h"
-#include "classes/DrawCommand.h"
+#include "classes/Command.h"
 #include "classes/DrawRectangle.h"
 #include "classes/DrawCircle.h"
 #include "classes/MouseHandler.h"

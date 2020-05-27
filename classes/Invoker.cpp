@@ -7,35 +7,20 @@ void DPDrawing::Invoker::setDrawingColor(SDL_Color& c) {
 	this->drawingColor = c;
 	SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, SDL_ALPHA_OPAQUE);
 }
-void DPDrawing::Invoker::prepareToDraw(DrawCommand* cmd) {
+
+void DPDrawing::Invoker::addCommand(Command* cmd) {
+	if(cmd == nullptr) {
+		SDL_Log("WARNING! Adding a NULLPTR command to the Invoker.");
+	}
 	mCmds.push_back(cmd);
 }
-void DPDrawing::Invoker::updateMouse(bool mouseBeingHeld) {
-	SDL_GetMouseState(&mouseX, &mouseY);
-	this->mouseBeingHeld = mouseBeingHeld;
-}
-void DPDrawing::Invoker::updateMouseEnd(bool mouseBeingHeld) {
-	SDL_GetMouseState(&mouseEndX, &mouseEndY);
-	this->mouseBeingHeld = mouseBeingHeld;
-}
-int DPDrawing::Invoker::getMouseX() {
-	return mouseX;
-}
-int DPDrawing::Invoker::getMouseY() {
-	return mouseY;
-}
-int DPDrawing::Invoker::getMouseEndX() {
-	return mouseEndX;
-}
-int DPDrawing::Invoker::getMouseEndY() {
-	return mouseEndY;
-}
-void DPDrawing::Invoker::Draw() {
-	for(DrawCommand* mCmd : mCmds) {
-		if(mCmd == nullptr) {
-			SDL_Log("ERROR: Calling Draw() on a nullptr! Your DrawCommand* likely went out of scope.");
+
+void DPDrawing::Invoker::Invoke() {
+	for(int i = 0; i < (int)mCmds.size(); i++) {
+		if(mCmds.at(i) == nullptr) {
+			SDL_Log("ERROR! Executing a NULLPTR in the Invoker!");
 		}
-		mCmd->execute(renderer, tm);
+		mCmds.at(i)->execute();
 	}
 	SDL_RenderPresent(renderer);
 	mCmds.clear();

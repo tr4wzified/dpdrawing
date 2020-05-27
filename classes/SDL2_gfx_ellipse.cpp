@@ -1,6 +1,6 @@
-#include "DrawCircle.h"
+#include "SDL2_gfx_ellipse.h"
 
-int DPDrawing::DrawCircle::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -9,7 +9,7 @@ int DPDrawing::DrawCircle::pixelRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y
 	return result;
 }
 
-int DPDrawing::DrawCircle::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Uint32 weight)
+int DPDrawing::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Uint32 weight)
 {
 	/*
 	* Modify Alpha by weight 
@@ -25,7 +25,7 @@ int DPDrawing::DrawCircle::pixelRGBAWeight(SDL_Renderer * renderer, Sint16 x, Si
 	return pixelRGBA(renderer, x, y, r, g, b, a);
 }
 
-int DPDrawing::DrawCircle::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -34,7 +34,7 @@ int DPDrawing::DrawCircle::vlineRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y
 	return result;
 }
 
-int DPDrawing::DrawCircle::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result = 0;
 	result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
@@ -43,7 +43,7 @@ int DPDrawing::DrawCircle::hlineRGBA(SDL_Renderer * renderer, Sint16 x1, Sint16 
 	return result;
 }
 
-int DPDrawing::DrawCircle::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	int result;
 	int i;
@@ -224,27 +224,27 @@ int DPDrawing::DrawCircle::aaellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint
 	return (result);
 }
 
-int DPDrawing::DrawCircle::pixel(SDL_Renderer *renderer, Sint16 x, Sint16 y)
+int DPDrawing::pixel(SDL_Renderer *renderer, Sint16 x, Sint16 y)
 {
 	return SDL_RenderDrawPoint(renderer, x, y);
 }
 
-int DPDrawing::DrawCircle::vline(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2)
+int DPDrawing::vline(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2)
 {
 	return SDL_RenderDrawLine(renderer, x, y1, x, y2);;
 }
 
-int DPDrawing::DrawCircle::hline(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y)
+int DPDrawing::hline(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y)
 {
 	return SDL_RenderDrawLine(renderer, x1, y, x2, y);;
 }
 
-int DPDrawing::DrawCircle::filledEllipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int DPDrawing::filledEllipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 1);
 }
 
-int DPDrawing::DrawCircle::_drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Sint32 f)
+int DPDrawing::_drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Sint32 f)
 {
 	int result = 0;
 	Sint16 xpdx, xmdx;
@@ -282,7 +282,7 @@ int DPDrawing::DrawCircle::_drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Si
 	return result;
 }
 
-int DPDrawing::DrawCircle::_ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f)
+int DPDrawing::_ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f)
 {
 	int result;
 	Sint32 rxi, ryi;
