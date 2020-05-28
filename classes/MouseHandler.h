@@ -1,9 +1,11 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <memory>
 namespace DPDrawing {
 	class MouseHandler {
 		public:
-		MouseHandler();
+		static DPDrawing::MouseHandler* getInstance();
+		~MouseHandler(){};
 		void Update();
 		void updateMouseBeingHeld();
 		void updateHoldingPos(int x, int y);
@@ -20,6 +22,8 @@ namespace DPDrawing {
 		int getHowLongBeingHeld();
 
 		private:
+		static MouseHandler* instance;
+		MouseHandler(){};
 		void updateBeginPos();
 		void updateEndPos();
 		struct Position {

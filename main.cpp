@@ -19,8 +19,8 @@ SDL_Event event;
 int currentMode = 0;
 // Objects
 TextureManager tm;
-Invoker* dr;
-MouseHandler* mh;
+Invoker* dr = nullptr;
+MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 // Fonts, initialized in Init()
@@ -214,8 +214,8 @@ void drawShapes() {
 			DrawCircle drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
 			dr->addCommand(&drawcirc);
 		}
+		dr->Invoke();
 	}
-	dr->Invoke();
 }
 
 void deleteShape() {
@@ -248,14 +248,10 @@ void loadCanvas() {
 		if (j[i]["type"].get<std::string>() == "Rectangle") {
 			Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
 			shapes.push_back(std::make_unique<Rectangle>(r));
-			DrawRectangle drawrec(&r, gRenderer, &tm);
-			dr->addCommand(&drawrec);
 		}
 		else if (j[i]["type"].get<std::string>() == "Circle") {
-			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>() + (j[i]["width"].get<int>() / 2), j[i]["posY"].get<int>() + (j[i]["height"].get<int>() / 2));
+			Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
 			shapes.push_back(std::make_unique<Circle>(r));
-			DrawCircle drawcirc(&r, gRenderer, &tm);
-			dr->addCommand(&drawcirc);
 		}
 	}
 	drawShapes();
@@ -446,7 +442,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
     SDL_Log("Textures loaded.");
 
 	dr = new Invoker(gRenderer, &tm);
-	mh = new MouseHandler();
+	mh = DPDrawing::MouseHandler::getInstance();
 
 	loadButtons();
 

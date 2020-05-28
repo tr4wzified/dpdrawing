@@ -1,5 +1,11 @@
 #include "MouseHandler.h"
-DPDrawing::MouseHandler::MouseHandler() {
+DPDrawing::MouseHandler* DPDrawing::MouseHandler::instance = nullptr;
+
+DPDrawing::MouseHandler* DPDrawing::MouseHandler::getInstance() {
+	if(instance == nullptr) {
+		instance = new MouseHandler();
+	}
+	return instance;
 }
 
 void DPDrawing::MouseHandler::Update() {
