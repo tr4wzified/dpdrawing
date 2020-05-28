@@ -3,10 +3,6 @@ DPDrawing::Invoker::Invoker(SDL_Renderer* renderer, TextureManager* tm) {
 	this->renderer = renderer;
 	this->tm = tm;
 };
-void DPDrawing::Invoker::setDrawingColor(SDL_Color& c) {
-	this->drawingColor = c;
-	SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, SDL_ALPHA_OPAQUE);
-}
 
 void DPDrawing::Invoker::addCommand(Command* cmd) {
 	if(cmd == nullptr) {
@@ -25,3 +21,7 @@ void DPDrawing::Invoker::Invoke() {
 	SDL_RenderPresent(renderer);
 	mCmds.clear();
 } 
+
+void DPDrawing::Invoker::setDrawingColor(SDL_Color& c) {
+	SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, SDL_ALPHA_OPAQUE);
+}

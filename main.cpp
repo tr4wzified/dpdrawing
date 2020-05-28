@@ -25,49 +25,6 @@ vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 // Fonts, initialized in Init()
 
-/*void dynamicResize(Circle* mCirc) {
-	int temp;
-	int mouseX = mh->getMouseX();
-	int mouseY = mh->getMouseY();
-	int mouseEndX = mh->getMouseEndY();
-	int mouseEndY = mh->getMouseEndY();
-	// topleft to bottomright
-    if (mouseEndX > mouseX && mouseEndY > mouseY) {
-	}
-	// bottomleft to topright
-    else if (mouseEndX > mouseX && mouseEndY < mouseY) {
-		int temp = mouseY;
-		mouseY = mouseEndY;
-		mouseEndY = temp;
-	}
-	// bottomright to topleft
-    else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-		temp = mouseX;
-		mouseX = mouseEndX;
-		mouseEndX = temp;
-
-		temp = mouseY;
-		mouseY = mouseEndY;
-		mouseEndY = temp;
-	}
-	// topright to bottomleft
-	else {
-		temp = mouseX;
-		mouseX = mouseEndX;
-		mouseEndX = temp;
-    }
-	int w = mouseEndX - mouseX;
-	int h = mouseEndY - mouseY;
-	mCirc->setWidth(w);
-	mCirc->setHeight(h);
-
-	int middelX = (mouseX + mouseEndX) / 2;
-	int middelY = (mouseY + mouseEndY) / 2;
-	mCirc->setCenterX(middelX); 
-	mCirc->setCenterY(middelY); 
-}
-*/
-
 void dynamicResize(Shape* mShape) {
 	int temp;
 	int mouseX = mh->getMouseX();
@@ -564,15 +521,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 	case SDL_MOUSEBUTTONUP:
 		// Move
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
-			if(shapes.at(holdingShape)->getType() != "Circle") {
-				shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
-				shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
-			}
-			else {
-				Circle* c = dynamic_cast<Circle*>(shapes.at(holdingShape).get());
-				c->setCenterX((mh->getMouseEndX() - mh->getHoldingPosX()) + c->getWidth() / 2);
-				c->setCenterY((mh->getMouseEndY() - mh->getHoldingPosY()) + c->getHeight() / 2);
-			}
+			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
+			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
 			clearCanvas();
 			drawShapes();
 			holdingShape = -1;
@@ -607,9 +557,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 				case 2:
 					{
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
-						SDL_Log("Circle posX: %d posY: %d width: %d height: %d", circ.getPosX(), circ.getPosY(), circ.getWidth(), circ.getHeight());
 						dynamicResize(&circ);
-						SDL_Log("Dynamic RESIZED Circle posX: %d posY: %d width: %d height: %d", circ.getPosX(), circ.getPosY(), circ.getWidth(), circ.getHeight());
 						shapes.push_back(std::make_unique<Circle>(circ));
 						DrawCircle drawcirc(&circ, gRenderer, &tm);
 						dr->addCommand(&drawcirc);

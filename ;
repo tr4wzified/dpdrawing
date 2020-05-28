@@ -10,7 +10,6 @@ namespace DPDrawing {
 		Invoker(SDL_Renderer* renderer, TextureManager* tm);
 		void addCommand(Command* cmd);
 		void Invoke();
-		void setDrawingColor(SDL_Color& c); 
 
 	private:
 		vector<Command*> mCmds;
