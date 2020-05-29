@@ -192,24 +192,6 @@ int resetCanvas() {
 	return 0;
 }
 
-
-void saveCanvas() {
-	json jsonObjects = json::array();
-	for(int i = 0; i < shapes.size(); ++i) {
-	    jsonObjects.push_back(json::object());
-		jsonObjects[i]["type"] = shapes.at(i)->getType();
-		jsonObjects[i]["width"] = shapes.at(i)->getWidth();
-		jsonObjects[i]["height"] = shapes.at(i)->getHeight();
-		jsonObjects[i]["posX"] = shapes.at(i)->getPosX();
-		jsonObjects[i]["posY"] = shapes.at(i)->getPosY();
-	}
-
-	std::cout << jsonObjects << std::endl;
-	std::ofstream myfile(SAVE_PATH);
-	myfile << jsonObjects;
-	myfile.close();
-}
-
 void drawShapes() {
 	for(int i = shapes.size() - 1; i >= 0; i--) {
 		auto& sp = shapes.at(i);
@@ -226,30 +208,10 @@ void drawShapes() {
 	}
 }
 
-void deleteShape() {
-	for(int i = 0; i < shapes.size(); i++) {
-		if(shapes.at(i)->getType() == "Rectangle") {
-			if (shapes.at(i)->isSelected()){
-				shapes.erase(shapes.begin() + i);
-				break;
-			}
-		}
-		else if(shapes.at(i)->getType() == "Circle") {
-			if (shapes.at(i)->isSelected()) {
-				shapes.erase(shapes.begin() + i);
-				break;
-			}
-		}
-	}
-	clearCanvas();
-	drawShapes();
-}
-
 void loadCanvas() {
 	std::ifstream i(SAVE_PATH);
 	json j;
 	i >> j;
-	resetCanvas();
 	SDL_Color c = {255, 255, 255};
 	inv->setDrawingColor(c);
 	for(int i = 0; i < (int)j.size(); ++i) {
@@ -262,7 +224,6 @@ void loadCanvas() {
 			shapes.push_back(std::make_unique<Circle>(r));
 		}
 	}
-	drawShapes();
 	i.close();
 }
 
@@ -303,22 +264,31 @@ bool checkIfButtonPressed() {
 			// Save
 			else if(mouseY <= BUTTON_HEIGHT * 3) {
 				currentMode = -2;
-				saveCanvas();
+				SaveCommand sc(&shapes, "saves/saved.json");
+				inv->addCommand(&sc);
+				inv->Invoke();
 				loadButtons();
 				return true;
 			}
 			// Load
 			else if(mouseY <= BUTTON_HEIGHT * 4) {
 				currentMode = -3;
-				loadButtons();
-				loadCanvas();
+				resetCanvas();
+				LoadCommand lc(&shapes, "saves/saved.json");
+				inv->addCommand(&lc);
+				inv->Invoke();
+				drawShapes();
 				return true;
 			}
-			// Delete
+			// Delete Selected
 			else if(mouseY <= BUTTON_HEIGHT * 5) {
 				currentMode = -4;
 				loadButtons();
-				deleteShape();
+				DeleteCommand dc(&shapes);
+				inv->addCommand(&dc);
+				inv->Invoke();
+				clearCanvas();
+				drawShapes();
 				return true;
 			}
 			else if(mouseY <= BUTTON_HEIGHT * 6) {
