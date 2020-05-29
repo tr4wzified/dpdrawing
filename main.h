@@ -7,8 +7,8 @@
 #include "classes/commands/Command.h"
 #include "classes/MouseHandler.h"
 
-#include "classes/commands/DrawRectangle.h"
-#include "classes/commands/DrawCircle.h"
+#include "classes/commands/DrawRectangleCommand.h"
+#include "classes/commands/DrawCircleCommand.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>

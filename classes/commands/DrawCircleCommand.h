@@ -8,9 +8,9 @@
 using DPDrawing::filledEllipseRGBA;
 
 namespace DPDrawing {
-	class DrawCircle : public Command {
+	class DrawCircleCommand : public Command {
 		public:
-		DrawCircle(Circle* circ, SDL_Renderer* r, TextureManager* tm) {
+		DrawCircleCommand(Circle* circ, SDL_Renderer* r, TextureManager* tm) {
 			mCirc = circ;
 			this->r = r;
 			this->tm = tm;

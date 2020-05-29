@@ -5,9 +5,9 @@
 #include "Command.h"
 #include <memory>
 namespace DPDrawing {
-	class DrawRectangle : public Command {
+	class DrawRectangleCommand : public Command {
 		public:
-			DrawRectangle(Rectangle* rect, SDL_Renderer* r, TextureManager* tm) {
+			DrawRectangleCommand(Rectangle* rect, SDL_Renderer* r, TextureManager* tm) {
 				mRect = rect;
 				this->r = r;
 				this->tm = tm;

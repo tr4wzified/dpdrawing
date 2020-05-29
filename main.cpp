@@ -215,11 +215,11 @@ void drawShapes() {
 		auto& sp = shapes.at(i);
 		sp->Deselect();
 		if(sp->getType() == "Rectangle") {
-			DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+			DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
 			dr->addCommand(&drawrec);
 		}
 		else if(sp->getType() == "Circle") {
-			DrawCircle drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+			DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
 			dr->addCommand(&drawcirc);
 		}
 		dr->Invoke();
@@ -496,7 +496,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						int mEndX = dr->getMouseEndX();
 						int mEndY = dr->getMouseEndY();
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						DrawRectangle* drawrec = new DrawRectangle(&rec);
+						DrawRectangleCommand* drawrec = new DrawRectangleCommand(&rec);
 						dr->addCommand(drawrec);
 						dr->Invoke();
 					}
@@ -512,7 +512,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
 						std::unique_ptr<Shape> uniqueCirc = std::make_unique<Shape>(&circ);
 						shapes.push_back(uniqueCirc);
-						DrawCircle drawcirc = DrawCircle(&circ);
+						DrawCircleCommand drawcirc = DrawCircleCommand(&circ);
 						dr->addCommand(&drawcirc);
 						dr->Invoke();
 					}
@@ -556,7 +556,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&rec);
 						shapes.push_back(std::make_unique<Rectangle>(rec));
-						DrawRectangle drawrec(&rec, gRenderer, &tm);
+						DrawRectangleCommand drawrec(&rec, gRenderer, &tm);
 						dr->addCommand(&drawrec);
 						dr->Invoke();
 						break;
@@ -567,7 +567,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&circ);
 						shapes.push_back(std::make_unique<Circle>(circ));
-						DrawCircle drawcirc(&circ, gRenderer, &tm);
+						DrawCircleCommand drawcirc(&circ, gRenderer, &tm);
 						dr->addCommand(&drawcirc);
 						dr->Invoke();
 						break;
@@ -594,12 +594,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										auto& sp = shapes.at(i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
-											DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+											DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
 											dr->addCommand(&drawrec);
 											dr->Invoke();
 										}
 										else if(sp->getType() == "Circle") {
-											DrawCircle drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+											DrawCircleCommand drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
 											dr->addCommand(&drawrec);
 											dr->Invoke();
 										}
@@ -621,12 +621,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											}
 
 											if(sp->getType() == "Rectangle") {
-												DrawRectangle drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
+												DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
 												dr->addCommand(&drawrec);
 												dr->Invoke();
 											}
 											else if(sp->getType() == "Circle") {
-												DrawCircle drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
+												DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
 												dr->addCommand(&drawcirc);
 												dr->Invoke();
 											}
