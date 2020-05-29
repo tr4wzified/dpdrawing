@@ -1,7 +1,7 @@
 #pragma once
-#include "Rectangle.h"
+#include "../Rectangle.h"
 #include <SDL2/SDL.h>
-#include "TextureManager.h"
+#include "../TextureManager.h"
 #include "Command.h"
 #include <memory>
 namespace DPDrawing {
@@ -12,6 +12,7 @@ namespace DPDrawing {
 				this->r = r;
 				this->tm = tm;
 			}
+			
 			void execute() {
 				SDL_Rect* obj = mRect->getSDLObj();
 				SDL_Texture* tex = (mRect->isSelected()) ? tm->getTextureByName("red") : tm->getTextureByName("white");

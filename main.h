@@ -4,10 +4,11 @@
 #include "classes/TextureManager.h"
 #include "classes/Button.h"
 #include "classes/Invoker.h"
-#include "classes/Command.h"
-#include "classes/DrawRectangle.h"
-#include "classes/DrawCircle.h"
+#include "classes/commands/Command.h"
 #include "classes/MouseHandler.h"
+
+#include "classes/commands/DrawRectangle.h"
+#include "classes/commands/DrawCircle.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -27,7 +28,7 @@ namespace DPDrawing {
 class Main {
 public:
 	int resetCanvas();
-	int loadButtons();
+	void loadButtons();
 	void saveCanvas();
 	void drawShapes();
 	bool checkIfButtonPressed(int mouseX, int mouseY);

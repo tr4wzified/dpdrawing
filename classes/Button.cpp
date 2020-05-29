@@ -1,10 +1,5 @@
 #include "Button.h"
-DPDrawing::Button::Button(int posX, int posY, SDL_Color& fg_color, int text, TTF_Font* font) {
-    this->posX = posX;
-    this->posY = posY;
-	this->text = text;
-	this->font = font;
-	this->fg_color = fg_color;
+DPDrawing::Button::Button(int posX, int posY, SDL_Color& fg_color, int text, TTF_Font*& font) {
 	if(!font) {
 		SDL_Log("ERROR: cannot find font!");
 	}
@@ -16,6 +11,6 @@ SDL_Rect* DPDrawing::Button::getRectangle() {
 	return rect.getSDLObj();
 }
 
-SDL_Surface* DPDrawing::Button::getSurface() {
+SDL_Surface*& DPDrawing::Button::getSurface() {
 	return label;
 }

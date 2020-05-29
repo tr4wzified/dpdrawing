@@ -1,6 +1,6 @@
 #pragma once
 #include "SDL2/SDL.h"
-#include "Command.h"
+#include "commands/Command.h"
 #include "TextureManager.h"
 #include <memory>
 // Invoker

@@ -8,9 +8,12 @@ using std::string;
 namespace DPDrawing {
 class Button {
 public:
-	Button(int posX, int posY, SDL_Color& fg_color, int text, TTF_Font* font);
+	Button(int posX, int posY, SDL_Color& fg_color, int text, TTF_Font*& font);
+	~Button() {
+		SDL_FreeSurface(label);
+	}
 	SDL_Rect* getRectangle();
-	SDL_Surface* getSurface();
+	SDL_Surface*& getSurface();
 private:
 	int posX;
 	int posY;

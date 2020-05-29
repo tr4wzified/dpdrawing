@@ -1,8 +1,8 @@
 #pragma once
-#include "Circle.h"
+#include "../Circle.h"
 #include <SDL2/SDL.h>
-#include "SDL2_gfx_ellipse.h"
-#include "TextureManager.h"
+#include "../SDL2_gfx_ellipse.h"
+#include "../TextureManager.h"
 #include "Command.h"
 
 using DPDrawing::filledEllipseRGBA;

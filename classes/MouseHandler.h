@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <memory>
+#include "Shape.h"
 namespace DPDrawing {
 	class MouseHandler {
 		public:

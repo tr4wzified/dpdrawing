@@ -23,7 +23,10 @@ Invoker* dr = nullptr;
 MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
+TTF_Font* font = nullptr;
 // Fonts, initialized in Init()
+SDL_Texture* button_tex; 
+SDL_Texture* button_active;
 
 void dynamicResize(Shape* mShape) {
 	int temp;
@@ -51,11 +54,8 @@ void dynamicResize(Shape* mShape) {
 	mShape->setHeight(abs(mouseEndY - mouseY));
 }
 
-int loadButtons() {
+void loadButtons() {
 	SDL_Color text = {255,255,255};
-	TTF_Font* font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
-	SDL_Texture* button_tex = tm.getTextureByName("button");
-	SDL_Texture* button_active = tm.getTextureByName("button-active");
 
 	// Button -5 - Resize - Vertical
 	Button w(0, BUTTON_HEIGHT * 5, text, 124, font);
@@ -163,7 +163,15 @@ int loadButtons() {
 
 	SDL_RenderPresent(gRenderer);
 
-	return 0;
+	// Destroy
+	SDL_DestroyTexture(w_msg);
+	SDL_DestroyTexture(x_msg);
+	SDL_DestroyTexture(y_msg);
+	SDL_DestroyTexture(z_msg);
+	SDL_DestroyTexture(a_msg);
+	SDL_DestroyTexture(b_msg);
+	SDL_DestroyTexture(c_msg);
+	SDL_DestroyTexture(d_msg);
 }
 
 int clearCanvas() {
@@ -394,6 +402,7 @@ bool checkIfButtonPressed() {
 				loadCanvas();
 				return true;
 			}
+			// Delete
 			else if(mouseY <= BUTTON_HEIGHT * 5) {
 				currentMode = -4;
 				loadButtons();
@@ -406,7 +415,6 @@ bool checkIfButtonPressed() {
 				return true;
 			}
 		}
-	//}
 	return false;
 }
 
@@ -443,6 +451,9 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 
 	dr = new Invoker(gRenderer, &tm);
 	mh = DPDrawing::MouseHandler::getInstance();
+	font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
+	button_tex = tm.getTextureByName("button");
+	button_active = tm.getTextureByName("button-active");
 
 	loadButtons();
 
@@ -454,6 +465,7 @@ int Quit()
     SDL_Log("Quit() called!");
     running = false;
     TTF_Quit();
+	SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
