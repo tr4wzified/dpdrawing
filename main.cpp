@@ -18,8 +18,8 @@ SDL_Event event;
 */
 int currentMode = 0;
 // Objects
-TextureManager tm;
-Invoker* dr = nullptr;
+TextureManager* tm = nullptr;
+Invoker* inv = nullptr;
 MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
@@ -176,10 +176,10 @@ void loadButtons() {
 
 int clearCanvas() {
 	SDL_Color color = {0, 0, 0};
-	dr->setDrawingColor(color);
+	inv->setDrawingColor(color);
 	SDL_RenderClear(gRenderer);
 	SDL_Color white = {255, 255, 255};
-	dr->setDrawingColor(white);
+	inv->setDrawingColor(white);
 	loadButtons();
 	return 0;
 }
@@ -215,14 +215,14 @@ void drawShapes() {
 		auto& sp = shapes.at(i);
 		sp->Deselect();
 		if(sp->getType() == "Rectangle") {
-			DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
-			dr->addCommand(&drawrec);
+			DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
+			inv->addCommand(&drawrec);
 		}
 		else if(sp->getType() == "Circle") {
-			DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
-			dr->addCommand(&drawcirc);
+			DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
+			inv->addCommand(&drawcirc);
 		}
-		dr->Invoke();
+		inv->Invoke();
 	}
 }
 
@@ -251,7 +251,7 @@ void loadCanvas() {
 	i >> j;
 	resetCanvas();
 	SDL_Color c = {255, 255, 255};
-	dr->setDrawingColor(c);
+	inv->setDrawingColor(c);
 	for(int i = 0; i < (int)j.size(); ++i) {
 		if (j[i]["type"].get<std::string>() == "Rectangle") {
 			Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
@@ -264,94 +264,6 @@ void loadCanvas() {
 	}
 	drawShapes();
 	i.close();
-}
-
-void resize() {
-	SDL_Log("Called resize()");
-	int holdingPosX = mh->getHoldingPosX();
-	int holdingPosY = mh->getHoldingPosY();
-	for(int i = 0; i < shapes.size(); i++) {
-		auto& sp = shapes.at(i);
-		if(sp->isSelected()) {
-			int centerX = sp->getWidth() / 2;
-			int centerY = sp->getHeight() / 2;
-			SDL_Log("centerX %d, centerY %d", centerX, centerY);
-			if(sp->getType() == "Rectangle" ) {
-				// top left area
-				if(holdingPosX < centerX && holdingPosY < centerY) {
-					SDL_Log("Resizing from top left.");
-					int previousPosY = sp->getPosY();
-					int previousPosX = sp->getPosX();
-					sp->setPosX(mh->getMouseEndX());
-					sp->setPosY(mh->getMouseEndY());
-					sp->setWidth(sp->getWidth() + (previousPosX - mh->getMouseEndX()));
-					sp->setHeight(sp->getHeight() + (previousPosY - mh->getMouseEndY()));
-				}
-				// bottom left area
-				if(holdingPosX < centerX && holdingPosY > centerY) {
-					SDL_Log("Resizing from bottom left.");
-					int previousPosX = sp->getPosX();
-					sp->setPosX(mh->getMouseEndX());
-					sp->setWidth(sp->getWidth() + (previousPosX - sp->getPosX()));
-					sp->setHeight(sp->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
-				}
-				// top right area
-				if(holdingPosX > centerX && holdingPosY < centerY) {
-					SDL_Log("Resizing from top right.");
-					int previousPosY = sp->getPosY();
-					sp->setPosY(mh->getMouseEndY());
-					sp->setHeight(sp->getHeight() + (previousPosY - sp->getPosY()));
-					sp->setWidth(sp->getWidth() + (mh->getMouseEndX() - mh->getMouseX()));
-				}
-				// bottom right
-				if(holdingPosX > centerX && holdingPosY > centerY) {
-					SDL_Log("Resizing from bottom right.");
-					sp->setWidth(sp->getWidth() + (mh->getMouseEndX() - mh->getMouseX()));
-					sp->setHeight(sp->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
-				}
-			}
-			else if(sp->getType() == "Circle" ) {
-				Circle* circ = dynamic_cast<Circle*>(sp.get());
-				centerX = sp->getWidth() / 2;
-				centerY = sp->getHeight() / 2;
-				// top left area
-				if(holdingPosX < centerX && holdingPosY < centerY) {
-					SDL_Log("Resizing from top left.");
-					int previousPosY = circ->getPosY();
-					int previousPosX = circ->getPosX();
-					circ->setPosX(mh->getMouseEndX());
-					circ->setPosY(mh->getMouseEndY());
-					circ->setWidth(circ->getWidth() + (previousPosX - mh->getMouseEndX()));
-					circ->setHeight(circ->getHeight() + (previousPosY - mh->getMouseEndY()));
-				}
-				// bottom left area
-				if(holdingPosX < centerX && holdingPosY > centerY) {
-					SDL_Log("Resizing from bottom left.");
-					int previousPosX = circ->getPosX();
-					circ->setPosX(mh->getMouseEndX());
-					// teveel naar onder
-					circ->setWidth(circ->getWidth() + (previousPosX - circ->getPosX()));
-					circ->setHeight(circ->getHeight() + ((mh->getMouseEndY() - mh->getMouseY()) / 2));
-				}
-				// top right area
-				if(holdingPosX > centerX && holdingPosY < centerY) {
-					SDL_Log("Resizing from top right.");
-					int previousPosY = circ->getPosY();
-					circ->setPosY(mh->getMouseEndY());
-					// teveel naar rechts
-					circ->setHeight(circ->getHeight() + (previousPosY - circ->getPosY()));
-					circ->setWidth(circ->getWidth() + ((mh->getMouseEndX() - mh->getMouseX()) / 2));
-				}
-				// bottom right
-				if(holdingPosX > centerX && holdingPosY > centerY) {
-					SDL_Log("Resizing from bottom right.");
-					int previousPosY = circ->getPosY();
-					circ->setWidth(circ->getWidth() + ((mh->getMouseEndX() - mh->getMouseX()) / 2));
-					circ->setHeight(circ->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
-				}
-			}
-		}
-	}
 }
 
 bool checkIfButtonPressed() {
@@ -441,19 +353,26 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 
     // Add textures to TextureManager
     SDL_Log("Loading textures into TextureManager");
-    tm.addSurface(gRenderer, "resources/images/harald.bmp", "harald");
-    tm.addSurface(gRenderer, "resources/images/blue.bmp", "blue");
-    tm.addSurface(gRenderer, "resources/images/white.bmp", "white");
-    tm.addSurface(gRenderer, "resources/images/red.bmp", "red");
-	tm.addSurface(gRenderer, "resources/images/button.bmp", "button");
-	tm.addSurface(gRenderer, "resources/images/button-active.bmp", "button-active");
+	tm = new TextureManager();
+	if(tm == nullptr) {
+		SDL_Log("ERROR: TextureManager is NULLPTR!");
+	}
+    tm->addSurface(gRenderer, "resources/images/harald.bmp", "harald");
+    tm->addSurface(gRenderer, "resources/images/blue.bmp", "blue");
+    tm->addSurface(gRenderer, "resources/images/white.bmp", "white");
+    tm->addSurface(gRenderer, "resources/images/red.bmp", "red");
+	tm->addSurface(gRenderer, "resources/images/button.bmp", "button");
+	tm->addSurface(gRenderer, "resources/images/button-active.bmp", "button-active");
     SDL_Log("Textures loaded.");
 
-	dr = new Invoker(gRenderer, &tm);
+	inv = new Invoker(gRenderer, tm);
 	mh = DPDrawing::MouseHandler::getInstance();
 	font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
-	button_tex = tm.getTextureByName("button");
-	button_active = tm.getTextureByName("button-active");
+	if(font == nullptr) {
+		SDL_Log("ERROR: Font is NULLPTR after initializing!");
+	}
+	button_tex = tm->getTextureByName("button");
+	button_active = tm->getTextureByName("button-active");
 
 	loadButtons();
 
@@ -464,6 +383,8 @@ int Quit()
 {
     SDL_Log("Quit() called!");
     running = false;
+	delete mh;
+	delete inv;
     TTF_Quit();
 	SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(window);
@@ -474,53 +395,8 @@ int Quit()
 void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 {
     while (running) {
-	/* std::cout << "mouseX: " << mh->getMouseX() << " mouseY: " << mh->getMouseY() << std::endl; */
-	/* std::cout << "mouseEndX: " << mh->getMouseEndX() << " mouseEndY: " << mh->getMouseEndY() << std::endl; */
-	/* std::cout << "mouseBeingHeld: " << mh->getMouseBeingHeld() << std::endl; */
 	SDL_WaitEvent(&event);
 	mh->Update();
-	//SDL_Log("mh mouseX: %d mh mouseY: %d mh mouseBeingHeld: %d", mh->getMouseX(), mh->getMouseY(), mh->getHowLongBeingHeld());
-	// Live preview of the Rectangle drawing
-	/*
-	if (mh->getMouseBeingHeld()) {
-		mh->Update();
-		if(!checkIfButtonPressed()) {
-			switch(currentMode) {
-				// Rectangle
-				case 1:
-					{
-						resetCanvas();
-						dr->updateMouseEnd();
-						int mX = dr->getMouseX();
-						int mY = dr->getMouseY();
-						int mEndX = dr->getMouseEndX();
-						int mEndY = dr->getMouseEndY();
-						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						DrawRectangleCommand* drawrec = new DrawRectangleCommand(&rec);
-						dr->addCommand(drawrec);
-						dr->Invoke();
-					}
-					break;
-				case 2:
-					{
-						resetCanvas();
-						dr->updateMouseEnd();
-						int mX = dr->getMouseX();
-						int mY = dr->getMouseY();
-						int mEndX = dr->getMouseEndX();
-						int mEndY = dr->getMouseEndY();
-						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
-						std::unique_ptr<Shape> uniqueCirc = std::make_unique<Shape>(&circ);
-						shapes.push_back(uniqueCirc);
-						DrawCircleCommand drawcirc = DrawCircleCommand(&circ);
-						dr->addCommand(&drawcirc);
-						dr->Invoke();
-					}
-					break;
-			}
-		}
-	}
-	*/
 
 	switch (event.type) {
 	case SDL_QUIT:
@@ -537,7 +413,16 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 		}
 
 		if(currentMode == -5 && mh->getHowLongBeingHeld() > 30) {
-			resize();
+			Shape* s = nullptr;
+			for(int i = 0; i < shapes.size(); i++) {
+				if(shapes.at(i)->isSelected()) {
+					s = shapes.at(i).get();
+				}
+			}
+			ResizeCommand rc(s, mh);
+			inv->addCommand(&rc);
+			inv->Invoke();
+			
 			clearCanvas();
 			drawShapes();
 		}
@@ -556,9 +441,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&rec);
 						shapes.push_back(std::make_unique<Rectangle>(rec));
-						DrawRectangleCommand drawrec(&rec, gRenderer, &tm);
-						dr->addCommand(&drawrec);
-						dr->Invoke();
+						DrawRectangleCommand drawrec(&rec, gRenderer, tm);
+						inv->addCommand(&drawrec);
+						inv->Invoke();
 						break;
 					}
 				// Ellipse
@@ -567,9 +452,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&circ);
 						shapes.push_back(std::make_unique<Circle>(circ));
-						DrawCircleCommand drawcirc(&circ, gRenderer, &tm);
-						dr->addCommand(&drawcirc);
-						dr->Invoke();
+						DrawCircleCommand drawcirc(&circ, gRenderer, tm);
+						inv->addCommand(&drawcirc);
+						inv->Invoke();
 						break;
 					}
 			}
@@ -594,14 +479,14 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 										auto& sp = shapes.at(i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
-											DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
-											dr->addCommand(&drawrec);
-											dr->Invoke();
+											DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
+											inv->addCommand(&drawrec);
+											inv->Invoke();
 										}
 										else if(sp->getType() == "Circle") {
-											DrawCircleCommand drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
-											dr->addCommand(&drawrec);
-											dr->Invoke();
+											DrawCircleCommand drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
+											inv->addCommand(&drawrec);
+											inv->Invoke();
 										}
 									}
 									for(int i = shapes_size - 1; i >= 0; i--) {
@@ -621,14 +506,14 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer)
 											}
 
 											if(sp->getType() == "Rectangle") {
-												DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, &tm);
-												dr->addCommand(&drawrec);
-												dr->Invoke();
+												DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
+												inv->addCommand(&drawrec);
+												inv->Invoke();
 											}
 											else if(sp->getType() == "Circle") {
-												DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, &tm);
-												dr->addCommand(&drawcirc);
-												dr->Invoke();
+												DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
+												inv->addCommand(&drawcirc);
+												inv->Invoke();
 											}
 											break;
 										}

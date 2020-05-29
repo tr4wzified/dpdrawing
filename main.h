@@ -9,6 +9,7 @@
 
 #include "classes/commands/DrawRectangleCommand.h"
 #include "classes/commands/DrawCircleCommand.h"
+#include "classes/commands/ResizeCommand.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
