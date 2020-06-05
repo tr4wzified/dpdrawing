@@ -64,6 +64,32 @@ namespace DPDrawing {
 
 			SDL_Color text = {255,255,255};
 
+			// Button -6 - Redo - Vertical
+			Button u(0, BUTTON_HEIGHT * 7, text, 62, font);
+			SDL_Rect* u_rect = u.getRectangle();
+			SDL_Texture* u_msg = SDL_CreateTextureFromSurface(renderer, u.getSurface());
+			SDL_Rect* u_msg_rect = u.getRectangle();
+			if(*currentMode == -7) {
+				SDL_RenderCopy(renderer, button_active, NULL, u_rect);
+			}
+			else {
+				SDL_RenderCopy(renderer, button_tex, NULL, u_rect);
+			}
+			SDL_RenderCopy(renderer, u_msg, NULL, u_msg_rect);
+
+			// Button -6 - Undo - Vertical
+			Button v(0, BUTTON_HEIGHT * 6, text, 60, font);
+			SDL_Rect* v_rect = v.getRectangle();
+			SDL_Texture* v_msg = SDL_CreateTextureFromSurface(renderer, v.getSurface());
+			SDL_Rect* v_msg_rect = v.getRectangle();
+			if(*currentMode == -6) {
+				SDL_RenderCopy(renderer, button_active, NULL, v_rect);
+			}
+			else {
+				SDL_RenderCopy(renderer, button_tex, NULL, v_rect);
+			}
+			SDL_RenderCopy(renderer, v_msg, NULL, v_msg_rect);
+
 			// Button -5 - Resize - Vertical
 			Button w(0, BUTTON_HEIGHT * 5, text, 124, font);
 			SDL_Rect* w_rect = w.getRectangle();
@@ -171,6 +197,8 @@ namespace DPDrawing {
 			SDL_RenderPresent(renderer);
 
 			// Destroy
+			SDL_DestroyTexture(u_msg);
+			SDL_DestroyTexture(v_msg);
 			SDL_DestroyTexture(w_msg);
 			SDL_DestroyTexture(x_msg);
 			SDL_DestroyTexture(y_msg);

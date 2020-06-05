@@ -20,7 +20,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= *BUTTON_WIDTH) {
 				*currentMode = 0;
-				ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				HardResetCommand* resetc = new HardResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 				inv->addCommand(resetc);
 				inv->Invoke();
 				return true;
@@ -89,11 +89,23 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 				inv->Invoke();
 				return true;
 			}
+			// Resize
 			else if(mouseY <= *BUTTON_HEIGHT * 6) {
 				*currentMode = -5;
 				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 				inv->addCommand(lbc);
 				inv->Invoke();
+				return true;
+			}
+			// Undo
+			else if(mouseY <= *BUTTON_HEIGHT * 7) {
+				*currentMode = -6;
+				inv->Undo(shapes, tm, font, *BUTTON_WIDTH, *BUTTON_HEIGHT, currentMode);
+				return true;
+			}
+			// Redo
+			else if(mouseY <= *BUTTON_HEIGHT * 8) {
+				*currentMode = -7;
 				return true;
 			}
 		}

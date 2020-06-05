@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "commands/ResetCommand.h"
+#include "commands/HardResetCommand.h"
 #include "commands/LoadButtonsCommand.h"
 #include "commands/DrawShapesCommand.h"
 #include "commands/SaveCommand.h"

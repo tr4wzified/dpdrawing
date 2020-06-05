@@ -107,6 +107,7 @@ int Quit() {
     running = false;
 	delete mh;
 	delete inv;
+	delete bh;
     TTF_Quit();
 	SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(window);
