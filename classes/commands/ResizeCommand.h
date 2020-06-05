@@ -18,7 +18,7 @@ namespace DPDrawing {
 			if(s == nullptr) {
 				SDL_Log("ERROR: Shape to resize is NULLPTR!");
 			}
-			if(s == nullptr) {
+			if(mh == nullptr) {
 				SDL_Log("ERROR: MouseHandler to resize with is NULLPTR!");
 			}
 			int holdingPosX = mh->getHoldingPosX();

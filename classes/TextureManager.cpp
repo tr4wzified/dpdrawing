@@ -44,11 +44,9 @@ void DPDrawing::TextureManager::addText(SDL_Renderer* r, SDL_Surface* surfaceMes
 
 SDL_Texture* DPDrawing::TextureManager::getTextureByName(string name) {
 	int amount_names = names.size();
-	if(amount_names > 0) {
-		for(int i = 0; i < amount_names; i++) {
-			if (names.at(i) == name) {
-				return textures.at(i);
-			}
+	for(int i = 0; i < amount_names; i++) {
+		if (names.at(i) == name) {
+			return textures.at(i);
 		}
 	}
 	SDL_Log("ERROR: Could not retrieve texture!");

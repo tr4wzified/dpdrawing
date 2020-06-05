@@ -7,14 +7,12 @@
 namespace DPDrawing {
 	class Invoker {
 	public:
-		Invoker(SDL_Renderer* renderer, TextureManager* tm);
+		Invoker(SDL_Renderer* renderer);
 		void addCommand(Command* cmd);
 		void Invoke();
-		void setDrawingColor(SDL_Color& c); 
 
 	private:
 		vector<Command*> mCmds;
 		SDL_Renderer* renderer;
-		TextureManager* tm;
 	};
 }

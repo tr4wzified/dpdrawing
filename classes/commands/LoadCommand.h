@@ -15,16 +15,19 @@ namespace DPDrawing {
 		private:
 		vector<std::unique_ptr<Shape>>* shapes;
 		std::string load_path;
+		SDL_Renderer* renderer = nullptr;
 
 		public:
-		LoadCommand(vector<std::unique_ptr<Shape>>* shapes, std::string load_path) {
+		LoadCommand(vector<std::unique_ptr<Shape>>* shapes, std::string load_path, SDL_Renderer* renderer) {
 			this->shapes = shapes;
 			this->load_path = load_path;
+			this->renderer = renderer;
 		}
 		void execute() {
 			std::ifstream i(load_path);
 			json j;
 			i >> j;
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 			for(int i = 0; i < (int)j.size(); ++i) {
 				if (j[i]["type"].get<std::string>() == "Rectangle") {
 					Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
@@ -35,6 +38,7 @@ namespace DPDrawing {
 					shapes->push_back(std::make_unique<Circle>(r));
 				}
 			}
+			i.close();
 		}
 	};
 }
