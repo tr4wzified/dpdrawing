@@ -16,6 +16,7 @@ void DPDrawing::Invoker::Invoke() {
 			SDL_Log("ERROR! Executing a NULLPTR in the Invoker!");
 		}
 		mCmds.at(i)->execute();
+		executedCommands.push(mCmds.at(i));
 	}
 	SDL_RenderPresent(renderer);
 	mCmds.clear();

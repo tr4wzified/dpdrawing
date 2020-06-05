@@ -20,24 +20,24 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= *BUTTON_WIDTH) {
 				*currentMode = 0;
-				ResetCommand resetc(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&resetc);
+				ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(resetc);
 				inv->Invoke();
 				return true;
 			}
 			// Pressed second button - RECTANGLE
 			else if(mouseX >= *BUTTON_WIDTH * 1 && mouseX <= *BUTTON_WIDTH * 2) {
 				*currentMode = 1;
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&lbc);
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(lbc);
 				inv->Invoke();
 				return true;
 			}
 			// Pressed third button - ELLIPSE
 			else if(mouseX >= *BUTTON_WIDTH * 2 && mouseX <= *BUTTON_WIDTH * 3) {
 				*currentMode = 2;
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&lbc);
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(lbc);
 				inv->Invoke();
 				return true;
 			}
@@ -48,51 +48,51 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 			// Select
 			if(mouseY <= *BUTTON_HEIGHT * 2) {
 				*currentMode = -1;
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&lbc);
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(lbc);
 				inv->Invoke();
 				return true;
 			}
 			// Save
 			else if(mouseY <= *BUTTON_HEIGHT * 3) {
 				*currentMode = -2;
-				SaveCommand sc(shapes, "saves/saved.json");
-				inv->addCommand(&sc);
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&lbc);
+				SaveCommand* sc = new SaveCommand(shapes, "saves/saved.json");
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(sc);
+				inv->addCommand(lbc);
 				inv->Invoke();
 				return true;
 			}
 			// Load
 			else if(mouseY <= *BUTTON_HEIGHT * 4) {
 				*currentMode = -3;
-				ResetCommand resetc(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				LoadCommand lc(shapes, "saves/saved.json", renderer);
-				DrawShapesCommand dsc(inv, tm, shapes, renderer);
-				inv->addCommand(&resetc);
-				inv->addCommand(&lc);
-				inv->addCommand(&dsc);
+				ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				LoadCommand* lc = new LoadCommand(shapes, "saves/saved.json", renderer);
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				inv->addCommand(resetc);
+				inv->addCommand(lc);
+				inv->addCommand(dsc);
 				inv->Invoke();
 				return true;
 			}
 			// Delete Selected
 			else if(mouseY <= *BUTTON_HEIGHT * 5) {
 				*currentMode = -4;
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				DeleteCommand dc(shapes);
-				ClearCommand clearc(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				DrawShapesCommand dsc(inv, tm, shapes, renderer);
-				inv->addCommand(&lbc);
-				inv->addCommand(&dc);
-				inv->addCommand(&clearc);
-				inv->addCommand(&dsc);
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				DeleteCommand* dc = new DeleteCommand(shapes);
+				ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				inv->addCommand(lbc);
+				inv->addCommand(dc);
+				inv->addCommand(clearc);
+				inv->addCommand(dsc);
 				inv->Invoke();
 				return true;
 			}
 			else if(mouseY <= *BUTTON_HEIGHT * 6) {
 				*currentMode = -5;
-				LoadButtonsCommand lbc(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-				inv->addCommand(&lbc);
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(lbc);
 				inv->Invoke();
 				return true;
 			}

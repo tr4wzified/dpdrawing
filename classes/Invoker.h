@@ -3,6 +3,9 @@
 #include "commands/Command.h"
 #include "TextureManager.h"
 #include <memory>
+#include <stack>
+using std::vector;
+using std::stack;
 // Invoker
 namespace DPDrawing {
 	class Invoker {
@@ -14,5 +17,7 @@ namespace DPDrawing {
 	private:
 		vector<Command*> mCmds;
 		SDL_Renderer* renderer;
+		stack<Command*> executedCommands;
+		stack<Command*> undoneCommands;
 	};
 }

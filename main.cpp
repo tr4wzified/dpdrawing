@@ -95,8 +95,8 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	}
 
 	bh = new ButtonHandler(inv, gRenderer, tm, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-	LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-	inv->addCommand(&lbc);
+	LoadButtonsCommand* lbc = new LoadButtonsCommand(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+	inv->addCommand(lbc);
 	inv->Invoke();
 
     return 0;
@@ -128,10 +128,10 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
 			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
 			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
-			ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-			DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
-			inv->addCommand(&clearc);
-			inv->addCommand(&dsc);
+			ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+			DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+			inv->addCommand(clearc);
+			inv->addCommand(dsc);
 			holdingShape = -1;
 			inv->Invoke();
 		}
@@ -144,12 +144,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 				}
 			}
 			if(s != nullptr) {
-				ResizeCommand rc(s, mh);
-				ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-				DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
-				inv->addCommand(&rc);
-				inv->addCommand(&clearc);
-				inv->addCommand(&dsc);
+				ResizeCommand* rc = new ResizeCommand(s, mh);
+				ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+				inv->addCommand(rc);
+				inv->addCommand(clearc);
+				inv->addCommand(dsc);
 				inv->Invoke();
 			}
 		}
@@ -168,8 +168,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&rec);
 						shapes.push_back(std::make_unique<Rectangle>(rec));
-						DrawRectangleCommand drawrec(&rec, gRenderer, tm);
-						inv->addCommand(&drawrec);
+						DrawRectangleCommand* drawrec = new DrawRectangleCommand(&rec, gRenderer, tm);
+						inv->addCommand(drawrec);
 						inv->Invoke();
 						break;
 					}
@@ -179,8 +179,8 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
 						dynamicResize(&circ);
 						shapes.push_back(std::make_unique<Circle>(circ));
-						DrawCircleCommand drawcirc(&circ, gRenderer, tm);
-						inv->addCommand(&drawcirc);
+						DrawCircleCommand* drawcirc = new DrawCircleCommand(&circ, gRenderer, tm);
+						inv->addCommand(drawcirc);
 						inv->Invoke();
 						break;
 					}
@@ -206,13 +206,12 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 										auto& sp = shapes.at(i);
 										sp->Deselect();
 										if(sp->getType() == "Rectangle") {
-											DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
-											inv->addCommand(&drawrec);
-											inv->Invoke();
+											DrawRectangleCommand* drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
+											inv->addCommand(drawrec);
 										}
 										else if(sp->getType() == "Circle") {
-											DrawCircleCommand drawrec(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
-											inv->addCommand(&drawrec);
+											DrawCircleCommand* drawrec = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
+											inv->addCommand(drawrec);
 											inv->Invoke();
 										}
 									}
@@ -233,13 +232,13 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 											}
 
 											if(sp->getType() == "Rectangle") {
-												DrawRectangleCommand drawrec(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
-												inv->addCommand(&drawrec);
+												DrawRectangleCommand* drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
+												inv->addCommand(drawrec);
 												inv->Invoke();
 											}
 											else if(sp->getType() == "Circle") {
-												DrawCircleCommand drawcirc(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
-												inv->addCommand(&drawcirc);
+												DrawCircleCommand* drawcirc = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
+												inv->addCommand(drawcirc);
 												inv->Invoke();
 											}
 											break;
