@@ -19,13 +19,17 @@ namespace DPDrawing {
 		const int BUTTON_HEIGHT = 75;
 		TTF_Font* font = nullptr;
 		TextureManager* tm = nullptr;
+		const int* button_height = nullptr;
+		const int* button_width = nullptr;
 
 		public:
-		LoadButtonsCommand(SDL_Renderer* renderer, TTF_Font* font, TextureManager*& tm, int* currentMode) {
+		LoadButtonsCommand(SDL_Renderer* renderer, TTF_Font* font, TextureManager* tm, int* currentMode, const int* button_width, const int* button_height) {
 			this->renderer = renderer;
 			this->font = font;
 			this->tm = tm;
 			this->currentMode = currentMode;
+			this->button_width = button_width;
+			this->button_height = button_height;
 		}
 
 		void execute() {
@@ -40,6 +44,12 @@ namespace DPDrawing {
 			}
 			if(currentMode == nullptr) {
 				SDL_Log("ERROR: currentMode is nullptr in LoadButtonsCommand");
+			}
+			if(button_width == nullptr) {
+				SDL_Log("ERROR: button_width is nullptr in LoadButtonsCommand");
+			}
+			if(button_height == nullptr) {
+				SDL_Log("ERROR: button_height is nullptr in LoadButtonsCommand");
 			}
 
 			SDL_Texture* button_tex = tm->getTextureByName("button");

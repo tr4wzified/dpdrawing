@@ -1,11 +1,37 @@
 #include "MouseHandler.h"
 #include <SDL2/SDL.h>
+#include <memory>
+#include <vector>
+
+#include "commands/ResetCommand.h"
+#include "commands/LoadButtonsCommand.h"
+#include "commands/DrawShapesCommand.h"
+#include "commands/SaveCommand.h"
+#include "commands/LoadCommand.h"
+#include "commands/DeleteCommand.h"
+
+using std::unique_ptr;
+using std::vector;
 namespace DPDrawing {
 	class ButtonHandler {
 		private:
-			MouseHandler* mh;
+			Invoker* inv = nullptr;
+			SDL_Renderer* renderer = nullptr;
+			TextureManager* tm = nullptr;
+			MouseHandler* mh = nullptr;
+			TTF_Font* font = nullptr;
+			vector<unique_ptr<Shape>>* shapes = nullptr;
+			const int* BUTTON_WIDTH = nullptr;
+			const int* BUTTON_HEIGHT = nullptr;
+			int* currentMode = nullptr;
+			ResetCommand* rc = nullptr;
+			LoadButtonsCommand* lbc = nullptr;
+			DrawShapesCommand* dsc = nullptr;
+			SaveCommand* sc = nullptr;
+			LoadCommand* lc = nullptr;
+			DeleteCommand* dc = nullptr;
 		public:
-			ButtonHandler(MouseHandler* mh, int button_width, int button_height);
+			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
 			bool checkIfButtonPressed();
 			bool initializeButtons();
 	};

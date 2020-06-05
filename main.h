@@ -6,6 +6,7 @@
 #include "classes/Invoker.h"
 #include "classes/commands/Command.h"
 #include "classes/MouseHandler.h"
+#include "classes/ButtonHandler.h"
 
 #include "classes/commands/DrawRectangleCommand.h"
 #include "classes/commands/DrawCircleCommand.h"

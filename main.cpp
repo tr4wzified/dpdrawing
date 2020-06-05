@@ -1,6 +1,4 @@
 #include "main.h"
-#define BUTTON_WIDTH 75
-#define BUTTON_HEIGHT 75
 #define SAVE_PATH "saves/saved.json"
 SDL_Window* window = nullptr;
 SDL_Renderer* gRenderer = nullptr;
@@ -16,17 +14,18 @@ SDL_Event event;
  * 1 = Rectangle
  * 2 = Circle
 */
-int currentMode = 0;
+// const
+const int BUTTON_WIDTH = 75;
+const int BUTTON_HEIGHT = 75;
 // Objects
+int currentMode = 0;
 TextureManager* tm = nullptr;
 Invoker* inv = nullptr;
 MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 TTF_Font* font = nullptr;
-// Fonts, initialized in Init()
-SDL_Texture* button_tex; 
-SDL_Texture* button_active;
+ButtonHandler* bh = nullptr;
 
 void dynamicResize(Shape* mShape) {
 	int temp;
@@ -54,95 +53,6 @@ void dynamicResize(Shape* mShape) {
 	mShape->setHeight(abs(mouseEndY - mouseY));
 }
 
-
-bool checkIfButtonPressed() {
-	int mouseX = mh->getMouseX();
-	int mouseY = mh->getMouseY();
-	//if(!mouseBeingHeld) {
-		// Horizontal
-		if(mouseY >= 0 && mouseY <= BUTTON_HEIGHT) {
-		// Pressed first button - RESET
-			if(mouseX >= 0 && mouseX <= BUTTON_WIDTH) {
-				currentMode = 0;
-				ResetCommand resetc(inv, gRenderer, font, tm, &shapes, &currentMode);
-				inv->addCommand(&resetc);
-				inv->Invoke();
-				return true;
-			}
-			// Pressed second button - RECTANGLE
-			else if(mouseX >= BUTTON_WIDTH * 1 && mouseX <= BUTTON_WIDTH * 2) {
-				currentMode = 1;
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				inv->addCommand(&lbc);
-				inv->Invoke();
-				return true;
-			}
-			// Pressed third button - ELLIPSE
-			else if(mouseX >= BUTTON_WIDTH * 2 && mouseX <= BUTTON_WIDTH * 3) {
-				currentMode = 2;
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				inv->addCommand(&lbc);
-				inv->Invoke();
-				return true;
-			}
-			return false;
-		}
-		// Vertical
-		else if(mouseX <= BUTTON_WIDTH && mouseY >= 0) {
-			// Select
-			if(mouseY <= BUTTON_HEIGHT * 2) {
-				currentMode = -1;
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				inv->addCommand(&lbc);
-				inv->Invoke();
-				return true;
-			}
-			// Save
-			else if(mouseY <= BUTTON_HEIGHT * 3) {
-				currentMode = -2;
-				SaveCommand sc(&shapes, "saves/saved.json");
-				inv->addCommand(&sc);
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				inv->addCommand(&lbc);
-				inv->Invoke();
-				return true;
-			}
-			// Load
-			else if(mouseY <= BUTTON_HEIGHT * 4) {
-				currentMode = -3;
-				ResetCommand resetc(inv, gRenderer, font, tm, &shapes, &currentMode);
-				LoadCommand lc(&shapes, "saves/saved.json", gRenderer);
-				DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
-				inv->addCommand(&resetc);
-				inv->addCommand(&lc);
-				inv->addCommand(&dsc);
-				inv->Invoke();
-				return true;
-			}
-			// Delete Selected
-			else if(mouseY <= BUTTON_HEIGHT * 5) {
-				currentMode = -4;
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				DeleteCommand dc(&shapes);
-				ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode);
-				DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
-				inv->addCommand(&lbc);
-				inv->addCommand(&dc);
-				inv->addCommand(&clearc);
-				inv->addCommand(&dsc);
-				inv->Invoke();
-				return true;
-			}
-			else if(mouseY <= BUTTON_HEIGHT * 6) {
-				currentMode = -5;
-				LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
-				inv->addCommand(&lbc);
-				inv->Invoke();
-				return true;
-			}
-		}
-	return false;
-}
 
 int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 {
@@ -184,7 +94,8 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 		SDL_Log("ERROR: Font is NULLPTR after initializing!");
 	}
 
-	LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode);
+	bh = new ButtonHandler(inv, gRenderer, tm, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+	LoadButtonsCommand lbc(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 	inv->addCommand(&lbc);
 	inv->Invoke();
 
@@ -217,7 +128,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
 			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
 			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
-			ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode);
+			ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 			DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
 			inv->addCommand(&clearc);
 			inv->addCommand(&dsc);
@@ -234,7 +145,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 			}
 			if(s != nullptr) {
 				ResizeCommand rc(s, mh);
-				ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode);
+				ClearCommand clearc(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 				DrawShapesCommand dsc(inv, tm, &shapes, gRenderer);
 				inv->addCommand(&rc);
 				inv->addCommand(&clearc);
@@ -245,7 +156,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		mh->updateMouseBeingHeld();
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
-		if(!checkIfButtonPressed()) {
+		if(!bh->checkIfButtonPressed()) {
 			int mX = mh->getMouseX();
 			int mY = mh->getMouseY();
 			int mEndX = mh->getMouseEndX();
@@ -282,7 +193,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 	    break;
 	case SDL_MOUSEBUTTONDOWN:
 		mh->updateMouseBeingHeld();
-		if(!checkIfButtonPressed()) {
+		if(!bh->checkIfButtonPressed()) {
 			switch(event.button.button) {
 				case SDL_BUTTON_LEFT:
 					{

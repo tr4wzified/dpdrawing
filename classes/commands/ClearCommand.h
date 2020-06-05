@@ -19,16 +19,20 @@ namespace DPDrawing {
 		TextureManager* tm = nullptr;
 		vector<std::unique_ptr<Shape>>* shapes;
 		int* currentMode = nullptr;
+		const int* BUTTON_WIDTH = nullptr;
+		const int* BUTTON_HEIGHT = nullptr;
 		LoadButtonsCommand* lbc = nullptr;
 
 		public:
-		ClearCommand(Invoker* inv, SDL_Renderer* renderer, TTF_Font* font, TextureManager*& tm, vector<std::unique_ptr<Shape>>* shapes, int* currentMode) {
+		ClearCommand(Invoker* inv, SDL_Renderer* renderer, TTF_Font* font, TextureManager*& tm, vector<std::unique_ptr<Shape>>* shapes, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT) {
 			this->inv = inv;
 			this->renderer = renderer;
 			this->font = font;
 			this->tm = tm;
 			this->shapes = shapes;
 			this->currentMode = currentMode;
+			this->BUTTON_WIDTH = BUTTON_WIDTH;
+			this->BUTTON_HEIGHT = BUTTON_HEIGHT;
 		}
 		~ClearCommand() {
 			delete lbc;
@@ -55,7 +59,7 @@ namespace DPDrawing {
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 			SDL_RenderClear(renderer);
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-			LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode);
+			LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 			inv->addCommand(lbc);
 		}
 	};
