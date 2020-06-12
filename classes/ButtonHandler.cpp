@@ -1,8 +1,9 @@
 #include "ButtonHandler.h"
-DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT) { 
+DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT) { 
 	this->inv = inv;
 	this->renderer = renderer;
 	this->tm = tm;
+	this->uh = uh;
 	this->mh = mh;
 	this->shapes = shapes;
 	this->font = font;
@@ -14,7 +15,7 @@ DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, Te
 bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 	int mouseX = mh->getMouseX();
 	int mouseY = mh->getMouseY();
-	//if(!mouseBeingHeld) {
+	if(!mh->getMouseBeingHeld()) {
 		// Horizontal
 		if(mouseY >= 0 && mouseY <= *BUTTON_HEIGHT) {
 		// Pressed first button - RESET
@@ -100,7 +101,10 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 			// Undo
 			else if(mouseY <= *BUTTON_HEIGHT * 7) {
 				*currentMode = -6;
-				inv->Undo(shapes, tm, font, *BUTTON_WIDTH, *BUTTON_HEIGHT, currentMode);
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				uh->Undo();
+				inv->addCommand(dsc);
+				inv->Invoke();
 				return true;
 			}
 			// Redo
@@ -109,6 +113,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 				return true;
 			}
 		}
+	}
 	return false;
 }
 

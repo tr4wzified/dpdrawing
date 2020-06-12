@@ -208,6 +208,9 @@ namespace DPDrawing {
 			SDL_DestroyTexture(c_msg);
 			SDL_DestroyTexture(d_msg);
 			}
+		bool isUndoable() {
+			return false;
+		}
 	};
 }
 

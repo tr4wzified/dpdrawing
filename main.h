@@ -7,6 +7,7 @@
 #include "classes/commands/Command.h"
 #include "classes/MouseHandler.h"
 #include "classes/ButtonHandler.h"
+#include "classes/UndoHandler.h"
 
 #include "classes/commands/DrawRectangleCommand.h"
 #include "classes/commands/DrawCircleCommand.h"
@@ -18,6 +19,8 @@
 #include "classes/commands/ClearCommand.h"
 #include "classes/commands/ResetCommand.h"
 #include "classes/commands/LoadButtonsCommand.h"
+#include "classes/commands/CreateRectangleCommand.h"
+#include "classes/commands/CreateCircleCommand.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>

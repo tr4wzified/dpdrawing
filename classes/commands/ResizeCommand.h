@@ -55,6 +55,9 @@ namespace DPDrawing {
 					s->setHeight(s->getHeight() + (mh->getMouseEndY() - mh->getMouseY()));
 				}
 		}
+		bool isUndoable() {
+			return true;
+		}
 
 	};
 }

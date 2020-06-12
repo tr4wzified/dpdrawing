@@ -43,5 +43,8 @@ namespace DPDrawing {
 			*currentMode = 0;
 			shapes->clear();
 		}
+		bool isUndoable() {
+			return false;
+		}
 	};
 }

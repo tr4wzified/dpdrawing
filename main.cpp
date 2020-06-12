@@ -26,33 +26,7 @@ vector<std::unique_ptr<Shape>> shapes;
 int holdingShape = -1;
 TTF_Font* font = nullptr;
 ButtonHandler* bh = nullptr;
-
-void dynamicResize(Shape* mShape) {
-	int temp;
-	int mouseX = mh->getMouseX();
-	int mouseY = mh->getMouseY();
-	int mouseEndX = mh->getMouseEndX();
-	int mouseEndY = mh->getMouseEndY();
-	if (mouseEndX > mouseX && mouseEndY > mouseY) {
-		mShape->setPosX(mouseX);
-		mShape->setPosY(mouseY);
-	}
-	else if (mouseEndX > mouseX && mouseEndY < mouseY) {
-		mShape->setPosX(mouseX);
-		mShape->setPosY(mouseEndY);
-	}
-	else if (mouseEndX < mouseX && mouseEndY < mouseY) {
-		mShape->setPosX(mouseEndX);
-		mShape->setPosY(mouseEndY);
-	}
-	else {
-		mShape->setPosX(mouseEndX);
-		mShape->setPosY(mouseY);
-	}
-	mShape->setWidth(abs(mouseEndX - mouseX));
-	mShape->setHeight(abs(mouseEndY - mouseY));
-}
-
+UndoHandler* uh = nullptr;
 
 int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 {
@@ -87,14 +61,16 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	tm->addSurface(gRenderer, "resources/images/button-active.bmp", "button-active");
     SDL_Log("Textures loaded.");
 
-	inv = new Invoker(gRenderer);
-	mh = MouseHandler::getInstance();
 	font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
 	if(font == nullptr) {
-		SDL_Log("ERROR: Font is NULLPTR after initializing!");
+		SDL_Log("ERROR: Font is NULLPTR after initializing! You're likely in the wrong directory!");
 	}
 
-	bh = new ButtonHandler(inv, gRenderer, tm, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+	uh = new UndoHandler(gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+	inv = new Invoker(gRenderer, uh);
+	mh = MouseHandler::getInstance();
+
+	bh = new ButtonHandler(inv, gRenderer, tm, uh, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 	LoadButtonsCommand* lbc = new LoadButtonsCommand(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 	inv->addCommand(lbc);
 	inv->Invoke();
@@ -129,6 +105,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
 			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
 			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
+			uh->Update();
 			ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 			DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
 			inv->addCommand(clearc);
@@ -158,30 +135,24 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
 		if(!bh->checkIfButtonPressed()) {
-			int mX = mh->getMouseX();
-			int mY = mh->getMouseY();
-			int mEndX = mh->getMouseEndX();
-			int mEndY = mh->getMouseEndY();
 			switch(currentMode) {
 				// Rectangle
 				case 1:
 					{
-						Rectangle rec = Rectangle(mEndX - mX, mEndY - mY, mX, mY);
-						dynamicResize(&rec);
-						shapes.push_back(std::make_unique<Rectangle>(rec));
-						DrawRectangleCommand* drawrec = new DrawRectangleCommand(&rec, gRenderer, tm);
-						inv->addCommand(drawrec);
+						CreateRectangleCommand* crc = new CreateRectangleCommand(inv, &shapes, mh, gRenderer, tm, true);
+						DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+						inv->addCommand(crc);
+						inv->addCommand(dsc);
 						inv->Invoke();
 						break;
 					}
 				// Ellipse
 				case 2:
 					{
-						Circle circ = Circle(mEndX - mX, mEndY - mY, mX, mY);
-						dynamicResize(&circ);
-						shapes.push_back(std::make_unique<Circle>(circ));
-						DrawCircleCommand* drawcirc = new DrawCircleCommand(&circ, gRenderer, tm);
-						inv->addCommand(drawcirc);
+						CreateCircleCommand* ccc = new CreateCircleCommand(inv, &shapes, mh, gRenderer, tm, true);
+						DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+						inv->addCommand(ccc);
+						inv->addCommand(dsc);
 						inv->Invoke();
 						break;
 					}
@@ -209,6 +180,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 										if(sp->getType() == "Rectangle") {
 											DrawRectangleCommand* drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
 											inv->addCommand(drawrec);
+											inv->Invoke();
 										}
 										else if(sp->getType() == "Circle") {
 											DrawCircleCommand* drawrec = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);

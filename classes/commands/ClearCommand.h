@@ -37,6 +37,9 @@ namespace DPDrawing {
 		~ClearCommand() {
 			delete lbc;
 		}
+		bool isUndoable() {
+			return false;
+		}
 		void execute() {
 			if(inv == nullptr) {
 				SDL_Log("ERROR: Invoker is NULLPTR!");

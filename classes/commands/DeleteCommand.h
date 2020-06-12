@@ -23,5 +23,9 @@ namespace DPDrawing {
 				}
 			}
 		}
+
+		bool isUndoable() {
+			return true;
+		}
 	};
 }

@@ -40,5 +40,8 @@ namespace DPDrawing {
 			inv->addCommand(&rc);
 			inv->Reset();
 		}
+		bool isUndoable() {
+			return false;
+		}
 	};
 }

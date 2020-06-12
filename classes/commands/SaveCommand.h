@@ -21,7 +21,7 @@ namespace DPDrawing {
 		}
 		void execute() {
 			json jsonObjects = json::array();
-			for(int i = 0; i < shapes->size(); ++i) {
+			for(int i = 0; i < (int)shapes->size(); ++i) {
 			    jsonObjects.push_back(json::object());
 				jsonObjects[i]["type"] = shapes->at(i)->getType();
 				jsonObjects[i]["width"] = shapes->at(i)->getWidth();
@@ -33,6 +33,9 @@ namespace DPDrawing {
 			std::ofstream myfile(save_path);
 			myfile << jsonObjects;
 			myfile.close();
+		}
+		bool isUndoable() {
+			return false;
 		}
 
 	};

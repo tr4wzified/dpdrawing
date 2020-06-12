@@ -27,6 +27,9 @@ namespace DPDrawing {
 				}
 				SDL_RenderPresent(r);
 		}
+		bool isUndoable() {
+			return false;
+		}
 			
 		private:
 		SDL_Renderer* r;

@@ -47,6 +47,10 @@ namespace DPDrawing {
 				}
 			}
 		}
+
+		bool isUndoable() {
+			return false;
+		}
 			
 	};
 }

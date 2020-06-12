@@ -1,5 +1,6 @@
 #include "MouseHandler.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <memory>
 #include <vector>
 
@@ -19,6 +20,7 @@ namespace DPDrawing {
 			SDL_Renderer* renderer = nullptr;
 			TextureManager* tm = nullptr;
 			MouseHandler* mh = nullptr;
+			UndoHandler* uh = nullptr;
 			TTF_Font* font = nullptr;
 			vector<unique_ptr<Shape>>* shapes = nullptr;
 			const int* BUTTON_WIDTH = nullptr;
@@ -31,7 +33,7 @@ namespace DPDrawing {
 			LoadCommand* lc = nullptr;
 			DeleteCommand* dc = nullptr;
 		public:
-			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
+			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
 			bool checkIfButtonPressed();
 			bool initializeButtons();
 	};

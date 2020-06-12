@@ -1,0 +1,43 @@
+{
+	"timesteps": 
+	[
+		{
+			"timestep": {
+				"shapes": [
+					{
+						"height": 400,
+						"posX": 100,
+						"posY": 100,
+						"type": "Rectangle",
+						"width": 400
+					},
+					{
+						"height": 400,
+						"posX": 400,
+						"posY": 200,
+						"type": "Rectangle",
+						"width": 400
+					}
+				]
+			},
+			"timestep": {
+				"shapes": [
+					{
+						"height": 500,
+						"posX": 100,
+						"posY": 100,
+						"type": "Rectangle",
+						"width": 200
+					},
+					{
+						"height": 100,
+						"posX": 400,
+						"posY": 200,
+						"type": "Rectangle",
+						"width": 100
+					}
+				]
+			}
+		}
+	]
+}
