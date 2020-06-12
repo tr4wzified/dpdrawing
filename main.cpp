@@ -105,7 +105,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
 			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
 			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
-			uh->Update();
+			uh->Update(true);
 			ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 			DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
 			inv->addCommand(clearc);

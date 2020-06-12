@@ -110,6 +110,10 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 			// Redo
 			else if(mouseY <= *BUTTON_HEIGHT * 8) {
 				*currentMode = -7;
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				uh->Redo();
+				inv->addCommand(dsc);
+				inv->Invoke();
 				return true;
 			}
 		}

@@ -21,11 +21,13 @@ namespace DPDrawing {
 	class UndoHandler {
 		public:
 		UndoHandler(SDL_Renderer* renderer, TTF_Font* font, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
-		void Update();
+		void Update(bool clearRedo);
 		void Undo();
+		void Redo();
 
 		private:
 		void printTimesteps();
+		void printRedoTimesteps();
 		SDL_Renderer* renderer = nullptr;
 		TTF_Font* font = nullptr;
 		TextureManager* tm = nullptr;
@@ -34,6 +36,7 @@ namespace DPDrawing {
 		const int* BUTTON_WIDTH = nullptr;
 		const int* BUTTON_HEIGHT = nullptr;
 		vector<vector<Shape*>> timesteps;
+		vector<vector<Shape*>> redotimesteps;
 
 	};
 }

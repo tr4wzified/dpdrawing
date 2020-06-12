@@ -17,10 +17,9 @@ void DPDrawing::Invoker::Invoke() {
 			if(mCmds.at(i) == nullptr) {
 				SDL_Log("ERROR! Executing a NULLPTR in the Invoker!");
 			}
-			SDL_Log("Executing a command that is undoable: %d", mCmds.at(i)->isUndoable());
 			mCmds.at(i)->execute();
 			if(mCmds.at(i)->isUndoable()) {
-				uh->Update();
+				uh->Update(true);
 			}
 		}
 		SDL_RenderPresent(renderer);
