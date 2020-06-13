@@ -4,4 +4,5 @@ SDL2Test
 DPDrawing
 CMakeFiles/
 .ccls-cache
+.vscode/
 saves/
