@@ -27,6 +27,7 @@ namespace DPDrawing {
 		void Reset();
 
 		private:
+		void setShapes(vector<Shape*>& v);
 		void printTimesteps();
 		void printRedoTimesteps();
 		SDL_Renderer* renderer = nullptr;

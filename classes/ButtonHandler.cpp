@@ -101,8 +101,13 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 			// Undo
 			else if(mouseY <= *BUTTON_HEIGHT * 7) {
 				*currentMode = -6;
-				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(resetc);
+				inv->Invoke();
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 				uh->Undo();
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				inv->addCommand(lbc);
 				inv->addCommand(dsc);
 				inv->Invoke();
 				return true;
@@ -110,8 +115,12 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 			// Redo
 			else if(mouseY <= *BUTTON_HEIGHT * 8) {
 				*currentMode = -7;
-				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				inv->addCommand(clearc);
 				uh->Redo();
+				LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+				inv->addCommand(lbc);
 				inv->addCommand(dsc);
 				inv->Invoke();
 				return true;
