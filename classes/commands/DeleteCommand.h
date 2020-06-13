@@ -16,7 +16,9 @@ namespace DPDrawing {
 		}
 
 		void execute() {
+			SDL_Log("Shapes size: %d", (int)shapes->size());
 			for(int i = 0; i < (int)shapes->size(); i++) {
+				SDL_Log("Shape %d is selected: %d", i, shapes->at(i)->isSelected());
 				if (shapes->at(i)->isSelected()) {
 					shapes->erase(shapes->begin() + i);
 					break;

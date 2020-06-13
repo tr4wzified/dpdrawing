@@ -15,7 +15,6 @@ void DPDrawing::UndoHandler::Reset() {
 }
 
 void DPDrawing::UndoHandler::Update(bool clearRedo) {
-	SDL_Log("Updating timesteps");
 	vector<Shape*> tempVec;
 	for(int i = 0; i < (int)shapes->size(); i++) {
 		if(shapes->at(i)->getType() == "Rectangle") {
@@ -67,6 +66,7 @@ void DPDrawing::UndoHandler::setShapes(vector<Shape*>& v) {
 
 void DPDrawing::UndoHandler::Redo() {
 	if(!redotimesteps.empty()) {
+		shapes->clear();
 		vector<Shape*> shapesInCurrentTimestep;
 		shapesInCurrentTimestep = redotimesteps.back();
 		redotimesteps.erase(redotimesteps.begin() + redotimesteps.size() - 1);
@@ -76,8 +76,6 @@ void DPDrawing::UndoHandler::Redo() {
 }
 
 void DPDrawing::UndoHandler::Undo() {
-	std::cout << "Before undo:" << std::endl;
-	printTimesteps();
 	if(!timesteps.empty()) {
 		if(timesteps.size() == 1) {
 			redotimesteps.push_back(timesteps.at(0));

@@ -34,7 +34,7 @@ namespace DPDrawing {
 			DeleteCommand* dc = nullptr;
 		public:
 			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
-			bool checkIfButtonPressed();
+			bool checkIfButtonPressed(bool execute);
 			bool initializeButtons();
 	};
 }

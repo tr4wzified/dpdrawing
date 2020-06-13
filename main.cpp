@@ -134,7 +134,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		mh->updateMouseBeingHeld();
 	    switch (event.button.button) {
 	    case SDL_BUTTON_LEFT:
-		if(!bh->checkIfButtonPressed()) {
+		if(!bh->checkIfButtonPressed(true)) {
 			switch(currentMode) {
 				// Rectangle
 				case 1:
@@ -165,7 +165,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 	    break;
 	case SDL_MOUSEBUTTONDOWN:
 		mh->updateMouseBeingHeld();
-		if(!bh->checkIfButtonPressed()) {
+		if(!bh->checkIfButtonPressed(false)) {
 			switch(event.button.button) {
 				case SDL_BUTTON_LEFT:
 					{
