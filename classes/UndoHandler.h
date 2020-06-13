@@ -24,6 +24,7 @@ namespace DPDrawing {
 		void Update(bool clearRedo);
 		void Undo();
 		void Redo();
+		void Reset();
 
 		private:
 		void printTimesteps();

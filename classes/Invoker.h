@@ -14,8 +14,6 @@ namespace DPDrawing {
 		Invoker(SDL_Renderer* renderer, UndoHandler* uh);
 		void addCommand(Command* cmd);
 		void Invoke();
-		void Reset();
-		int timesExecuted = 0;
 
 	private:
 		vector<Command*> mCmds;

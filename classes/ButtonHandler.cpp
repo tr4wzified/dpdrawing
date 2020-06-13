@@ -21,7 +21,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed() {
 		// Pressed first button - RESET
 			if(mouseX >= 0 && mouseX <= *BUTTON_WIDTH) {
 				*currentMode = 0;
-				HardResetCommand* resetc = new HardResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+				HardResetCommand* resetc = new HardResetCommand(inv, uh, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 				inv->addCommand(resetc);
 				inv->Invoke();
 				return true;

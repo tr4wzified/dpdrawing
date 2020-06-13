@@ -26,10 +26,3 @@ void DPDrawing::Invoker::Invoke() {
 		mCmds.clear();
 	}
 } 
-
-void DPDrawing::Invoker::Reset() {
-	timesExecuted++;
-	if(timesExecuted == 1) {
-		Invoke();
-	}
-}

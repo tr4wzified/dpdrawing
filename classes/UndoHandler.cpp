@@ -9,6 +9,11 @@ DPDrawing::UndoHandler::UndoHandler(SDL_Renderer* renderer, TTF_Font* font, Text
 	this->BUTTON_HEIGHT = BUTTON_HEIGHT;
 }
 
+void DPDrawing::UndoHandler::Reset() {
+	timesteps.clear();
+	redotimesteps.clear();
+}
+
 void DPDrawing::UndoHandler::Update(bool clearRedo) {
 	SDL_Log("Updating timesteps");
 	vector<Shape*> tempVec;
@@ -234,6 +239,7 @@ void DPDrawing::UndoHandler::Redo() {
 		vector<Shape*> shapesInCurrentTimestep;
 		shapesInCurrentTimestep = redotimesteps.back();
 		// push into undo?
+		//timesteps.push_back(redotimesteps.back());
 		redotimesteps.erase(redotimesteps.begin() + redotimesteps.size() - 1);
 		for(int i = 0; i < (int)shapesInCurrentTimestep.size(); ++i) {
 			if (shapesInCurrentTimestep.at(i)->getType() == "Rectangle") {
@@ -277,6 +283,7 @@ void DPDrawing::UndoHandler::Undo() {
 	printTimesteps();
 	if(!timesteps.empty()) {
 	if(timesteps.size() == 1) {
+		redotimesteps.push_back(timesteps.at(0));
 		timesteps.clear();
 		// Reset
 		*currentMode = 0;
