@@ -21,6 +21,7 @@ void DPDrawing::Invoker::Invoke() {
 			if(mCmds.at(i)->isUndoable()) {
 				uh->Update(true);
 			}
+			delete mCmds.at(i);
 		}
 		SDL_RenderPresent(renderer);
 		mCmds.clear();

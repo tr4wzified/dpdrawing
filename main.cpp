@@ -115,6 +115,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 			holdingShape = -1;
 		}
 
+		// Resize
 		if(currentMode == -5 && mh->getHowLongBeingHeld() > 30) {
 			Shape* s = nullptr;
 			for(int i = 0; i < (int)shapes.size(); i++) {

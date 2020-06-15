@@ -16,7 +16,6 @@ namespace DPDrawing {
 			this->tm = tm;
 		}
 		void execute() {
-				SDL_Log("posX: %d posY: %d width: %d height: %d", mCirc->getPosX(), mCirc->getPosY(), mCirc->getWidth(), mCirc->getHeight());
 				if (mCirc->isSelected()) {
 					// Draw in red
 					filledEllipseRGBA(r, mCirc->getPosX() + (mCirc->getWidth() / 2), mCirc->getPosY() + (mCirc->getHeight() / 2), mCirc->getWidth() / 2, mCirc->getHeight() / 2, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255);
