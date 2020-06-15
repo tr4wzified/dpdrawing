@@ -103,15 +103,16 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 	case SDL_MOUSEBUTTONUP:
 		// Move
 		if(currentMode == -1 && mh->getHowLongBeingHeld() > 30 && holdingShape >= 0) {
-			shapes.at(holdingShape)->setPosX(mh->getMouseEndX() - mh->getHoldingPosX());
-			shapes.at(holdingShape)->setPosY(mh->getMouseEndY() - mh->getHoldingPosY());
-			uh->Update(true);
+			int x = mh->getMouseEndX() - mh->getHoldingPosX();
+			int y = mh->getMouseEndY() - mh->getHoldingPosY();
+			MoveCommand* mc = new MoveCommand(shapes.at(holdingShape).get(), x, y);
 			ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 			DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+			inv->addCommand(mc);
 			inv->addCommand(clearc);
 			inv->addCommand(dsc);
-			holdingShape = -1;
 			inv->Invoke();
+			holdingShape = -1;
 		}
 
 		if(currentMode == -5 && mh->getHowLongBeingHeld() > 30) {
@@ -169,55 +170,39 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 			switch(event.button.button) {
 				case SDL_BUTTON_LEFT:
 					{
+						// If in selecting or resizing mode
 						if(currentMode == -1 || currentMode == -5) {
-								int mX = mh->getMouseX();
-								int mY = mh->getMouseY();
-								int shapes_size = shapes.size();
-								if (shapes_size > 0) {
-									for(int i = shapes_size - 1; i >= 0; i--) {
-										auto& sp = shapes.at(i);
-										sp->Deselect();
-										if(sp->getType() == "Rectangle") {
-											DrawRectangleCommand* drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
-											inv->addCommand(drawrec);
-											inv->Invoke();
-										}
-										else if(sp->getType() == "Circle") {
-											DrawCircleCommand* drawrec = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
-											inv->addCommand(drawrec);
-											inv->Invoke();
-										}
-									}
-									for(int i = shapes_size - 1; i >= 0; i--) {
-										auto& sp = shapes.at(i);
-										if (
-											mX >= sp->getPosX() &&
-											mX <= sp->getPosX() + sp->getWidth() &&
-											mY >= sp->getPosY() &&
-											mY <= sp->getPosY() + sp->getHeight()
-											) {
+							int mX = mh->getMouseX();
+							int mY = mh->getMouseY();
+							SDL_Log("amount of shapes %d", (int)shapes.size());
+								for(unique_ptr<Shape>& s : shapes) {
+									s->Deselect();
+								}
+								for(int i = 0; i < shapes.size(); i++) {
+									if (
+										mX >= shapes.at(i)->getPosX() &&
+										mX <= shapes.at(i)->getPosX() + shapes.at(i)->getWidth() &&
+										mY >= shapes.at(i)->getPosY() &&
+										mY <= shapes.at(i)->getPosY() + shapes.at(i)->getHeight()
+										) {
 
-											sp->Select();
+									SDL_Log("selecting shape %d", i);
+										shapes.at(i)->Select();
 
-											if(mh->getHowLongBeingHeld() == 0) {
-												mh->updateHoldingPos(mh->getMouseX() - sp->getPosX(), mh->getMouseY() - sp->getPosY());
-												holdingShape = i;
-											}
-
-											if(sp->getType() == "Rectangle") {
-												DrawRectangleCommand* drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), gRenderer, tm);
-												inv->addCommand(drawrec);
-												inv->Invoke();
-											}
-											else if(sp->getType() == "Circle") {
-												DrawCircleCommand* drawcirc = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), gRenderer, tm);
-												inv->addCommand(drawcirc);
-												inv->Invoke();
-											}
+										if(mh->getHowLongBeingHeld() == 0) {
+											mh->updateHoldingPos(mh->getMouseX() - shapes.at(i)->getPosX(), mh->getMouseY() - shapes.at(i)->getPosY());
+											holdingShape = i;
 											break;
 										}
 									}
 								}
+							for(int i = 0; i < shapes.size(); i++) {
+								SDL_Log("Shape %d", i);
+								SDL_Log("	Selected? %d", shapes.at(i)->isSelected());
+							}
+							DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer, false);
+							inv->addCommand(dsc);
+							inv->Invoke();
 						}
 					}
 			}

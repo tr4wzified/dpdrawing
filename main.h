@@ -12,6 +12,7 @@
 #include "classes/commands/DrawRectangleCommand.h"
 #include "classes/commands/DrawCircleCommand.h"
 #include "classes/commands/DrawShapesCommand.h"
+#include "classes/commands/MoveCommand.h"
 #include "classes/commands/ResizeCommand.h"
 #include "classes/commands/SaveCommand.h"
 #include "classes/commands/LoadCommand.h"

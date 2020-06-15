@@ -22,12 +22,14 @@ namespace DPDrawing {
 		vector<unique_ptr<Shape>>* shapes;
 		DrawRectangleCommand* drawrec = nullptr;
 		DrawCircleCommand* drawcirc = nullptr;
+		bool deselectAll = true;
 		public:
-		DrawShapesCommand(Invoker* inv, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer) {
+		DrawShapesCommand(Invoker* inv, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer, bool deselectAll = true) {
 			this->inv = inv;
 			this->shapes = shapes;
 			this->renderer = renderer;
 			this->tm = tm;
+			this->deselectAll = deselectAll;
 		}
 		~DrawShapesCommand() {
 			delete drawrec;
@@ -36,7 +38,9 @@ namespace DPDrawing {
 		void execute() {
 			for(int i = shapes->size() - 1; i >= 0; i--) {
 				auto& sp = shapes->at(i);
-				sp->Deselect();
+				if(deselectAll) {
+					sp->Deselect();
+				}
 				if(sp->getType() == "Rectangle") {
 					drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), renderer, tm);
 					inv->addCommand(drawrec);
