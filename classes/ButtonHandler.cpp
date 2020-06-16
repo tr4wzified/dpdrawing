@@ -1,5 +1,5 @@
 #include "ButtonHandler.h"
-DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT) { 
+DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite) { 
 	this->inv = inv;
 	this->renderer = renderer;
 	this->tm = tm;
@@ -10,6 +10,7 @@ DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, Te
 	this->currentMode = currentMode;
 	this->BUTTON_WIDTH = BUTTON_WIDTH;
 	this->BUTTON_HEIGHT = BUTTON_HEIGHT;
+	this->composite = composite;
 }
 
 bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
@@ -153,6 +154,23 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 				}
 				return true;
 			}
+			// Group selected objects
+			else if(mouseY <= *BUTTON_HEIGHT * 9) {
+				if(execute) {
+					*currentMode = -8;
+					GroupCommand* gc = new GroupCommand(composite, shapes);
+					ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					inv->addCommand(gc);
+					inv->addCommand(clearc);
+					inv->addCommand(lbc);
+					inv->addCommand(dsc);
+					inv->Invoke();
+					SDL_Log("-8");
+				}
+			}
+
 			else {
 				return false;
 			}

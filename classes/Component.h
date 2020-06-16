@@ -1,3 +1,7 @@
+#include <string>
+#include <random>
+#include <sstream>
+using std::string;
 #pragma once
 namespace DPDrawing {
 	class Component {

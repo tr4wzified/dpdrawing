@@ -8,6 +8,8 @@
 #include "classes/MouseHandler.h"
 #include "classes/ButtonHandler.h"
 #include "classes/UndoHandler.h"
+#include "classes/Component.h"
+#include "classes/Composite.h"
 
 #include "classes/commands/DrawRectangleCommand.h"
 #include "classes/commands/DrawCircleCommand.h"

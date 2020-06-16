@@ -27,6 +27,7 @@ int holdingShape = -1;
 TTF_Font* font = nullptr;
 ButtonHandler* bh = nullptr;
 UndoHandler* uh = nullptr;
+Composite* composite = nullptr;
 
 int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 {
@@ -70,7 +71,11 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	inv = new Invoker(gRenderer, uh);
 	mh = MouseHandler::getInstance();
 
-	bh = new ButtonHandler(inv, gRenderer, tm, uh, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
+	SDL_Log("loading composite");
+	composite = new Composite();
+	SDL_Log("composite UUID: %s", composite->getUUID().c_str());
+
+	bh = new ButtonHandler(inv, gRenderer, tm, uh, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT, composite);
 	LoadButtonsCommand* lbc = new LoadButtonsCommand(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 	inv->addCommand(lbc);
 	inv->Invoke();
@@ -169,16 +174,16 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 		mh->updateMouseBeingHeld();
 		if(!bh->checkIfButtonPressed(false)) {
 			switch(event.button.button) {
+				case SDL_BUTTON_RIGHT:
+					for(unique_ptr<Shape>& s : shapes) {
+						s->Deselect();
+					}
 				case SDL_BUTTON_LEFT:
 					{
 						// If in selecting or resizing mode
 						if(currentMode == -1 || currentMode == -5) {
 							int mX = mh->getMouseX();
 							int mY = mh->getMouseY();
-							SDL_Log("amount of shapes %d", (int)shapes.size());
-								for(unique_ptr<Shape>& s : shapes) {
-									s->Deselect();
-								}
 								for(int i = 0; i < shapes.size(); i++) {
 									if (
 										mX >= shapes.at(i)->getPosX() &&
@@ -197,10 +202,6 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 										}
 									}
 								}
-							for(int i = 0; i < shapes.size(); i++) {
-								SDL_Log("Shape %d", i);
-								SDL_Log("	Selected? %d", shapes.at(i)->isSelected());
-							}
 							DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer, false);
 							inv->addCommand(dsc);
 							inv->Invoke();

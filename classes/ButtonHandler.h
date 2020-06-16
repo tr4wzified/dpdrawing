@@ -10,6 +10,7 @@
 #include "commands/SaveCommand.h"
 #include "commands/LoadCommand.h"
 #include "commands/DeleteCommand.h"
+#include "commands/GroupCommand.h"
 
 using std::unique_ptr;
 using std::vector;
@@ -32,8 +33,9 @@ namespace DPDrawing {
 			SaveCommand* sc = nullptr;
 			LoadCommand* lc = nullptr;
 			DeleteCommand* dc = nullptr;
+			Composite* composite = nullptr;
 		public:
-			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT);
+			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite);
 			bool checkIfButtonPressed(bool execute);
 			bool initializeButtons();
 	};

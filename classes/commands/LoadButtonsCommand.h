@@ -64,7 +64,20 @@ namespace DPDrawing {
 
 			SDL_Color text = {255,255,255};
 
-			// Button -6 - Redo - Vertical
+			// Button -7 - Redo - Vertical
+			Button t(0, BUTTON_HEIGHT * 8, text, 71, font);
+			SDL_Rect* t_rect = t.getRectangle();
+			SDL_Texture* t_msg = SDL_CreateTextureFromSurface(renderer, t.getSurface());
+			SDL_Rect* t_msg_rect = t.getRectangle();
+			if(*currentMode == -7) {
+				SDL_RenderCopy(renderer, button_active, NULL, t_rect);
+			}
+			else {
+				SDL_RenderCopy(renderer, button_tex, NULL, t_rect);
+			}
+			SDL_RenderCopy(renderer, t_msg, NULL, t_msg_rect);
+
+			// Button -7 - Redo - Vertical
 			Button u(0, BUTTON_HEIGHT * 7, text, 62, font);
 			SDL_Rect* u_rect = u.getRectangle();
 			SDL_Texture* u_msg = SDL_CreateTextureFromSurface(renderer, u.getSurface());

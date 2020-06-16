@@ -1,12 +1,13 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <string>
+#include <iostream>
 #include "Selectable.h"
 #include "Component.h"
 
 using std::string;
 namespace DPDrawing {
-class Shape: public Selectable, Component {
+class Shape: public Selectable, public Component {
 public:
 	~Shape() {}
     virtual void setPosX(int posX);
@@ -20,7 +21,9 @@ public:
 	virtual string getType() = 0;
     virtual float getArea() = 0;
 
-	virtual void operation() {}
+	virtual void operation() {
+		std::cout << "test";
+	}
 
 private:
 	int posX;
