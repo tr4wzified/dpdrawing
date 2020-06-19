@@ -13,14 +13,46 @@ namespace DPDrawing {
 		private: 
 			vector<unique_ptr<Shape>>* shapes = nullptr;
 			Composite* composite = nullptr;
+			void RecursiveDelete(Component* c, Component* toCheckAgainst) {
+				// For each component in composite c, check if it is the component toCheckAgainst
+				SDL_Log("RecursiveDelete() called! Component c size: %d, Component toCheckAgainst size: %d", c->size(), toCheckAgainst->size());
+				for(int j = 0; j < toCheckAgainst->size(); j++) {
+					SDL_Log("toCheckAgainst j: %d", j);
+					if(toCheckAgainst->getChild(j)->size() == 0) {
+						SDL_Log("That j is a leaf!");
+						for(int i = 0; i < c->size(); i++) {
+							SDL_Log("c i: %d", i);
+							if(c->getChild(i) == nullptr) {
+								SDL_Log("ERROR: getChild(i) is a NULLPTR!");
+							}
+							// if it's a leaf (shape)
+							if(c->getChild(i)->size() == 0) {
+								SDL_Log("that i is a leaf!");
+								// Identical component found!
+								if(c->getChild(i)->getUUID() == toCheckAgainst->getChild(j)->getUUID()) {
+									SDL_Log("they are the same! removing");
+									c->remove(i);
+								}
+							}
+							else {
+								SDL_Log("hit else");
+								// Recursive
+								RecursiveDelete(c->getChild(i), toCheckAgainst);
+							}
+						}
+					}
+				}
+			}
 		public:
 			GroupCommand(Composite* composite, vector<unique_ptr<Shape>>* shapes) {
 				this->composite = composite;
 				this->shapes = shapes;
 			}
+
 			bool isUndoable() {
 				return false;
 			}
+
 			void execute() {
 				Composite* newComposite = nullptr;
 				// If there is a selected shape
@@ -35,18 +67,10 @@ namespace DPDrawing {
 					}
 				}
 				if(newComposite != nullptr) {
-					// Go through each composite, if the shape is already there, delete it because it's in the new group now
-					// 
-					for(int i = 0; i < composite->size(); i++) {
-						for(int j = 0; j < newComposite->size(); j++) {
-							if(composite->at(i).getUUID() == newComposite->at(j).getUUID()) {
-								composite->remove(i);
-							}
-						}
-					}
+					RecursiveDelete(composite, newComposite);
 					composite->add(newComposite);
 				}
-				composite->printAmountChildren();
+				//composite->print();
 			}
 	};
 }

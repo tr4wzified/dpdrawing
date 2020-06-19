@@ -13,6 +13,7 @@ namespace DPDrawing {
 			int getRadiusX();
 			int getRadiusY();
 			string getType();
+			void print();
 
 	};
 }

@@ -8,6 +8,7 @@ public:
     float getArea();
     SDL_Rect* getSDLObj();
 	string getType();
+	void print();
 private:
     SDL_Rect rect;
 };

@@ -20,6 +20,20 @@ public:
 	virtual int getHeight();
 	virtual string getType() = 0;
     virtual float getArea() = 0;
+	virtual string getUUID() {
+		return UUID;
+	}
+	virtual void setUUID(std::string UUID) {
+		this->UUID = UUID;
+	}
+
+	virtual int size() {
+		return 0;
+	}
+
+	void print() {
+		SDL_Log("Shape");
+	}
 
 	virtual void operation() {
 		std::cout << "test";
@@ -30,6 +44,7 @@ private:
 	int posY;
 	int width;
 	int height;
+	string UUID;
 
 };
 }

@@ -84,7 +84,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					*currentMode = -3;
 					ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					LoadCommand* lc = new LoadCommand(shapes, "saves/saved.json", renderer);
-					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(resetc);
 					inv->addCommand(lc);
 					inv->addCommand(dsc);
@@ -100,7 +100,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					DeleteCommand* dc = new DeleteCommand(shapes);
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(dc);
 					inv->addCommand(lbc);
 					inv->addCommand(clearc);
@@ -130,7 +130,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->Invoke();
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					uh->Undo();
-					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
@@ -146,7 +146,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(clearc);
 					uh->Redo();
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
@@ -161,7 +161,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					GroupCommand* gc = new GroupCommand(composite, shapes);
 					ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-					DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, shapes, renderer);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(gc);
 					inv->addCommand(clearc);
 					inv->addCommand(lbc);

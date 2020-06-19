@@ -3,6 +3,7 @@
 #include "../Invoker.h"
 #include "../TextureManager.h"
 #include "../MouseHandler.h"
+#include "../Composite.h"
 #include "strategy/Context.h"
 #include "strategy/DrawRectangleStrategy.h"
 #include <SDL2/SDL.h>
@@ -18,6 +19,7 @@ namespace DPDrawing {
 			MouseHandler* mh = nullptr;
 			SDL_Renderer* renderer = nullptr;
 			TextureManager* tm = nullptr;
+			Composite* composite = nullptr;
 			bool useDynamicResize = false;
 			void dynamicResize(Shape* mShape) {
 				mShape->setPosX(std::min(mh->getMouseX(), mh->getMouseEndX()));
@@ -26,12 +28,13 @@ namespace DPDrawing {
 				mShape->setHeight(abs(mh->getMouseEndY() - mh->getMouseY()));
 			}
 			public:
-			CreateRectangleCommand(Invoker* inv, vector<unique_ptr<Shape>>* shapes, MouseHandler* mh, SDL_Renderer* renderer, TextureManager* tm, bool useDynamicResize) {
+			CreateRectangleCommand(Invoker* inv, vector<unique_ptr<Shape>>* shapes, MouseHandler* mh, SDL_Renderer* renderer, TextureManager* tm, Composite* composite, bool useDynamicResize) {
 				this->inv = inv;
 				this->shapes = shapes;
 				this->mh = mh;
 				this->renderer = renderer;
 				this->tm = tm;
+				this->composite = composite;
 				this->useDynamicResize = useDynamicResize;
 			}
 		void execute() {
@@ -40,6 +43,7 @@ namespace DPDrawing {
 				dynamicResize(rec);
 			}
 			shapes->push_back(std::make_unique<Rectangle>(*rec));
+			composite->add(rec);
 			Context* context = new Context(new DrawRectangleStrategy(rec, renderer, tm));
 			context->executeStrategy();
 			delete context;

@@ -44,23 +44,43 @@ namespace DPDrawing {
 				};
 				this->UUID = ss.str();
 			}
+
 			~Composite() {
 				for (unsigned int i = 0; i < children.size(); i++ ) {
 				  delete children.at(i);
 				}
 			}
-			Component* getChild(const unsigned int index) {
+
+			Component* getChild(int index) {
+				if(index < 0 || index >= size()) {
+					SDL_Log("ERROR: Index out of range in Composite!");
+				}
+				if(children.at(index) == nullptr) {
+					SDL_Log("ERROR: getChild() from Composite returned nullptr!");
+				}
 				return children.at(index);
 			}
 
 			void add(Component* component) {
+				if(component == nullptr) {
+					SDL_Log("WARNING: Adding a NULLPTR to a Composite!");
+				}
 				children.push_back(component);
 			}
 
-			void remove(const unsigned int index) {
+			void remove(int index) {
 				Component* child = children.at(index);
 				children.erase(children.begin() + index);
 				delete child;
+			}
+
+			int size() {
+				return (int)children.size();
+			}
+
+			void print() {
+				SDL_Log("Type: Composite");
+				SDL_Log("Size: %d", size());
 			}
 
 			void operation() {
@@ -68,12 +88,9 @@ namespace DPDrawing {
 					c->operation();
 				}
 			}
-			virtual string getUUID() {
-				return UUID;
-			}
 
-			virtual void printAmountChildren() {
-				SDL_Log("%d", (int)children.size());
+			string getUUID() {
+				return UUID;
 			}
 	};
 }

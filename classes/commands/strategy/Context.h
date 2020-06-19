@@ -17,7 +17,6 @@ namespace DPDrawing {
 			}
 			void executeStrategy() {
 				strategy->execute();
-				delete strategy;
 			}
 	};
 }

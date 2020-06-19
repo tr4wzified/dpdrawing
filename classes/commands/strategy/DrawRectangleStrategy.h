@@ -12,7 +12,7 @@ namespace DPDrawing {
 				this->r = r;
 				this->tm = tm;
 			}
-			
+
 			void execute() {
 				if(mRect == nullptr) {
 					SDL_Log("ERROR: mRect is a NULLPTR in DrawRectangleStrategy!");

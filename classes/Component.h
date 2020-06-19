@@ -1,8 +1,9 @@
+#pragma once
+#include <SDL2/SDL.h>
 #include <string>
 #include <random>
 #include <sstream>
 using std::string;
-#pragma once
 namespace DPDrawing {
 	class Component {
 		public:
@@ -11,5 +12,8 @@ namespace DPDrawing {
 			virtual void add(Component*) {}
 			virtual void remove(int) { }
 			virtual void operation() = 0;
+			virtual string getUUID() = 0;
+			virtual int size() = 0;
+			virtual void print() = 0;
 	};	
 }
