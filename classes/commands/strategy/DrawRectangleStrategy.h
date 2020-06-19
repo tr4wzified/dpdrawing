@@ -1,13 +1,13 @@
 #pragma once
-#include "../Rectangle.h"
+#include "../../Rectangle.h"
 #include <SDL2/SDL.h>
-#include "../TextureManager.h"
-#include "Command.h"
-#include <memory>
+#include "../../SDL2_gfx_ellipse.h"
+#include "../../TextureManager.h"
+#include "Strategy.h"
 namespace DPDrawing {
-	class DrawRectangleCommand : public Command {
+	class DrawRectangleStrategy : public Strategy {
 		public:
-			DrawRectangleCommand(Rectangle* rect, SDL_Renderer* r, TextureManager* tm) {
+			DrawRectangleStrategy(Rectangle* rect, SDL_Renderer* r, TextureManager* tm) {
 				mRect = rect;
 				this->r = r;
 				this->tm = tm;
@@ -15,7 +15,7 @@ namespace DPDrawing {
 			
 			void execute() {
 				if(mRect == nullptr) {
-					SDL_Log("ERROR: mRect is a NULLPTR in DrawRectangleCommand!");
+					SDL_Log("ERROR: mRect is a NULLPTR in DrawRectangleStrategy!");
 				}
 				SDL_Rect* obj = mRect->getSDLObj();
 				SDL_Texture* tex = (mRect->isSelected()) ? tm->getTextureByName("red") : tm->getTextureByName("white");
@@ -23,9 +23,6 @@ namespace DPDrawing {
 				SDL_RenderPresent(r);
 			}
 
-			bool isUndoable() {
-				return false;
-			}
 		private:
 			Rectangle* mRect;
 			SDL_Renderer* r;

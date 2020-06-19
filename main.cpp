@@ -112,7 +112,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 			int y = mh->getMouseEndY() - mh->getHoldingPosY();
 			MoveCommand* mc = new MoveCommand(shapes.at(holdingShape).get(), x, y);
 			ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-			DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+			DrawShapesCommand* dsc = new DrawShapesCommand(tm, &shapes, gRenderer);
 			inv->addCommand(mc);
 			inv->addCommand(clearc);
 			inv->addCommand(dsc);
@@ -131,7 +131,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 			if(s != nullptr) {
 				ResizeCommand* rc = new ResizeCommand(s, mh);
 				ClearCommand* clearc = new ClearCommand(inv, gRenderer, font, tm, &shapes, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
-				DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+				DrawShapesCommand* dsc = new DrawShapesCommand(tm, &shapes, gRenderer);
 				inv->addCommand(rc);
 				inv->addCommand(clearc);
 				inv->addCommand(dsc);
@@ -147,9 +147,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 				case 1:
 					{
 						CreateRectangleCommand* crc = new CreateRectangleCommand(inv, &shapes, mh, gRenderer, tm, true);
-						DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+						//DrawShapesCommand* dsc = new DrawShapesCommand(tm, &shapes, gRenderer);
 						inv->addCommand(crc);
-						inv->addCommand(dsc);
+						//inv->addCommand(dsc);
 						inv->Invoke();
 						break;
 					}
@@ -157,9 +157,9 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 				case 2:
 					{
 						CreateCircleCommand* ccc = new CreateCircleCommand(inv, &shapes, mh, gRenderer, tm, true);
-						DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer);
+						//DrawShapesCommand* dsc = new DrawShapesCommand(tm, &shapes, gRenderer);
 						inv->addCommand(ccc);
-						inv->addCommand(dsc);
+						//inv->addCommand(dsc);
 						inv->Invoke();
 						break;
 					}
@@ -202,7 +202,7 @@ void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
 										}
 									}
 								}
-							DrawShapesCommand* dsc = new DrawShapesCommand(inv, tm, &shapes, gRenderer, false);
+							DrawShapesCommand* dsc = new DrawShapesCommand(tm, &shapes, gRenderer, false);
 							inv->addCommand(dsc);
 							inv->Invoke();
 						}

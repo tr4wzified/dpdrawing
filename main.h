@@ -10,9 +10,8 @@
 #include "classes/UndoHandler.h"
 #include "classes/Component.h"
 #include "classes/Composite.h"
+#include "classes/commands/strategy/Context.h"
 
-#include "classes/commands/DrawRectangleCommand.h"
-#include "classes/commands/DrawCircleCommand.h"
 #include "classes/commands/DrawShapesCommand.h"
 #include "classes/commands/MoveCommand.h"
 #include "classes/commands/ResizeCommand.h"

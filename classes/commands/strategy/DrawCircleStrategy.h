@@ -1,16 +1,16 @@
 #pragma once
-#include "../Circle.h"
+#include "../../Circle.h"
 #include <SDL2/SDL.h>
-#include "../SDL2_gfx_ellipse.h"
-#include "../TextureManager.h"
-#include "Command.h"
+#include "../../SDL2_gfx_ellipse.h"
+#include "../../TextureManager.h"
+#include "Strategy.h"
 
 using DPDrawing::filledEllipseRGBA;
 
 namespace DPDrawing {
-	class DrawCircleCommand : public Command {
+	class DrawCircleStrategy : public Strategy {
 		public:
-		DrawCircleCommand(Circle* circ, SDL_Renderer* r, TextureManager* tm) {
+		DrawCircleStrategy(Circle* circ, SDL_Renderer* r, TextureManager* tm) {
 			mCirc = circ;
 			this->r = r;
 			this->tm = tm;
@@ -26,10 +26,7 @@ namespace DPDrawing {
 				}
 				SDL_RenderPresent(r);
 		}
-		bool isUndoable() {
-			return false;
-		}
-			
+
 		private:
 		SDL_Renderer* r;
 		TextureManager* tm;

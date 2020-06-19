@@ -3,7 +3,8 @@
 #include "../Invoker.h"
 #include "../TextureManager.h"
 #include "../MouseHandler.h"
-#include "DrawCircleCommand.h"
+#include "strategy/Context.h"
+#include "strategy/DrawCircleStrategy.h"
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
@@ -39,8 +40,9 @@ namespace DPDrawing {
 				dynamicResize(circ);
 			}
 			shapes->push_back(std::make_unique<Circle>(*circ));
-			DrawCircleCommand* drawcirc = new DrawCircleCommand(circ, renderer, tm);
-			inv->addCommand(drawcirc);
+			Context* context = new Context(new DrawCircleStrategy(circ, renderer, tm));
+			context->executeStrategy();
+			delete context;
 		}
 		bool isUndoable() {
 			return true;

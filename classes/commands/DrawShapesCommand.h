@@ -1,39 +1,34 @@
 #pragma once
-#include "../Selectable.h"
-#include "../Shape.h"
+#include "Command.h"
 #include "../Circle.h"
 #include "../Rectangle.h"
 #include <SDL2/SDL.h>
 #include "../SDL2_gfx_ellipse.h"
-#include "../Invoker.h"
-#include "DrawRectangleCommand.h"
-#include "DrawCircleCommand.h"
-#include "Command.h"
+#include "strategy/Context.h"
+#include "strategy/DrawCircleStrategy.h"
+#include "strategy/DrawRectangleStrategy.h"
 #include <memory>
 
 using std::unique_ptr;
 
 namespace DPDrawing {
+	// Context
 	class DrawShapesCommand : public Command {
 		private:
-		Invoker* inv = nullptr;
 		TextureManager* tm = nullptr;
 		SDL_Renderer* renderer = nullptr;
 		vector<unique_ptr<Shape>>* shapes;
-		DrawRectangleCommand* drawrec = nullptr;
-		DrawCircleCommand* drawcirc = nullptr;
+		Context* context = nullptr;
 		bool deselectAll = true;
 		public:
-		DrawShapesCommand(Invoker* inv, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer, bool deselectAll = true) {
-			this->inv = inv;
+		DrawShapesCommand(TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer, bool deselectAll = true) {
 			this->shapes = shapes;
 			this->renderer = renderer;
 			this->tm = tm;
 			this->deselectAll = deselectAll;
 		}
 		~DrawShapesCommand() {
-			delete drawrec;
-			delete drawcirc;
+			delete context;
 		}
 		void execute() {
 			for(int i = shapes->size() - 1; i >= 0; i--) {
@@ -42,12 +37,17 @@ namespace DPDrawing {
 					sp->Deselect();
 				}
 				if(sp->getType() == "Rectangle") {
-					drawrec = new DrawRectangleCommand(dynamic_cast<Rectangle*>(sp.get()), renderer, tm);
-					inv->addCommand(drawrec);
+					this->context = new Context(new DrawRectangleStrategy(dynamic_cast<Rectangle*>(sp.get()), renderer, tm));
 				}
 				else if(sp->getType() == "Circle") {
-					drawcirc = new DrawCircleCommand(dynamic_cast<Circle*>(sp.get()), renderer, tm);
-					inv->addCommand(drawcirc);
+					this->context = new Context(new DrawCircleStrategy(dynamic_cast<Circle*>(sp.get()), renderer, tm));
+				}
+				if(context != nullptr) {
+					context->executeStrategy();
+					delete context;
+				}
+				else {
+					SDL_Log("ERROR: Tried to execute strategies on NULLPTR Context in DrawShapesCommand!");
 				}
 			}
 		}
@@ -55,6 +55,5 @@ namespace DPDrawing {
 		bool isUndoable() {
 			return false;
 		}
-			
 	};
 }

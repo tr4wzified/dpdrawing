@@ -3,7 +3,6 @@
 #include "../Invoker.h"
 #include "../TextureManager.h"
 #include "../MouseHandler.h"
-#include "DrawCircleCommand.h"
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>

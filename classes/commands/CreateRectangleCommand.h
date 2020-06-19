@@ -3,7 +3,8 @@
 #include "../Invoker.h"
 #include "../TextureManager.h"
 #include "../MouseHandler.h"
-#include "DrawRectangleCommand.h"
+#include "strategy/Context.h"
+#include "strategy/DrawRectangleStrategy.h"
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
@@ -39,8 +40,9 @@ namespace DPDrawing {
 				dynamicResize(rec);
 			}
 			shapes->push_back(std::make_unique<Rectangle>(*rec));
-			DrawRectangleCommand* drawrec = new DrawRectangleCommand(rec, renderer, tm);
-			inv->addCommand(drawrec);
+			Context* context = new Context(new DrawRectangleStrategy(rec, renderer, tm));
+			context->executeStrategy();
+			delete context;
 		}
 		bool isUndoable() {
 			return true;

@@ -22,11 +22,29 @@ namespace DPDrawing {
 				return false;
 			}
 			void execute() {
+				Composite* newComposite = nullptr;
+				// If there is a selected shape
 				for(unique_ptr<Shape>& s : *shapes) {
 					if(s->isSelected()) {
+						if(newComposite == nullptr) {
+							SDL_Log("Creating new group.");
+							newComposite = new Composite();
+						}
 						SDL_Log("Adding a shape to the composite.");
-						composite->add(s.get());
+						newComposite->add(s.get());
 					}
+				}
+				if(newComposite != nullptr) {
+					// Go through each composite, if the shape is already there, delete it because it's in the new group now
+					// 
+					for(int i = 0; i < composite->size(); i++) {
+						for(int j = 0; j < newComposite->size(); j++) {
+							if(composite->at(i).getUUID() == newComposite->at(j).getUUID()) {
+								composite->remove(i);
+							}
+						}
+					}
+					composite->add(newComposite);
 				}
 				composite->printAmountChildren();
 			}
