@@ -18,27 +18,55 @@ namespace DPDrawing {
 				SDL_Log("RecursiveDelete() called! Component c size: %d, Component toCheckAgainst size: %d", c->size(), toCheckAgainst->size());
 				for(int j = 0; j < toCheckAgainst->size(); j++) {
 					SDL_Log("toCheckAgainst j: %d", j);
-					if(toCheckAgainst->getChild(j)->size() == 0) {
-						SDL_Log("That j is a leaf!");
-						for(int i = 0; i < c->size(); i++) {
-							SDL_Log("c i: %d", i);
-							if(c->getChild(i) == nullptr) {
-								SDL_Log("ERROR: getChild(i) is a NULLPTR!");
-							}
-							// if it's a leaf (shape)
-							if(c->getChild(i)->size() == 0) {
-								SDL_Log("that i is a leaf!");
-								// Identical component found!
-								if(c->getChild(i)->getUUID() == toCheckAgainst->getChild(j)->getUUID()) {
-									SDL_Log("they are the same! removing");
-									c->remove(i);
+					if(toCheckAgainst->size() != 0) {
+						if(toCheckAgainst->getChild(j)->size() == 0) {
+							SDL_Log("That j is a leaf!");
+							for(int i = 0; i < c->size(); i++) {
+								SDL_Log("c i: %d", i);
+								if(c->getChild(i) == nullptr) {
+									SDL_Log("ERROR: getChild(i) is a NULLPTR!");
+								}
+								// if it's a leaf (shape)
+								if(c->getChild(i)->size() == 0) {
+									SDL_Log("that i is a leaf!");
+									SDL_Log("c->getChild(%d)->getUUID() = %s", i, c->getChild(i)->getUUID().c_str());
+									SDL_Log("toCheckAgainst->getChild(%d)->getUUID() = %s", j, toCheckAgainst->getChild(j)->getUUID().c_str());
+									// Identical component found!
+									if(c->getChild(i)->getUUID() == toCheckAgainst->getChild(j)->getUUID()) {
+										SDL_Log("they are the same! removing");
+										c->remove(i);
+										i--;
+									}
+								}
+								else {
+									SDL_Log("hit else");
+									// Recursive
+									RecursiveDelete(c->getChild(i), toCheckAgainst);
 								}
 							}
-							else {
-								SDL_Log("hit else");
-								// Recursive
-								RecursiveDelete(c->getChild(i), toCheckAgainst);
+						}
+					}
+				}
+			}
+
+			void deleteRecursive(Component* c, Component* removeAllChildrenFromC) {
+				if(c->size() != 0) {
+					if(removeAllChildrenFromC->size() != 0) {
+						for(int i = 0; i < c->size(); i++) {
+							if(c->getChild(i)->size() == 0) {
+								for(int j = 0; j < removeAllChildrenFromC->size(); j++) {
+									if(c->getChild(i)->getUUID() == removeAllChildrenFromC->getChild(j)->getUUID()) {
+										c->remove(i);
+										//i--;
+									}
+								}
 							}
+							// Pure virtual bug?
+							/*
+							else {
+								deleteRecursive(c->getChild(i), removeAllChildrenFromC);
+							}
+							*/
 						}
 					}
 				}
@@ -67,7 +95,7 @@ namespace DPDrawing {
 					}
 				}
 				if(newComposite != nullptr) {
-					RecursiveDelete(composite, newComposite);
+					deleteRecursive(composite, newComposite);
 					composite->add(newComposite);
 				}
 				//composite->print();

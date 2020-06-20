@@ -10,7 +10,7 @@ namespace DPDrawing {
 			virtual ~Component() {}
 			virtual Component* getChild(int) { return 0; }
 			virtual void add(Component*) {}
-			virtual void remove(int) { }
+			virtual void remove(int) = 0;
 			virtual void operation() = 0;
 			virtual string getUUID() = 0;
 			virtual int size() = 0;

@@ -27,9 +27,11 @@ public:
 		this->UUID = UUID;
 	}
 
-	virtual int size() {
+	int size() {
 		return 0;
 	}
+
+	void remove(int) {}
 
 	void print() {
 		SDL_Log("Shape");
