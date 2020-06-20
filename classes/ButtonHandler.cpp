@@ -98,12 +98,12 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 				if(execute) {
 					*currentMode = -4;
 					DeleteCommand* dc = new DeleteCommand(shapes);
-					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(dc);
-					inv->addCommand(lbc);
 					inv->addCommand(clearc);
+					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
 					SDL_Log("-4");
