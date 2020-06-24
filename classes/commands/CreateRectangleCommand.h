@@ -9,6 +9,9 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
+
+#include "../decorators/ShapeDecorator.h"
+#include "../decorators/TextTopDecorator.h"
 using std::vector;
 using std::unique_ptr;
 namespace DPDrawing {
@@ -47,6 +50,14 @@ namespace DPDrawing {
 			Context* context = new Context(new DrawRectangleStrategy(rec, renderer, tm));
 			context->executeStrategy();
 			delete context;
+			Shape* s = rec;
+			SDL_Log("Shape: %s", s->getType().c_str());
+			ShapeDecorator* sd = new ShapeDecorator(s, tm, shapes, renderer, inv);
+			SDL_Log("ShapeDecorator: %s", sd->getType().c_str());
+			TextTopDecorator* ttd = new TextTopDecorator(s, tm, shapes, renderer, inv);
+			SDL_Log("TextTopDecorator: %s", ttd->getType().c_str());
+			delete sd;
+			delete ttd;
 		}
 		bool isUndoable() {
 			return true;

@@ -25,7 +25,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					HardResetCommand* resetc = new HardResetCommand(inv, uh, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(resetc);
 					inv->Invoke();
-					SDL_Log("0");
 				}
 				return true;
 			}
@@ -36,7 +35,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(lbc);
 					inv->Invoke();
-					SDL_Log("1");
 				}
 				return true;
 			}
@@ -47,7 +45,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(lbc);
 					inv->Invoke();
-					SDL_Log("2");
 				}
 				return true;
 			}
@@ -61,7 +58,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(lbc);
 					inv->Invoke();
-					SDL_Log("-1");
 				}
 				return true;
 			}
@@ -74,7 +70,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(sc);
 					inv->addCommand(lbc);
 					inv->Invoke();
-					SDL_Log("-2");
 				}
 				return true;
 			}
@@ -89,7 +84,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(lc);
 					inv->addCommand(dsc);
 					inv->Invoke();
-					SDL_Log("-3");
 				}
 				return true;
 			}
@@ -106,7 +100,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
-					SDL_Log("-4");
 				}
 				return true;
 			}
@@ -117,7 +110,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(lbc);
 					inv->Invoke();
-					SDL_Log("-5");
 				}
 				return true;
 			}
@@ -134,7 +126,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
-					SDL_Log("-6");
 				}
 				return true;
 			}
@@ -150,7 +141,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
-					SDL_Log("-7");
 				}
 				return true;
 			}
@@ -167,7 +157,6 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					inv->addCommand(lbc);
 					inv->addCommand(dsc);
 					inv->Invoke();
-					SDL_Log("-8");
 				}
 			}
 

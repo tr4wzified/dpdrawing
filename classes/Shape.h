@@ -19,7 +19,7 @@ public:
 	virtual int getWidth();
 	virtual int getHeight();
 	virtual string getType() = 0;
-    virtual float getArea() = 0;
+    virtual float getArea() { return 0; };
 	virtual string getUUID() {
 		return UUID;
 	}
