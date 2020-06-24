@@ -1,5 +1,10 @@
 #include "TextureManager.h"
 
+DPDrawing::TextureManager::TextureManager() {
+	this->font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
+	this->smallFont = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 32);
+}
+
 vector<SDL_Texture*>& DPDrawing::TextureManager::getTextures() {
 	return this->textures;
 }
@@ -55,5 +60,13 @@ SDL_Texture* DPDrawing::TextureManager::getTextureByName(string name) {
 
 SDL_Texture* DPDrawing::TextureManager::getTextureById(int id) {
 	return textures.at(id);
+}
+
+TTF_Font* DPDrawing::TextureManager::getFont() {
+	return this->font;
+}
+
+TTF_Font* DPDrawing::TextureManager::getSmallFont() {
+	return this->smallFont;
 }
 

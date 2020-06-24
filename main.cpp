@@ -62,7 +62,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	tm->addSurface(gRenderer, "resources/images/button-active.bmp", "button-active");
     SDL_Log("Textures loaded.");
 
-	font = TTF_OpenFont("./resources/fonts/open-sans/OpenSans-Regular.ttf", 96);
+	font = tm->getFont();
 	if(font == nullptr) {
 		SDL_Log("ERROR: Font is NULLPTR after initializing! You're likely in the wrong directory!");
 	}

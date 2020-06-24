@@ -11,8 +11,8 @@
 #include "classes/Component.h"
 #include "classes/Composite.h"
 #include "classes/commands/strategy/Context.h"
-#include "classes/decorators/ShapeDecorator.h"
-#include "classes/decorators/TextTopDecorator.h"
+#include "classes/decorators/ShapeTextDecorator.h"
+#include "classes/decorators/ShapeTextTopDecorator.h"
 
 #include "classes/commands/DrawShapesCommand.h"
 #include "classes/commands/MoveCommand.h"
