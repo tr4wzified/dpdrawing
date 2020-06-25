@@ -23,7 +23,7 @@ TextureManager* tm = nullptr;
 Invoker* inv = nullptr;
 MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
-vector<std::unique_ptr<Shape>> textDecorators;
+vector<std::unique_ptr<ShapeTextDecorator>> textDecorators;
 int holdingShape = -1;
 TTF_Font* font = nullptr;
 ButtonHandler* bh = nullptr;

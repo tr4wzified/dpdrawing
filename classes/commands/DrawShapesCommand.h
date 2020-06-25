@@ -36,12 +36,14 @@ namespace DPDrawing {
 				if(deselectAll) {
 					sp->Deselect();
 				}
+
 				if(sp->getType() == "Rectangle") {
 					this->context = new Context(new DrawRectangleStrategy(dynamic_cast<Rectangle*>(sp.get()), renderer, tm));
 				}
 				else if(sp->getType() == "Circle") {
 					this->context = new Context(new DrawCircleStrategy(dynamic_cast<Circle*>(sp.get()), renderer, tm));
 				}
+
 				if(context != nullptr) {
 					context->executeStrategy();
 					delete context;
@@ -49,6 +51,7 @@ namespace DPDrawing {
 				else {
 					SDL_Log("ERROR: Tried to execute strategies on NULLPTR Context in DrawShapesCommand!");
 				}
+
 			}
 		}
 

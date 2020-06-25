@@ -19,14 +19,16 @@ namespace DPDrawing {
 			Invoker* inv = nullptr;
 			TextureManager* tm = nullptr;
 			vector<unique_ptr<Shape>>* shapes = nullptr;
+			vector<unique_ptr<ShapeTextDecorator>>* textDecorators = nullptr;
 			SDL_Renderer* renderer = nullptr;
 			std::string userInput = "";
 		public:
-		DecorateCommand(Shape* shapeToDecorate, Invoker* inv, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer) {
+		DecorateCommand(Shape* shapeToDecorate, Invoker* inv, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<ShapeTextDecorator>>* textDecorators, SDL_Renderer* renderer) {
 			this->shapeToDecorate = shapeToDecorate;
 			this->inv = inv;
 			this->tm = tm;
 			this->shapes = shapes;
+			this->textDecorators = textDecorators;
 			this->renderer = renderer;
 		}
 		void execute() {
@@ -40,37 +42,37 @@ namespace DPDrawing {
 				if(userInput == "center") {
 					SDL_Log("Chose option center! Please enter the text you wish to appear in the center.");
 					std::cin >> userInput;
-					ShapeTextDecorator* sd = new ShapeTextDecorator(shapeToDecorate, tm, shapes, renderer, inv);
-					sd->drawText(userInput);
-					delete sd;
+					ShapeTextDecorator sd = ShapeTextDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					sd.drawText(userInput);
+					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(sd));
 				}
 				else if(userInput == "left") {
 					SDL_Log("Chose option left! Please enter the text you wish to appear in the left.");
 					std::cin >> userInput;
-					ShapeTextLeftDecorator* ttl = new ShapeTextLeftDecorator(shapeToDecorate, tm, shapes, renderer, inv);
-					ttl->drawText(userInput);
-					delete ttl;
+					ShapeTextLeftDecorator ttl = ShapeTextLeftDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ttl.drawText(userInput);
+					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttl));
 				}
 				else if(userInput == "right") {
 					SDL_Log("Chose option right! Please enter the text you wish to appear in the right.");
 					std::cin >> userInput;
-					ShapeTextRightDecorator* ttr = new ShapeTextRightDecorator(shapeToDecorate, tm, shapes, renderer, inv);
-					ttr->drawText(userInput);
-					delete ttr;
+					ShapeTextRightDecorator ttr = ShapeTextRightDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ttr.drawText(userInput);
+					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttr));
 				}
 				else if(userInput == "top") {
 					SDL_Log("Chose option top! Please enter the text you wish to appear in the top.");
 					std::cin >> userInput;
-					ShapeTextTopDecorator* ttd = new ShapeTextTopDecorator(shapeToDecorate, tm, shapes, renderer, inv);
-					ttd->drawText(userInput);
-					delete ttd;
+					ShapeTextTopDecorator ttd = ShapeTextTopDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ttd.drawText(userInput);
+					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttd));
 				}
 				else if(userInput == "bottom") {
 					SDL_Log("Chose option bottom! Please enter the text you wish to appear on the bottom.");
 					std::cin >> userInput;
-					ShapeTextBottomDecorator* ttb = new ShapeTextBottomDecorator(shapeToDecorate, tm, shapes, renderer, inv);
-					ttb->drawText(userInput);
-					delete ttb;
+					ShapeTextBottomDecorator ttb = ShapeTextBottomDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ttb.drawText(userInput);
+					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttb));
 				}
 				else {
 					SDL_Log("Unrecognized input. Please try again.");

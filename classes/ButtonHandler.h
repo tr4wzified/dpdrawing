@@ -25,7 +25,7 @@ namespace DPDrawing {
 			UndoHandler* uh = nullptr;
 			TTF_Font* font = nullptr;
 			vector<unique_ptr<Shape>>* shapes = nullptr;
-			vector<unique_ptr<Shape>>* textDecorators = nullptr;
+			vector<unique_ptr<ShapeTextDecorator>>* textDecorators = nullptr;
 			const int* BUTTON_WIDTH = nullptr;
 			const int* BUTTON_HEIGHT = nullptr;
 			int* currentMode = nullptr;
@@ -37,7 +37,7 @@ namespace DPDrawing {
 			DeleteCommand* dc = nullptr;
 			Composite* composite = nullptr;
 		public:
-			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<Shape>>* textDecorators, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite);
+			ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<ShapeTextDecorator>>* textDecorators, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite);
 			bool checkIfButtonPressed(bool execute);
 			bool initializeButtons();
 	};

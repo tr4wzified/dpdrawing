@@ -1,5 +1,5 @@
 #include "ButtonHandler.h"
-DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<Shape>>* textDecorators, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite) { 
+DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<ShapeTextDecorator>>* textDecorators, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite) { 
 	this->inv = inv;
 	this->renderer = renderer;
 	this->tm = tm;
@@ -61,7 +61,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 							break;
 						}
 					}
-					DecorateCommand* dc = new DecorateCommand(s, inv, tm, shapes, renderer);
+					DecorateCommand* dc = new DecorateCommand(s, inv, tm, shapes, textDecorators, renderer);
 					inv->addCommand(dc);
 					inv->addCommand(lbc);
 					inv->Invoke();
@@ -98,10 +98,11 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 				if(execute) {
 					*currentMode = -3;
 					ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
-					LoadCommand* lc = new LoadCommand(shapes, "saves/saved.json", renderer);
-					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);
 					inv->addCommand(resetc);
+					inv->Invoke();
+					LoadCommand* lc = new LoadCommand(shapes, "saves/saved.json", renderer);
 					inv->addCommand(lc);
+					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer, true);
 					inv->addCommand(dsc);
 					inv->Invoke();
 				}

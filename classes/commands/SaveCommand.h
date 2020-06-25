@@ -28,6 +28,7 @@ namespace DPDrawing {
 				jsonObjects[i]["height"] = shapes->at(i)->getHeight();
 				jsonObjects[i]["posX"] = shapes->at(i)->getPosX();
 				jsonObjects[i]["posY"] = shapes->at(i)->getPosY();
+				jsonObjects[i]["UUID"] = shapes->at(i)->getUUID();
 			}
 		
 			std::ofstream myfile(save_path);

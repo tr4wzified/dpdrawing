@@ -27,6 +27,10 @@ namespace DPDrawing {
 				return "ShapeTextDecorator";
 			}
 
+			string getShapeUUID() {
+				return decoratedShape->getUUID();
+			}
+
 			void drawText(string text) {
 				int texW = 0;
 				int texH = 0;

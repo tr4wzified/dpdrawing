@@ -31,10 +31,12 @@ namespace DPDrawing {
 			for(int i = 0; i < (int)j.size(); ++i) {
 				if (j[i]["type"].get<std::string>() == "Rectangle") {
 					Rectangle r = Rectangle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
+					r.setUUID(j[i]["UUID"].get<string>());
 					shapes->push_back(std::make_unique<Rectangle>(r));
 				}
 				else if (j[i]["type"].get<std::string>() == "Circle") {
 					Circle r = Circle(j[i]["width"].get<int>(), j[i]["height"].get<int>(), j[i]["posX"].get<int>(), j[i]["posY"].get<int>());
+					r.setUUID(j[i]["UUID"].get<string>());
 					shapes->push_back(std::make_unique<Circle>(r));
 				}
 			}
