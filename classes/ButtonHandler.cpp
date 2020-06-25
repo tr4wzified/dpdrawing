@@ -85,9 +85,11 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 			else if(mouseY <= *BUTTON_HEIGHT * 3) {
 				if(execute) {
 					*currentMode = -2;
-					SaveCommand* sc = new SaveCommand(shapes, "saves/saved.json");
+					SaveCommand* sc = new SaveCommand(shapes, "saves/shapes.json");
+					SaveDecorationsCommand* sdc = new SaveDecorationsCommand(textDecorators, "saves/decorations.json");
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(sc);
+					inv->addCommand(sdc);
 					inv->addCommand(lbc);
 					inv->Invoke();
 				}
@@ -100,10 +102,12 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 					ResetCommand* resetc = new ResetCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					inv->addCommand(resetc);
 					inv->Invoke();
-					LoadCommand* lc = new LoadCommand(shapes, "saves/saved.json", renderer);
+					LoadCommand* lc = new LoadCommand(shapes, "saves/shapes.json", renderer);
 					inv->addCommand(lc);
 					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer, true);
 					inv->addCommand(dsc);
+					LoadDecorationsCommand* ldc = new LoadDecorationsCommand(textDecorators, shapes, "saves/decorations.json", renderer, inv, tm);
+					inv->addCommand(ldc);
 					inv->Invoke();
 				}
 				return true;
@@ -112,7 +116,7 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 			else if(mouseY <= *BUTTON_HEIGHT * 5) {
 				if(execute) {
 					*currentMode = -4;
-					DeleteCommand* dc = new DeleteCommand(shapes);
+					DeleteCommand* dc = new DeleteCommand(shapes, textDecorators);
 					ClearCommand* clearc = new ClearCommand(inv, renderer, font, tm, shapes, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
 					DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer);

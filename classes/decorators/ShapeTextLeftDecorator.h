@@ -8,12 +8,20 @@ using std::string;
 namespace DPDrawing {
 	class ShapeTextLeftDecorator : public ShapeTextDecorator {
 		public:
-		ShapeTextLeftDecorator(Shape* decoratedShape, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer, Invoker* inv) : ShapeTextDecorator(decoratedShape, tm, shapes, renderer, inv) {}
+		ShapeTextLeftDecorator(string shapeUUID, TextureManager* tm, vector<unique_ptr<Shape>>* shapes, SDL_Renderer* renderer, Invoker* inv) : ShapeTextDecorator(shapeUUID, tm, shapes, renderer, inv) {}
 
 		string getType() {
 			return "ShapeTextLeftDecorator";
 		}
 		void drawText(string text) {
+			Shape* decoratedShape = nullptr;
+			for(int i = 0; i < (int)shapes->size(); i++) {
+				if(shapes->at(i)->getUUID() == shapeUUID) {
+					decoratedShape = shapes->at(i).get();
+					break;
+				}
+			}
+			this->text = text;
 			int texW = 0;
 			int texH = 0;
 			SDL_Surface* surface = TTF_RenderText_Solid(tm->getSmallFont(), text.c_str(), {255, 255, 255});

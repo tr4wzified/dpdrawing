@@ -9,6 +9,8 @@
 #include "commands/DrawShapesCommand.h"
 #include "commands/SaveCommand.h"
 #include "commands/LoadCommand.h"
+#include "commands/SaveDecorationsCommand.h"
+#include "commands/LoadDecorationsCommand.h"
 #include "commands/DeleteCommand.h"
 #include "commands/GroupCommand.h"
 #include "commands/DecorateCommand.h"

@@ -42,35 +42,35 @@ namespace DPDrawing {
 				if(userInput == "center") {
 					SDL_Log("Chose option center! Please enter the text you wish to appear in the center.");
 					std::cin >> userInput;
-					ShapeTextDecorator sd = ShapeTextDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ShapeTextDecorator sd = ShapeTextDecorator(shapeToDecorate->getUUID(), tm, shapes, renderer, inv);
 					sd.drawText(userInput);
 					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(sd));
 				}
 				else if(userInput == "left") {
 					SDL_Log("Chose option left! Please enter the text you wish to appear in the left.");
 					std::cin >> userInput;
-					ShapeTextLeftDecorator ttl = ShapeTextLeftDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ShapeTextLeftDecorator ttl = ShapeTextLeftDecorator(shapeToDecorate->getUUID(), tm, shapes, renderer, inv);
 					ttl.drawText(userInput);
 					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttl));
 				}
 				else if(userInput == "right") {
 					SDL_Log("Chose option right! Please enter the text you wish to appear in the right.");
 					std::cin >> userInput;
-					ShapeTextRightDecorator ttr = ShapeTextRightDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ShapeTextRightDecorator ttr = ShapeTextRightDecorator(shapeToDecorate->getUUID(), tm, shapes, renderer, inv);
 					ttr.drawText(userInput);
 					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttr));
 				}
 				else if(userInput == "top") {
 					SDL_Log("Chose option top! Please enter the text you wish to appear in the top.");
 					std::cin >> userInput;
-					ShapeTextTopDecorator ttd = ShapeTextTopDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ShapeTextTopDecorator ttd = ShapeTextTopDecorator(shapeToDecorate->getUUID(), tm, shapes, renderer, inv);
 					ttd.drawText(userInput);
 					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttd));
 				}
 				else if(userInput == "bottom") {
 					SDL_Log("Chose option bottom! Please enter the text you wish to appear on the bottom.");
 					std::cin >> userInput;
-					ShapeTextBottomDecorator ttb = ShapeTextBottomDecorator(shapeToDecorate, tm, shapes, renderer, inv);
+					ShapeTextBottomDecorator ttb = ShapeTextBottomDecorator(shapeToDecorate->getUUID(), tm, shapes, renderer, inv);
 					ttb.drawText(userInput);
 					textDecorators->push_back(std::make_unique<ShapeTextDecorator>(ttb));
 				}

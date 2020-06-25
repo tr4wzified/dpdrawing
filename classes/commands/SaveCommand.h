@@ -7,15 +7,16 @@
 #include <fstream>
 #include <string>
 using std::vector;
+using std::unique_ptr;
 using json = nlohmann::json;
 
 namespace DPDrawing {
 	class SaveCommand : public Command {
 		private:
-			vector<std::unique_ptr<Shape>>* shapes;
+			vector<unique_ptr<Shape>>* shapes;
 			std::string save_path;
 		public:
-		SaveCommand(vector<std::unique_ptr<Shape>>* shapes, std::string save_path) {
+		SaveCommand(vector<unique_ptr<Shape>>* shapes, std::string save_path) {
 			this->shapes = shapes;
 			this->save_path = save_path;
 		}
