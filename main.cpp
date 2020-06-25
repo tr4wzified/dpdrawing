@@ -23,6 +23,7 @@ TextureManager* tm = nullptr;
 Invoker* inv = nullptr;
 MouseHandler* mh = nullptr;
 vector<std::unique_ptr<Shape>> shapes;
+vector<std::unique_ptr<Shape>> textDecorators;
 int holdingShape = -1;
 TTF_Font* font = nullptr;
 ButtonHandler* bh = nullptr;
@@ -75,7 +76,7 @@ int Init(const int& SCREEN_WIDTH, const int& SCREEN_HEIGHT)
 	composite = new Composite();
 	SDL_Log("composite UUID: %s", composite->getUUID().c_str());
 
-	bh = new ButtonHandler(inv, gRenderer, tm, uh, mh, &shapes, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT, composite);
+	bh = new ButtonHandler(inv, gRenderer, tm, uh, mh, &shapes, &textDecorators, font, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT, composite);
 	LoadButtonsCommand* lbc = new LoadButtonsCommand(gRenderer, font, tm, &currentMode, &BUTTON_WIDTH, &BUTTON_HEIGHT);
 	inv->addCommand(lbc);
 	inv->Invoke();

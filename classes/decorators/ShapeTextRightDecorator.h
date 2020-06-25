@@ -19,7 +19,7 @@ namespace DPDrawing {
 			SDL_Surface* surface = TTF_RenderText_Solid(tm->getSmallFont(), text.c_str(), {255, 255, 255});
 			SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 			SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-			SDL_Rect dstrect = { decoratedShape->getPosX() + (decoratedShape->getWidth() / 2) + texW + 50, decoratedShape->getPosY() + (decoratedShape->getHeight() / 2) - (texH / 2), texW, texH };
+			SDL_Rect dstrect = { decoratedShape->getPosX() + decoratedShape->getWidth() + 10, decoratedShape->getPosY() + (decoratedShape->getHeight() / 2) - (texH / 2), texW, texH };
 			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 			SDL_RenderPresent(renderer);
 		}

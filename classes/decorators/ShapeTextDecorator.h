@@ -22,11 +22,7 @@ namespace DPDrawing {
 				this->renderer = renderer;
 				this->inv = inv;
 			}
-			/* void draw() { */
-			/* 	DrawShapesCommand* dsc = new DrawShapesCommand(tm, shapes, renderer); */
-			/* 	inv->addCommand(dsc); */
-			/* 	inv->Invoke(); */
-			/* } */
+
 			string getType() {
 				return "ShapeTextDecorator";
 			}

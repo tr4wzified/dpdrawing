@@ -9,12 +9,6 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
-
-#include "../decorators/ShapeTextDecorator.h"
-#include "../decorators/ShapeTextTopDecorator.h"
-#include "../decorators/ShapeTextBottomDecorator.h"
-#include "../decorators/ShapeTextLeftDecorator.h"
-#include "../decorators/ShapeTextRightDecorator.h"
 using std::vector;
 using std::unique_ptr;
 namespace DPDrawing {
@@ -53,25 +47,6 @@ namespace DPDrawing {
 			Context* context = new Context(new DrawRectangleStrategy(rec, renderer, tm));
 			context->executeStrategy();
 			delete context;
-			Shape* s = rec;
-			ShapeTextDecorator* sd = new ShapeTextDecorator(s, tm, shapes, renderer, inv);
-			//SDL_Log("ShapeTextDecorator: %s", sd->getType().c_str());
-			string test;
-			SDL_Log("Please input your text to display in the middle below!");
-			std::cin >> test;
-			sd->drawText(test);
-			ShapeTextTopDecorator* ttd = new ShapeTextTopDecorator(s, tm, shapes, renderer, inv);
-			//SDL_Log("ShapeTextTopDecorator: %s", ttd->getType().c_str());
-			ttd->drawText("top text");
-			ShapeTextBottomDecorator* ttb = new ShapeTextBottomDecorator(s, tm, shapes, renderer, inv);
-			ttb->drawText("bottom text");
-			ShapeTextLeftDecorator* ttl = new ShapeTextLeftDecorator(s, tm, shapes, renderer, inv);
-			ttl->drawText("left text");
-			ShapeTextRightDecorator* ttr = new ShapeTextRightDecorator(s, tm, shapes, renderer, inv);
-			ttr->drawText("right text");
-			delete sd;
-			delete ttd;
-			delete ttb;
 		}
 		bool isUndoable() {
 			return true;

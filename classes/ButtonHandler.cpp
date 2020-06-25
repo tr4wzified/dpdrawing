@@ -1,11 +1,12 @@
 #include "ButtonHandler.h"
-DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite) { 
+DPDrawing::ButtonHandler::ButtonHandler(Invoker* inv, SDL_Renderer* renderer, TextureManager* tm, UndoHandler* uh, MouseHandler* mh, vector<unique_ptr<Shape>>* shapes, vector<unique_ptr<Shape>>* textDecorators, TTF_Font* font, int* currentMode, const int* BUTTON_WIDTH, const int* BUTTON_HEIGHT, Composite* composite) { 
 	this->inv = inv;
 	this->renderer = renderer;
 	this->tm = tm;
 	this->uh = uh;
 	this->mh = mh;
 	this->shapes = shapes;
+	this->textDecorators = textDecorators;
 	this->font = font;
 	this->currentMode = currentMode;
 	this->BUTTON_WIDTH = BUTTON_WIDTH;
@@ -43,6 +44,25 @@ bool DPDrawing::ButtonHandler::checkIfButtonPressed(bool execute) {
 				if(execute) {
 					*currentMode = 2;
 					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+					inv->addCommand(lbc);
+					inv->Invoke();
+				}
+				return true;
+			}
+			// Pressed fourth button - TEXT
+			else if(mouseX >= *BUTTON_WIDTH * 3 && mouseX <= *BUTTON_WIDTH * 4) {
+				if(execute) {
+					*currentMode = 3;
+					LoadButtonsCommand* lbc = new LoadButtonsCommand(renderer, font, tm, currentMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+					Shape* s = nullptr;
+					for(int i = (int)shapes->size() - 1; i >= 0; i--) {
+						if(shapes->at(i)->isSelected()) {
+							s = shapes->at(i).get();
+							break;
+						}
+					}
+					DecorateCommand* dc = new DecorateCommand(s, inv, tm, shapes, renderer);
+					inv->addCommand(dc);
 					inv->addCommand(lbc);
 					inv->Invoke();
 				}

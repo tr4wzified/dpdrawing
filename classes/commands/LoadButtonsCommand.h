@@ -209,6 +209,21 @@ namespace DPDrawing {
 
 			SDL_RenderPresent(renderer);
 
+			// Button 3 - Text - T
+			Button e(BUTTON_WIDTH * 3, 0, text, 84, font);
+			SDL_Rect* e_rect = e.getRectangle();
+			SDL_Texture* e_msg = SDL_CreateTextureFromSurface(renderer, e.getSurface());
+			SDL_Rect* e_msg_rect = e.getRectangle();
+			if(*currentMode == 3) {
+				SDL_RenderCopy(renderer, button_active, NULL, e_rect);
+			}
+			else {
+				SDL_RenderCopy(renderer, button_tex, NULL, e_rect);
+			}
+			SDL_RenderCopy(renderer, e_msg, NULL, e_msg_rect);
+
+			SDL_RenderPresent(renderer);
+
 			// Destroy
 			SDL_DestroyTexture(u_msg);
 			SDL_DestroyTexture(v_msg);
@@ -220,6 +235,7 @@ namespace DPDrawing {
 			SDL_DestroyTexture(b_msg);
 			SDL_DestroyTexture(c_msg);
 			SDL_DestroyTexture(d_msg);
+			SDL_DestroyTexture(e_msg);
 			}
 		bool isUndoable() {
 			return false;
