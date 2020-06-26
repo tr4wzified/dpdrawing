@@ -99,11 +99,11 @@ int Quit() {
 
 void Update(SDL_Window*& window, SDL_Renderer*& gRenderer) {
     while (running) {
-		for(unique_ptr<ShapeTextDecorator>& s : textDecorators) {
-			SDL_Log("STD: %s", s->getUUID().c_str());
-			SDL_Log("Belongs to: %s", s->getShapeUUID().c_str());
-		}
-		SDL_Log("-------------------");
+		/* for(unique_ptr<ShapeTextDecorator>& s : textDecorators) { */
+		/* 	SDL_Log("STD: %s", s->getUUID().c_str()); */
+		/* 	SDL_Log("Belongs to: %s", s->getShapeUUID().c_str()); */
+		/* } */
+		/* SDL_Log("-------------------"); */
 	SDL_WaitEvent(&event);
 	mh->Update();
 

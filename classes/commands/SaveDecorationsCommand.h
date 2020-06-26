@@ -26,9 +26,7 @@ namespace DPDrawing {
 			    jsonObjects.push_back(json::object());
 				jsonObjects[i]["type"] = textDecorators->at(i)->getType();
 				jsonObjects[i]["UUID"] = textDecorators->at(i)->getUUID();
-				SDL_Log("Getting Shape UUID");
 				jsonObjects[i]["shapeUUID"] = textDecorators->at(i)->getShapeUUID();
-				SDL_Log("Got Shape UUID");
 				jsonObjects[i]["text"] = textDecorators->at(i)->getText();
 			}
 		

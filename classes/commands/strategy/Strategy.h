@@ -11,6 +11,5 @@ namespace DPDrawing {
 	class Strategy {
 		public:
 		virtual void execute() = 0;
-		//virtual ~Strategy() = 0;
 	};
 }

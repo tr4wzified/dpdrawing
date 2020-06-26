@@ -44,9 +44,7 @@ namespace DPDrawing {
 			string newShape = "";
 			for(int i = 0; i < (int)j.size(); ++i) {
 				for(int i = 0; i < (int)shapes->size(); i++) {
-					SDL_Log("I'm in shapes for");
 					if(shapes->at(i)->getUUID() == j[i]["shapeUUID"].get<string>()) {
-						SDL_Log("I set newShape");
 						newShape = shapes->at(i)->getUUID();
 						break;
 					}
@@ -57,19 +55,13 @@ namespace DPDrawing {
 				else {
 					// Center
 					if (j[i]["type"].get<string>() == "ShapeTextDecorator") {
-						SDL_Log("I got to here");
 						ShapeTextDecorator r = ShapeTextDecorator(newShape, tm, shapes, renderer, inv);
-						SDL_Log("I got to here 1");
 						r.setUUID(j[i]["UUID"].get<string>());
-						SDL_Log("I got to here 1.5");
 						r.drawText(j[i]["text"].get<string>());
-						SDL_Log("I got to here 2");
 						textDecorators->push_back(std::make_unique<ShapeTextDecorator>(r));
-						SDL_Log("I got to here 3");
 					}
 					// Top
 					else if (j[i]["type"].get<string>() == "ShapeTextTopDecorator") {
-					SDL_Log("I got to here");
 						ShapeTextTopDecorator r = ShapeTextTopDecorator(newShape, tm, shapes, renderer, inv);
 						r.setUUID(j[i]["UUID"].get<string>());
 						r.drawText(j[i]["text"].get<string>());
@@ -77,7 +69,6 @@ namespace DPDrawing {
 					}
 					// Bottom
 					else if (j[i]["type"].get<string>() == "ShapeTextBottomDecorator") {
-					SDL_Log("I got to here");
 						ShapeTextBottomDecorator r = ShapeTextBottomDecorator(newShape, tm, shapes, renderer, inv);
 						r.setUUID(j[i]["UUID"].get<string>());
 						r.drawText(j[i]["text"].get<string>());
@@ -85,7 +76,6 @@ namespace DPDrawing {
 					}
 					// Left
 					else if (j[i]["type"].get<string>() == "ShapeTextLeftDecorator") {
-					SDL_Log("I got to here");
 						ShapeTextLeftDecorator r = ShapeTextLeftDecorator(newShape, tm, shapes, renderer, inv);
 						r.setUUID(j[i]["UUID"].get<string>());
 						r.drawText(j[i]["text"].get<string>());
@@ -93,7 +83,6 @@ namespace DPDrawing {
 					}
 					// Right
 					else if (j[i]["type"].get<std::string>() == "ShapeTextRightDecorator") {
-					SDL_Log("I got to here");
 						ShapeTextRightDecorator r = ShapeTextRightDecorator(newShape, tm, shapes, renderer, inv);
 						r.setUUID(j[i]["UUID"].get<string>());
 						r.drawText(j[i]["text"].get<string>());
