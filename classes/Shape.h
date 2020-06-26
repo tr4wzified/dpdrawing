@@ -27,8 +27,6 @@ public:
 		this->UUID = UUID;
 	}
 
-	virtual void drawText(std::string text) {};
-
 	int size() {
 		return 0;
 	}
